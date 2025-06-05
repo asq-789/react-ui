@@ -1,0 +1,56 @@
+.custom-navbar {
+  background-color: #e73131 !important; /* Red */
+}
+
+.custom-navbar .navbar-brand,
+.custom-navbar .nav-link,
+.custom-navbar .dropdown-toggle,
+.custom-navbar .dropdown-item,
+.custom-navbar .navbar-toggler {
+  color: #fff !important;
+}
+
+.custom-navbar .nav-link:hover,
+.custom-navbar .dropdown-item:hover {
+  color: #ffccbc !important; /* Light red shade on hover */
+}
+
+.custom-navbar .btn-outline-success {
+  color: #fff;
+  border-color: #fff;
+}
+
+.custom-navbar .btn-outline-success:hover {
+  background-color: #fff;
+  color: #ed3737;
+}
+/* cards */
+.cards-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* space between cards */
+  justify-content: space-between; /* spread out cards evenly */
+}
+
+.card-col {
+  flex: 0 0 60%;  /* increase width to 36% */
+  max-width: 60%;
+  box-sizing: border-box;
+}
+
+.card-col .card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%; /* full height so cards align nicely */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-col .card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
