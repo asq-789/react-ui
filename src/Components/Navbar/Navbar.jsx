@@ -1,156 +1,281 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-export const Navbar = () => {
-  const cartCount = 3; // Example value, you can set this from props or state
+export const Navbar = ({ cartItems, setCartItems }) => {
+  const [showModal, setShowModal] = useState(false);
+  const [showOrderModal, setShowOrderModal] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
+  const [countdown, setCountdown] = useState(15);
+  const [orderConfirmed, setOrderConfirmed] = useState(false);
+  const [deliveryErrors, setDeliveryErrors] = useState({});
+
+  const [deliveryInfo, setDeliveryInfo] = useState({
+    name: '',
+    address: '',
+    phone: '',
+    aphone: '',
+    email: '',
+    area: '',
+  });
+
+  const areaCharges = {
+    'Select Area': 0,
+    'DHA': 150,
+    'Gulshan': 120,
+    'Nazimabad': 100,
+    'Malir': 130,
+  };
+
+  const deliveryCharge = areaCharges[deliveryInfo.area] || 0;
+
+  const totalAmount = cartItems.reduce(
+    (sum, item) => sum + item.price * (item.quantity || 1),
+    0
+  ) + deliveryCharge;
+
+  const handleCartClick = () => setShowModal(true);
+  const handleClose = () => setShowModal(false);
+  const handleSearchChange = (e) => setSearchQuery(e.target.value);
+
+  const handleRemoveItem = (indexToRemove) => {
+    const updatedItems = cartItems.filter((_, index) => index !== indexToRemove);
+    setCartItems(updatedItems);
+  };
+
+  const handleAddMoreItems = () => {
+    setShowModal(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePlaceOrder = () => {
+    setShowModal(false);
+    setShowOrderModal(true);
+  };
+
+  const validateDeliveryInfo = () => {
+    const errors = {};
+    if (!deliveryInfo.name.trim()) errors.name = 'Name is required';
+    if (!deliveryInfo.address.trim()) errors.address = 'Address is required';
+    if (!deliveryInfo.phone.trim()) errors.phone = 'Phone number is required';
+    if (!deliveryInfo.area || deliveryInfo.area === 'Select Area') errors.area = 'Please select a delivery area';
+    if (!deliveryInfo.email.trim() || !/\S+@\S+\.\S+/.test(deliveryInfo.email)) {
+      errors.email = 'Valid email is required';
+    }
+    return errors;
+  };
+
+const handleConfirmOrder = () => {
+  const errors = validateDeliveryInfo();
+  setDeliveryErrors(errors);
+
+  if (Object.keys(errors).length > 0) return;
+
+  setShowOrderModal(false);
+  setShowConfirmation(true);
+  setOrderConfirmed(true);
+
+  // Immediately clear the cart after confirmation
+  setCartItems([]); 
+
+  let timeLeft = 15 * 60;
+  const interval = setInterval(() => {
+    timeLeft--;
+    setCountdown(Math.ceil(timeLeft / 60));
+    if (timeLeft <= 0) {
+      clearInterval(interval);
+      setShowConfirmation(false);
+      setOrderConfirmed(false);
+    }
+  }, 1000);
+};
 
   return (
-    <nav
-      className="navbar navbar-expand-lg w-100"
-      style={{ backgroundColor: 'red', padding: '10px 20px' }}
-    >
-      <div className="container-fluid">
-        {/* Food Logo */}
-        <a
-          className="navbar-brand d-flex align-items-center"
-          href="#"
-          style={{ color: 'white', fontWeight: 'bold', fontSize: '24px' }}
-        >
-          <img
-            src="https://img.icons8.com/ios-filled/50/ffffff/hamburger.png"
-            alt="Food Logo"
-            style={{ width: '30px', height: '30px', marginRight: '10px' }}
-          />
-          FoodieSpot
-        </a>
-
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
-
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item">
-              <a
-                className="nav-link active"
-                aria-current="page"
-                href="#"
-                style={{ color: 'white' }}
-              >
-                Home
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#" style={{ color: 'white' }}>
-                Menu
-              </a>
-            </li>
-            <li className="nav-item dropdown">
-              <a
-                className="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                style={{ color: 'white' }}
-              >
-                Categories
-              </a>
-              <ul className="dropdown-menu">
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Pizza
-                  </a>
-                </li>
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Burgers
-                  </a>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Desserts
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li className="nav-item">
-              <a
-                className="nav-link disabled"
-                aria-disabled="true"
-                style={{ color: '#ccc' }}
-              >
-                Offers
-              </a>
-            </li>
-          </ul>
-
-          {/* Search bar and button */}
-          <form className="d-flex align-items-center" role="search">
-            <input
-              className="form-control me-2"
-              type="search"
-              placeholder="Search food..."
-              aria-label="Search"
-              style={{ width: '200px' }}
-            />
-            <button
-              className="btn"
-              type="submit"
-              style={{
-                backgroundColor: 'white',
-                color: 'red',
-                border: '1px solid red',
-              }}
-            >
-              Search
-            </button>
-          </form>
-
-          {/* Cart Icon */}
-          <a
-            href="#"
-            style={{
-              marginLeft: '15px',
-              color: 'white',
-              position: 'relative',
-            }}
-          >
+    <>
+      <nav className="navbar navbar-expand-lg w-100" style={{ backgroundColor: 'red', padding: '10px 20px' }}>
+        <div className="container-fluid d-flex justify-content-between align-items-center">
+          <a className="navbar-brand d-flex align-items-center" href="#" style={{ color: 'white', fontWeight: 'bold', fontSize: '24px' }}>
             <img
-              src="https://img.icons8.com/ios-filled/24/ffffff/shopping-cart.png"
-              alt="Cart"
-              style={{ width: '24px', height: '24px' }}
+              src="https://img.icons8.com/ios-filled/50/ffffff/hamburger.png"
+              alt="Food Logo"
+              style={{ width: '30px', height: '30px', marginRight: '10px' }}
             />
-            {cartCount > 0 && (
-              <span
-                style={{
-                  position: 'absolute',
-                  top: '-8px',
-                  right: '-10px',
-                  backgroundColor: 'yellow',
-                  color: 'black',
-                  borderRadius: '50%',
-                  padding: '4px 8px',
-                  fontSize: '12px',
-                  fontWeight: 'bold',
-                }}
-              >
-                {cartCount}
-              </span>
-            )}
+            FoodieSpot
           </a>
+
+          <div className="d-flex align-items-center gap-3">
+            {showSearch && (
+              <input
+                type="text"
+                className="form-control rounded-pill px-4"
+                placeholder="Search for dishes..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onBlur={() => {
+                  if (searchQuery === '') setShowSearch(false);
+                }}
+                style={{ maxWidth: '300px' }}
+                autoFocus
+              />
+            )}
+            {!showSearch && (
+              <button onClick={() => setShowSearch(true)} className="btn text-white" style={{ fontSize: '20px' }}>
+                🔍
+              </button>
+            )}
+            <button className="btn position-relative" onClick={handleCartClick} style={{ backgroundColor: 'transparent', border: 'none' }}>
+              <img src="https://img.icons8.com/ios-filled/24/ffffff/shopping-cart.png" alt="Cart" />
+              {cartItems.length > 0 && (
+                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark" style={{ fontSize: '12px' }}>
+                  {cartItems.length}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+
+      {/* Cart Modal */}
+      {showModal && (
+        <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-lg">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">🛒 Your Cart</h5>
+                <button type="button" className="btn-close" onClick={handleClose}></button>
+              </div>
+              <div className="modal-body">
+                {cartItems.length === 0 ? (
+                  <p>No items in cart.</p>
+                ) : (
+                  <ul className="list-group">
+                    {cartItems.map((item, index) => (
+                      <li className="list-group-item d-flex align-items-center justify-content-between" key={index}>
+                        <div className="d-flex align-items-center">
+                          <img src={item.img || "/default.jpg"} alt={item.name} style={{ width: '60px', height: '60px', objectFit: 'cover', marginRight: '15px' }} />
+                          <div>
+                            <h6 className="mb-1">{item.name}</h6>
+                            <div className="d-flex align-items-center mb-1">
+                              <button className="btn btn-sm btn-outline-secondary me-2" onClick={() => {
+                                const updated = [...cartItems];
+                                if (!updated[index].quantity) updated[index].quantity = 1;
+                                if (updated[index].quantity > 1) {
+                                  updated[index].quantity -= 1;
+                                }
+                                setCartItems(updated);
+                              }}>−</button>
+                              <span>{item.quantity || 1}</span>
+                              <button className="btn btn-sm btn-outline-secondary ms-2" onClick={() => {
+                                const updated = [...cartItems];
+                                updated[index].quantity = (updated[index].quantity || 1) + 1;
+                                setCartItems(updated);
+                              }}>+</button>
+                            </div>
+                            <small className="text-muted">Price: Rs. {item.price * (item.quantity || 1)}</small>
+                          </div>
+                        </div>
+                        <button className="btn btn-sm btn-danger" onClick={() => handleRemoveItem(index)}>
+                          Remove
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              <div className="modal-footer flex-column flex-md-row justify-content-between align-items-center">
+                <h5 className="mb-2 mb-md-0">Total: Rs. {totalAmount}</h5>
+                <div>
+                  <button className="btn btn-success me-2" onClick={handlePlaceOrder}>Place Order</button>
+                  <button className="btn me-2" onClick={handleAddMoreItems} style={{ backgroundColor: '#fdd835', color: '#000', border: 'none' }}>Add More Items</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delivery Modal */}
+      {showOrderModal && (
+        <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-lg">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">📦 Delivery Details</h5>
+              </div>
+              <div className="modal-body">
+                {[
+                  { name: 'name', label: 'Name' },
+                  { name: 'address', label: 'Address' },
+                  { name: 'phone', label: 'Phone' },
+                  { name: 'aphone', label: 'Alternate phone' },
+                  { name: 'email', label: 'Email' },
+                ].map((field, i) => (
+                  <div className="mb-3" key={i}>
+                    <label className="form-label">{field.label}</label>
+                    <input
+                      type={field.name === 'email' ? 'email' : 'text'}
+                      className={`form-control ${deliveryErrors[field.name] ? 'is-invalid' : ''}`}
+                      value={deliveryInfo[field.name]}
+                      onChange={(e) => setDeliveryInfo({ ...deliveryInfo, [field.name]: e.target.value })}
+                    />
+                    {deliveryErrors[field.name] && (
+                      <div className="invalid-feedback">{deliveryErrors[field.name]}</div>
+                    )}
+                  </div>
+                ))}
+
+                <div className="mb-3">
+                  <label className="form-label">Delivery Area</label>
+                  <select
+                    className={`form-select ${deliveryErrors.area ? 'is-invalid' : ''}`}
+                    value={deliveryInfo.area}
+                    onChange={(e) => setDeliveryInfo({ ...deliveryInfo, area: e.target.value })}
+                  >
+                    {Object.keys(areaCharges).map((area, idx) => (
+                      <option key={idx} value={area}>{area}</option>
+                    ))}
+                  </select>
+                  {deliveryInfo.area !== 'Select Area' && (
+                    <small className="text-muted">Delivery Charges: Rs. {deliveryCharge}</small>
+                  )}
+                  {deliveryErrors.area && <div className="invalid-feedback">{deliveryErrors.area}</div>}
+                </div>
+
+                <h6 className="mt-4">🧾 Order Summary</h6>
+                <ul className="list-group mb-3">
+                  {cartItems.map((item, i) => (
+                    <li className="list-group-item d-flex justify-content-between" key={i}>
+                      <span>{item.name} × {item.quantity || 1}</span>
+                      <strong>Rs. {item.price * (item.quantity || 1)}</strong>
+                    </li>
+                  ))}
+                  <li className="list-group-item d-flex justify-content-between bg-light">
+                    <strong>Delivery</strong>
+                    <span>Rs. {deliveryCharge}</span>
+                  </li>
+                </ul>
+                <h5>Total: Rs. {totalAmount}</h5>
+              </div>
+              <div className="modal-footer">
+                <button className="btn btn-success" onClick={handleConfirmOrder}>Confirm Place Order</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Toast */}
+      {showConfirmation && (
+        <div className="toast-container position-fixed bottom-0 end-0 p-3">
+          <div className="toast show align-items-center text-white bg-success border-0">
+            <div className="d-flex">
+              <div className="toast-body">
+                🎉 Your order is confirmed! It will be delivered in approximately <strong>{countdown} minutes</strong>.
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
