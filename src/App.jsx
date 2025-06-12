@@ -8,7 +8,7 @@ function App() {
   const [cartItems, setCartItems] = useState([]);
   const [isCartLoaded, setIsCartLoaded] = useState(false);
 
-  // Load cart from localStorage
+  // Load cart from localStorage on first mount
   useEffect(() => {
     const storedCart = localStorage.getItem('cartItems');
     if (storedCart) {
@@ -17,10 +17,12 @@ function App() {
     setIsCartLoaded(true);
   }, []);
 
-  // Save cart to localStorage
+  // Save to localStorage only after cart has been loaded
   useEffect(() => {
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-  }, [cartItems]);
+    if (isCartLoaded) {
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    }
+  }, [cartItems, isCartLoaded]);
 
   // Add to cart with quantity logic
   const handleAddToCart = (product) => {
@@ -58,6 +60,7 @@ function App() {
     { name: 'Alferado Pasta', price: 900, img: '/alferado.jpg' },
   ];
 
+  // Prevent render until cart is loaded
   if (!isCartLoaded) return null;
 
   return (
@@ -84,11 +87,11 @@ function App() {
         </div>
       </div>
 
-     <h5 style={{ fontWeight: 'bold', fontSize: '1.6rem', color: '#000', display: 'flex', alignItems: 'center' }}>
-  <span style={{ marginRight: '8px' }}>🍜</span>
-  Popular Items..
-</h5>
-<h6>Most Ordered Chinese foods are here</h6>
+      <h5 style={{ fontWeight: 'bold', fontSize: '1.6rem', color: '#000', display: 'flex', alignItems: 'center' }}>
+        <span style={{ marginRight: '8px' }}>🍜</span>
+        Popular Items..
+      </h5>
+      <h6>Most Ordered Chinese foods are here</h6>
 
       <div className="container mt-4">
         <div className="row">
