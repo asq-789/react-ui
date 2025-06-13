@@ -195,74 +195,112 @@ const handleConfirmOrder = () => {
       )}
 
       {/* Delivery Modal */}
-      {showOrderModal && (
-        <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog modal-lg">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">📦 Delivery Details</h5>
-              </div>
-              <div className="modal-body">
-                {[
-                  { name: 'name', label: 'Name' },
-                  { name: 'address', label: 'Address' },
-                  { name: 'phone', label: 'Phone' },
-                  { name: 'aphone', label: 'Alternate phone' },
-                  { name: 'email', label: 'Email' },
-                ].map((field, i) => (
-                  <div className="mb-3" key={i}>
-                    <label className="form-label">{field.label}</label>
-                    <input
-                      type={field.name === 'email' ? 'email' : 'text'}
-                      className={`form-control ${deliveryErrors[field.name] ? 'is-invalid' : ''}`}
-                      value={deliveryInfo[field.name]}
-                      onChange={(e) => setDeliveryInfo({ ...deliveryInfo, [field.name]: e.target.value })}
-                    />
-                    {deliveryErrors[field.name] && (
-                      <div className="invalid-feedback">{deliveryErrors[field.name]}</div>
-                    )}
-                  </div>
-                ))}
-
-                <div className="mb-3">
-                  <label className="form-label">Delivery Area</label>
-                  <select
-                    className={`form-select ${deliveryErrors.area ? 'is-invalid' : ''}`}
-                    value={deliveryInfo.area}
-                    onChange={(e) => setDeliveryInfo({ ...deliveryInfo, area: e.target.value })}
-                  >
-                    {Object.keys(areaCharges).map((area, idx) => (
-                      <option key={idx} value={area}>{area}</option>
-                    ))}
-                  </select>
-                  {deliveryInfo.area !== 'Select Area' && (
-                    <small className="text-muted">Delivery Charges: Rs. {deliveryCharge}</small>
-                  )}
-                  {deliveryErrors.area && <div className="invalid-feedback">{deliveryErrors.area}</div>}
-                </div>
-
-                <h6 className="mt-4">🧾 Order Summary</h6>
-                <ul className="list-group mb-3">
-                  {cartItems.map((item, i) => (
-                    <li className="list-group-item d-flex justify-content-between" key={i}>
-                      <span>{item.name} × {item.quantity || 1}</span>
-                      <strong>Rs. {item.price * (item.quantity || 1)}</strong>
-                    </li>
-                  ))}
-                  <li className="list-group-item d-flex justify-content-between bg-light">
-                    <strong>Delivery</strong>
-                    <span>Rs. {deliveryCharge}</span>
-                  </li>
-                </ul>
-                <h5>Total: Rs. {totalAmount}</h5>
-              </div>
-              <div className="modal-footer">
-                <button className="btn btn-success" onClick={handleConfirmOrder}>Confirm Place Order</button>
-              </div>
-            </div>
-          </div>
+    {/* Delivery Modal */}
+{showOrderModal && (
+  <div
+    className="modal fade show"
+    style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}
+  >
+    <div className="modal-dialog modal-lg">
+      <div className="modal-content">
+        <div className="modal-header d-flex justify-content-between align-items-center">
+          <h5 className="modal-title">📦 Delivery Details</h5>
+          <button
+            type="button"
+            className="btn"
+            onClick={() => setShowOrderModal(false)}
+            style={{
+              fontSize: '1.2rem',
+              border: 'none',
+              background: 'transparent',
+              cursor: 'pointer',
+              lineHeight: 1,
+            }}
+            aria-label="Close"
+          >
+            ❌
+          </button>
         </div>
-      )}
+
+        <div className="modal-body">
+          {/* Input Fields */}
+          {[
+            { name: 'name', label: 'Name' },
+            { name: 'address', label: 'Address' },
+            { name: 'phone', label: 'Phone' },
+            { name: 'aphone', label: 'Alternate phone' },
+            { name: 'email', label: 'Email' },
+          ].map((field, i) => (
+            <div className="mb-3" key={i}>
+              <label className="form-label">{field.label}</label>
+              <input
+                type={field.name === 'email' ? 'email' : 'text'}
+                className={`form-control ${deliveryErrors[field.name] ? 'is-invalid' : ''}`}
+                value={deliveryInfo[field.name]}
+                onChange={(e) =>
+                  setDeliveryInfo({ ...deliveryInfo, [field.name]: e.target.value })
+                }
+              />
+              {deliveryErrors[field.name] && (
+                <div className="invalid-feedback">{deliveryErrors[field.name]}</div>
+              )}
+            </div>
+          ))}
+
+          {/* Area Selection */}
+          <div className="mb-3">
+            <label className="form-label">Delivery Area</label>
+            <select
+              className={`form-select ${deliveryErrors.area ? 'is-invalid' : ''}`}
+              value={deliveryInfo.area}
+              onChange={(e) =>
+                setDeliveryInfo({ ...deliveryInfo, area: e.target.value })
+              }
+            >
+              {Object.keys(areaCharges).map((area, idx) => (
+                <option key={idx} value={area}>
+                  {area}
+                </option>
+              ))}
+            </select>
+            {deliveryInfo.area !== 'Select Area' && (
+              <small className="text-muted">
+                Delivery Charges: Rs. {deliveryCharge}
+              </small>
+            )}
+            {deliveryErrors.area && (
+              <div className="invalid-feedback">{deliveryErrors.area}</div>
+            )}
+          </div>
+
+          {/* Order Summary */}
+          <h6 className="mt-4">🧾 Order Summary</h6>
+          <ul className="list-group mb-3">
+            {cartItems.map((item, i) => (
+              <li className="list-group-item d-flex justify-content-between" key={i}>
+                <span>
+                  {item.name} × {item.quantity || 1}
+                </span>
+                <strong>Rs. {item.price * (item.quantity || 1)}</strong>
+              </li>
+            ))}
+            <li className="list-group-item d-flex justify-content-between bg-light">
+              <strong>Delivery</strong>
+              <span>Rs. {deliveryCharge}</span>
+            </li>
+          </ul>
+          <h5>Total: Rs. {totalAmount}</h5>
+        </div>
+
+        <div className="modal-footer">
+          <button className="btn btn-success" onClick={handleConfirmOrder}>
+            Confirm Place Order
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
 
       {/* Confirmation Toast */}
       {showConfirmation && (

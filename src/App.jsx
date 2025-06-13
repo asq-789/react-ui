@@ -3,12 +3,14 @@ import './App.css';
 import { Navbar } from './Components/Navbar/Navbar';
 import { Cards } from './Components/Cards/Cards';
 import { Footer } from './Components/Footer/Index';
+import { Navbarname } from './Components/Navbar/Navbarname';
+import { Carousel } from './Components/Carousel/Carousel';
+import { Route } from 'react-router';
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
   const [isCartLoaded, setIsCartLoaded] = useState(false);
 
-  // Load cart from localStorage on first mount
   useEffect(() => {
     const storedCart = localStorage.getItem('cartItems');
     if (storedCart) {
@@ -17,18 +19,14 @@ function App() {
     setIsCartLoaded(true);
   }, []);
 
-  // Save to localStorage only after cart has been loaded
   useEffect(() => {
     if (isCartLoaded) {
       localStorage.setItem('cartItems', JSON.stringify(cartItems));
     }
   }, [cartItems, isCartLoaded]);
 
-  // Add to cart with quantity logic
   const handleAddToCart = (product) => {
-    const existingIndex = cartItems.findIndex(
-      (item) => item.name === product.name
-    );
+    const existingIndex = cartItems.findIndex(item => item.name === product.name);
 
     if (existingIndex !== -1) {
       const updatedCart = [...cartItems];
@@ -60,21 +58,87 @@ function App() {
     { name: 'Alferado Pasta', price: 900, img: '/alferado.jpg' },
   ];
 
-  // Prevent render until cart is loaded
+  const AnimeeProducts = [
+    { name: 'Shrimp Chowmin', price: 700, img: '/animee1.jpeg' },
+    { name: 'Veg fried rice', price: 1599, img: '/animee2.jpeg' },
+  ];
+
   if (!isCartLoaded) return null;
 
   return (
     <>
+     {/* <BrowserRouter> */}
       <Navbar cartItems={cartItems} setCartItems={setCartItems} />
+      <Carousel />
+      <Navbarname />
+{/* <Routes>
+  <Route path='/animee' element={<AnimeeDeals/>}/>
+  
+        <Route path="/animee" element={<AnimeeDeals handleAddToCart={handleAddToCart} />} />
+        <Route path="/fastfood" element={<FastFoodDeals handleAddToCart={handleAddToCart} />} />
+        <Route path="/popular" element={<PopularItems handleAddToCart={handleAddToCart} />} />
+    
+</Routes> */}
+      {/* Animee Deals */}
+    <div className="container mt-5">
+        <div className="heading-section">
+          <h5 style={{
+            fontWeight: 'bold',
+            fontSize: '1.8rem',
+            color: '#000',
+            display: 'flex',
+            alignItems: 'center'
+          }}>
+            <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🔥</span>
+            Animee Deals..
+          </h5>
+          <h6 style={{
+            fontSize: '1rem',
+            color: '#666',
+            marginTop: '4px'
+          }}>
+            Most Ordered right now
+          </h6>
+        </div>
+     
+      
+      <div className="row mt-4">
+    {AnimeeProducts.map((prod, index) => (
+      <Cards
+        key={index}
+        name={prod.name}
+        price={prod.price}
+        img={prod.img}
+        onAddToCart={() => handleAddToCart(prod)}
+      customClass="animee-card" // 👈 pass special class here
 
-      <h5 style={{ fontWeight: 'bold', fontSize: '1.6rem', color: '#000', display: 'flex', alignItems: 'center' }}>
-        <span style={{ marginRight: '8px' }}>🔥</span>
-        Summer Deals..
-      </h5>
-      <h6>Most Ordered right now</h6>
+      />
+    ))}
+  </div>
+</div>
 
-      <div className="container mt-4">
-        <div className="row">
+      {/* Fast Food Deals */}
+      <div className="container mt-5">
+        <div className="heading-section">
+          <h5 style={{
+            fontWeight: 'bold',
+            fontSize: '1.8rem',
+            color: '#000',
+            display: 'flex',
+            alignItems: 'center'
+          }}>
+            <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🔥</span>
+            Fast Food Deals..
+          </h5>
+          <h6 style={{
+            fontSize: '1rem',
+            color: '#666',
+            marginTop: '4px'
+          }}>
+            Most Ordered right now
+          </h6>
+        </div>
+        <div className="row mt-4">
           {Products.map((prod, index) => (
             <Cards
               key={index}
@@ -87,14 +151,28 @@ function App() {
         </div>
       </div>
 
-      <h5 style={{ fontWeight: 'bold', fontSize: '1.6rem', color: '#000', display: 'flex', alignItems: 'center' }}>
-        <span style={{ marginRight: '8px' }}>🍜</span>
-        Popular Items..
-      </h5>
-      <h6>Most Ordered Chinese foods are here</h6>
-
-      <div className="container mt-4">
-        <div className="row">
+      {/* Popular Items */}
+      <div className="container mt-5">
+        <div className="heading-section">
+          <h5 style={{
+            fontWeight: 'bold',
+            fontSize: '1.8rem',
+            color: '#000',
+            display: 'flex',
+            alignItems: 'center'
+          }}>
+            <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🍜</span>
+            Popular Items..
+          </h5>
+          <h6 style={{
+            fontSize: '1rem',
+            color: '#666',
+            marginTop: '4px'
+          }}>
+            Most Ordered Chinese foods are here
+          </h6>
+        </div>
+        <div className="row mt-4">
           {PopularProducts.map((prod, index) => (
             <Cards
               key={index}
@@ -106,8 +184,11 @@ function App() {
           ))}
         </div>
       </div>
-
+{/* <Routes>
+  <Route path='/' element={<Cards/>}/>
+</Routes> */}
       <Footer />
+      {/* </BrowserRouter> */}
     </>
   );
 }

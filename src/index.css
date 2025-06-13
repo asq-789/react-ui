@@ -54,3 +54,39 @@
   transform: translateY(-8px);
   box-shadow: 0 12px 24px rgba(0,0,0,0.15);
 }
+/* navbar */
+/* Red background and centering */
+.food-navbar {
+  background-color: red;
+  padding: 10px 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* Horizontal menu list */
+.menu-list {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+  margin: 0;
+  padding: 0;
+}
+
+/* Font styling and hover effects */
+.menu-list li a {
+  text-decoration: none;
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  transition: color 0.3s, border-bottom 0.3s;
+  padding: 5px 0;
+  display: inline-block;
+  border-bottom: 2px solid transparent;
+}
+
+/* Hover effect */
+.menu-list li a:hover {
+  color: #ffd700;
+  border-bottom: 2px solid #ffd700;
+}
