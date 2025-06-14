@@ -5,7 +5,10 @@ import { Cards } from './Components/Cards/Cards';
 import { Footer } from './Components/Footer/Index';
 import { Navbarname } from './Components/Navbar/Navbarname';
 import { Carousel } from './Components/Carousel/Carousel';
-import { Route } from 'react-router';
+import { Routes,Route } from 'react-router';
+import AnimeeDeals from './Components/Food/AnimeeDeals';
+import FastFoodDeals from './Components/Food/FastFoodDeals';
+import PopularItems from './Components/Food/PopularItems';
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -71,15 +74,15 @@ function App() {
       <Navbar cartItems={cartItems} setCartItems={setCartItems} />
       <Carousel />
       <Navbarname />
-{/* <Routes>
-  <Route path='/animee' element={<AnimeeDeals/>}/>
+<Routes>
+  <Route path='/' element={<AnimeeDeals/>}/>
   
         <Route path="/animee" element={<AnimeeDeals handleAddToCart={handleAddToCart} />} />
         <Route path="/fastfood" element={<FastFoodDeals handleAddToCart={handleAddToCart} />} />
         <Route path="/popular" element={<PopularItems handleAddToCart={handleAddToCart} />} />
     
-</Routes> */}
-      {/* Animee Deals */}
+</Routes>
+      {/* Animee Deals
     <div className="container mt-5">
         <div className="heading-section">
           <h5 style={{
@@ -118,7 +121,7 @@ function App() {
 </div>
 
       {/* Fast Food Deals */}
-      <div className="container mt-5">
+      {/* <div className="container mt-5">
         <div className="heading-section">
           <h5 style={{
             fontWeight: 'bold',
@@ -149,10 +152,10 @@ function App() {
             />
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Popular Items */}
-      <div className="container mt-5">
+      {/* <div className="container mt-5">
         <div className="heading-section">
           <h5 style={{
             fontWeight: 'bold',
@@ -183,7 +186,7 @@ function App() {
             />
           ))}
         </div>
-      </div>
+      </div> */} 
 {/* <Routes>
   <Route path='/' element={<Cards/>}/>
 </Routes> */}
