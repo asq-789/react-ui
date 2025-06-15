@@ -4,7 +4,7 @@ import { Cards } from '../Cards/Cards';
 const PopularProducts = [
   { name: 'Shrimp Chowmin', price: 700, img: '/chowmin.jpg' },
   { name: 'Vegetable Chowmin', price: 1699, img: '/noodles.jpg' },
-  { name: 'Prawns veg Soup', price: 2699, img: '/soup.jpg' },
+  { name: 'Mapo Tafu', price: 2699, img: '/tofu.jpg', description: ' Spicy tofu and minced meat in chili sauce.' },
   { name: 'Veg fried rice', price: 1599, img: '/veg.jpg' },
   { name: 'Mix Chowmin', price: 1060, img: '/prawnsnoodles.jpg' },
   { name: 'Hakka Noodles', price: 1060, img: '/hakka.jpg' },

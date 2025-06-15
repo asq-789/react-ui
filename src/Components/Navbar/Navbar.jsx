@@ -9,6 +9,8 @@ export const Navbar = ({ cartItems, setCartItems }) => {
   const [countdown, setCountdown] = useState(15);
   const [orderConfirmed, setOrderConfirmed] = useState(false);
   const [deliveryErrors, setDeliveryErrors] = useState({});
+  const [showWishlistModal, setShowWishlistModal] = useState(false);
+
 
   const [deliveryInfo, setDeliveryInfo] = useState({
     name: '',
@@ -131,9 +133,40 @@ const handleConfirmOrder = () => {
                 </span>
               )}
             </button>
+              {/* ❤️ Wishlist Icon */}
+  <button
+  className="btn text-white"
+  style={{ fontSize: '20px', backgroundColor: 'transparent', border: 'none' }}
+  onClick={() => setShowWishlistModal(true)}
+>
+  ❤️
+</button>
+
           </div>
         </div>
       </nav>
+{/* Wishlist Modal */}
+{showWishlistModal && (
+  <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+    <div className="modal-dialog modal-lg">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h5 className="modal-title">💖 Wishlist</h5>
+          <button type="button" className="btn-close" onClick={() => setShowWishlistModal(false)}></button>
+        </div>
+        <div className="modal-body">
+          {/* Replace this with actual wishlist logic */}
+          <p>Your wishlist is empty.</p>
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-secondary" onClick={() => setShowWishlistModal(false)}>
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
 
       {/* Cart Modal */}
       {showModal && (

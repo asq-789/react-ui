@@ -2,13 +2,44 @@ import React from 'react';
 import { Cards } from '../Cards/Cards';
 
 const Products = [
-  { name: 'Beef Jalapeno Dynamite burger', price: 700, img: '/img.jpg' },
-  { name: '3 Beef tender burgers', price: 1699, img: '/burger2.jpg' },
-  { name: 'Burgers with Fries', price: 950, img: '/deal.jpg' },
-  { name: 'Dragon Chicken with Rice and Noodles', price: 2699, img: '/chinesedeal.jpg' },
-  { name: 'Khawsa with Chicken fried rice', price: 1599, img: '/cdeal2.jpg' },
-  { name: 'Dragon Beef and Chicken', price: 1060, img: '/cdeal3.jpg' },
+  {
+    name: 'Beef Jalapeno Dynamite burger',
+    price: 700,
+    img: '/img.jpg',
+    description: 'A fiery beef patty loaded with jalapeños, cheese, and spicy dynamite sauce for a bold bite.',
+  },
+  {
+    name: '3 Beef tender burgers',
+    price: 1699,
+    img: '/burger2.jpg',
+    description: 'A triple treat of juicy, tender beef burgers stacked with fresh veggies and classic sauces.',
+  },
+  {
+    name: 'Burgers with Fries',
+    price: 950,
+    img: '/deal.jpg',
+    description: 'Classic beef burgers paired perfectly with golden crispy fries — the ultimate combo.',
+  },
+  {
+    name: 'Dragon Chicken with Rice and Noodles',
+    price: 2699,
+    img: '/chinesedeal.jpg',
+    description: 'A spicy and savory Chinese-style dragon chicken dish served with fried rice and stir-fried noodles.',
+  },
+  {
+    name: 'Khawsa with Chicken fried rice',
+    price: 1599,
+    img: '/cdeal2.jpg',
+    description: 'A comforting Burmese Khawsa bowl served alongside flavorful chicken fried rice.',
+  },
+  {
+    name: 'Dragon Beef and Chicken',
+    price: 1060,
+    img: '/cdeal3.jpg',
+    description: 'A sizzling hot plate of tender beef and chicken tossed in signature dragon sauce.',
+  },
 ];
+
 
 const FastFoodDeals = ({ handleAddToCart }) => {
   return (
@@ -28,6 +59,7 @@ const FastFoodDeals = ({ handleAddToCart }) => {
             name={prod.name}
             price={prod.price}
             img={prod.img}
+                              description={prod.description}
             onAddToCart={() => handleAddToCart(prod)}
           />
         ))}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router';
 
 export const Navbarname = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -12,7 +13,14 @@ export const Navbarname = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
+const handleToggleWishlist = (product) => {
+  const exists = wishlistItems.find(item => item.name === product.name);
+  if (exists) {
+    setWishlistItems(wishlistItems.filter(item => item.name !== product.name));
+  } else {
+    setWishlistItems([...wishlistItems, product]);
+  }
+};
   const styles = {
     navbar: {
       backgroundColor: 'red',
@@ -136,8 +144,19 @@ export const Navbarname = () => {
   };
 
   const menuItems = [
-    "Anime Deal", "Burger Deal", "Chinese Deal", "Pizza", "Burger",
-    "Sandwiches", "Biryani", "BBQ", "Appetizers", "Rolls", "Drinks", "Desserts"
+    { label: "Anime Deal", path: "/anime" },
+    { label: "Burger Deal", path: "/deal" },
+        { label: "Fast Food", path: "/fastfood" },
+    { label: "Chinese Deal", path: "/chinese" },
+    { label: "Pizza", path: "/pizza" },
+    { label: "Burger", path: "/burger" },
+    { label: "Sandwiches", path: "/sandwiches" },
+    { label: "Biryani", path: "/biryani" },
+    { label: "BBQ", path: "/bbq" },
+    { label: "Appetizers", path: "/appetizers" },
+    { label: "Rolls", path: "/rolls" },
+    { label: "Drinks", path: "/drinks" },
+    { label: "Desserts", path: "/desserts" }
   ];
 
   return (
@@ -156,14 +175,14 @@ export const Navbarname = () => {
             <ul style={styles.desktopList}>
               {menuItems.map((item, index) => (
                 <li key={index} style={styles.desktopItem}>
-                  <a
-                    href="#"
+                  <Link
+                    to={item.path}
                     style={styles.link}
                     onMouseOver={e => e.target.style.color = '#ffd700'}
                     onMouseOut={e => e.target.style.color = 'white'}
                   >
-                    {item}
-                  </a>
+                    {item.label}
+                  </Link>
                   {index !== menuItems.length - 1 && <span style={styles.divider}></span>}
                 </li>
               ))}
@@ -173,7 +192,7 @@ export const Navbarname = () => {
       </nav>
 
       {/* Mobile Bottom Menu */}
-      {isMobile && (
+      {isMobile && menuOpen && (
         <div style={styles.mobileMenuWrapper}>
           <div style={styles.closeIcon} onClick={() => setMenuOpen(false)}>×</div>
           <div style={styles.heading}>Menu 🍽️</div>
@@ -181,15 +200,15 @@ export const Navbarname = () => {
             <ul style={styles.menuList}>
               {menuItems.map((item, index) => (
                 <li key={index} style={styles.listItem}>
-                  <a
-                    href="#"
+                  <Link
+                    to={item.path}
                     style={styles.link}
                     onClick={() => setMenuOpen(false)}
                     onMouseOver={e => e.target.style.color = '#ffd700'}
                     onMouseOut={e => e.target.style.color = 'white'}
                   >
-                    {item}
-                  </a>
+                    {item.label}
+                  </Link>
                 </li>
               ))}
             </ul>
