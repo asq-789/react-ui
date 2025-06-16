@@ -25,9 +25,32 @@ const PopularProducts = [
 
 
 const AnimeeProducts = [
-  { name: 'Shrimp Chowmin', price: 700, img: '/animee1.jpeg', description: 'Special shrimp chowmin served in anime-style themed packaging.' },
-  { name: 'Veg fried rice', price: 1599, img: '/animee2.jpeg', description: 'Colorful and aromatic veg fried rice from our Animee deals.' },
-  { name: 'Veg fried rice', price: 1599, img: '/animee3.jpeg', description: 'Another flavor twist on veg fried rice for anime lovers.' },
+  {
+    name: 'Animee Lovers',
+    price: 700,
+    img: '/animee1.jpeg',
+    description: 'Special shrimp chowmin served in anime-style themed packaging.'
+  },
+  {
+    name: 'Mighty Deal',
+    price: 1599,
+    img: '/animee2.jpeg',
+    description: 'Colorful and aromatic veg fried rice from our Animee deals.'
+  },
+  {
+    name: 'Animee Combo Deal',
+    price: 1599,
+    img: '/animee3.jpeg',
+    description: 'Another flavor twist on veg fried rice for anime lovers.'
+  },
+];
+const burgerdealProducts = [
+  { id: 1, name: 'Chocolate Lava Cakes', price: 700, img: '/burgerdeal.png', description: 'Warm chocolate cake with a molten center, served fresh.' },
+  { id: 2, name: 'Mango Mousse', price: 1699, img: '/burgerdeal.png', description: 'Creamy mango mousse with a tropical fruity finish.' },
+  { id: 3, name: 'Strawberry Cheesecake', price: 2699, img: '/deal1.jpg', description: 'Classic New York-style cheesecake topped with strawberries.' },
+  { id: 4, name: 'Baklava', price: 1599, img: '/deal3.jpg', description: 'Rich Middle Eastern pastry made with layers of filo and nuts.' },
+  { id: 5, name: 'Gulab Jamun', price: 1060, img: '/deal.jpg', description: 'Soft milk-solid dumplings soaked in rose-flavored syrup.' },
+  { id: 6, name: 'Tiramisu', price: 1060, img: '/burger2.jpg', description: 'Italian layered dessert with coffee-soaked biscuits and mascarpone cream.' },
 ];
 
 const DessertsProducts = [

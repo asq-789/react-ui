@@ -3,127 +3,193 @@ import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
-export const Loginmoadal = () => {
+export const Loginmoadal = ({ setUserEmail }) => {
   const [option, setOption] = useState('');
   const [deliveryArea, setDeliveryArea] = useState('');
+  const [email, setEmail] = useState('');
+  const [showErrors, setShowErrors] = useState(false);
+  const [showSessionAlert, setShowSessionAlert] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const modal = new window.bootstrap.Modal(document.getElementById('loginModal'));
+    const modalElement = document.getElementById('loginModal');
+    const modal = new window.bootstrap.Modal(modalElement, {
+      backdrop: 'static', // disables closing on click outside
+      keyboard: false     // disables closing on Esc key
+    });
     modal.show();
 
-    // Clean up modal when unmounted
+    const dialog = document.querySelector('.modal-dialog');
+
+    const handleOutsideClick = (e) => {
+      if (dialog && !dialog.contains(e.target)) {
+        setShowErrors(true);
+        dialog.classList.add('shake');
+        setTimeout(() => dialog.classList.remove('shake'), 500);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+
     return () => {
-      modal.hide();
+      document.removeEventListener('mousedown', handleOutsideClick);
       document.body.classList.remove('modal-open');
       document.querySelector('.modal-backdrop')?.remove();
-      document.body.style.overflow = 'auto';
     };
   }, []);
 
-  const handleOptionChange = (selected) => setOption(selected);
+  const handleContinue = () => {
+    setShowErrors(true);
+    if (!email || !option || (option === 'Delivery' && !deliveryArea)) return;
 
-  const handleAreaChange = (e) => setDeliveryArea(e.target.value);
+    localStorage.setItem('userEmail', email);
+    localStorage.setItem('orderType', option);
+    localStorage.setItem('deliveryArea', deliveryArea || 'N/A');
+    setUserEmail(email);
 
-const handleContinue = () => {
-  if (!option) {
-    alert('Please select Delivery or Pickup.');
-    return;
-  }
+    const savedCart = JSON.parse(localStorage.getItem(`cart_${email}`)) || [];
+    const savedWishlist = JSON.parse(localStorage.getItem(`wishlist_${email}`)) || [];
 
-  if (option === 'Delivery' && !deliveryArea) {
-    alert('Please select a delivery area.');
-    return;
-  }
+    if (savedCart.length > 0 || savedWishlist.length > 0) {
+      setShowSessionAlert(true);
+      setTimeout(() => setShowSessionAlert(false), 3000);
+    }
 
-  localStorage.setItem('orderType', option);
-  localStorage.setItem('deliveryArea', deliveryArea || 'N/A');
+    const modalEl = document.getElementById('loginModal');
+    const modalInstance = window.bootstrap.Modal.getInstance(modalEl);
+    modalInstance?.hide();
 
-  // Hide modal
-  const modalEl = document.getElementById('loginModal');
-  const modalInstance = window.bootstrap.Modal.getInstance(modalEl);
-  modalInstance?.hide();
+    setTimeout(() => {
+      document.body.classList.remove('modal-open');
+      document.querySelector('.modal-backdrop')?.remove();
+    }, 300);
 
-  // ✅ Force cleanup styles and backdrops
-  setTimeout(() => {
-    document.body.classList.remove('modal-open');
-    document.body.style.overflow = 'auto';
-    document.querySelector('.modal-backdrop')?.remove();
-  }, 300); // Allow Bootstrap animation to finish
-
-  // ✅ Navigate after short delay to let cleanup happen first
-  setTimeout(() => {
-    navigate('/home');
-  }, 350);
-};
+    setTimeout(() => navigate('/home'), 350);
+  };
 
   return (
-    <div
-      className="modal fade"
-      id="loginModal"
-      tabIndex="-1"
-      aria-labelledby="loginModalLabel"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog modal-dialog-centered">
-        <div className="modal-content p-3">
-          <div className="modal-header border-0">
-            <h5 className="modal-title" id="loginModalLabel">Welcome to Luxurious Spire 🍽</h5>
-          </div>
-          <div className="modal-body">
-            {/* Email Input */}
-            <div className="mb-3">
-              <label className="form-label fw-bold">Email address</label>
-              <input type="email" className="form-control" placeholder="Enter your email" />
+    <>
+      {/* Toast Alert */}
+      {showSessionAlert && (
+        <div style={styles.sessionAlert}>
+          🔔 You have saved items from your last session.
+        </div>
+      )}
+
+      {/* Modal */}
+      <div className="modal fade" id="loginModal" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content p-3">
+            <div className="modal-header border-0">
+              <h5 className="modal-title">Welcome to Luxurious Spire 🍽</h5>
             </div>
-
-            {/* Toggle Buttons */}
-            <div className="d-flex justify-content-center gap-3 mb-3">
-              <button
-                className={`btn rounded-pill px-4 ${option === 'Delivery' ? 'btn-danger' : 'btn-outline-danger'}`}
-                onClick={() => handleOptionChange('Delivery')}
-              >
-                Delivery
-              </button>
-              <button
-                className={`btn rounded-pill px-4 ${option === 'Pickup' ? 'btn-danger' : 'btn-outline-danger'}`}
-                onClick={() => handleOptionChange('Pickup')}
-              >
-                Pickup
-              </button>
-            </div>
-
-            {/* Conditional UI */}
-            {option === 'Delivery' && (
-              <>
-                <div className="mb-3">
-                  <label className="form-label fw-bold">Select Delivery Area</label>
-                  <select className="form-select" value={deliveryArea} onChange={handleAreaChange}>
-                    <option value="">Choose area</option>
-                    <option value="Gulshan-e-Iqbal">Gulshan-e-Iqbal</option>
-                    <option value="DHA">DHA</option>
-                    <option value="North Nazimabad">North Nazimabad</option>
-                    <option value="Clifton">Clifton</option>
-                  </select>
-                </div>
-                <p className="text-danger mt-2 mb-0">🚚 Note: Delivery available only in Karachi.</p>
-              </>
-            )}
-
-            {option === 'Pickup' && (
-              <div className="alert alert-info mt-3">
-                📍 Pickup Location: Luxurious Spire Hotel, Main Shahrah-e-Faisal, Karachi
+            <div className="modal-body">
+              <div className="mb-3">
+                <label className="form-label fw-bold">Email address</label>
+                <input
+                  type="email"
+                  className={`form-control ${showErrors && !email ? 'is-invalid' : ''}`}
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                {showErrors && !email && <div className="text-danger mt-1">Please enter your email.</div>}
               </div>
-            )}
 
-            <div className="d-grid mt-4">
-              <button className="btn btn-dark rounded-pill" onClick={handleContinue}>
-                Continue
-              </button>
+              <div className="d-flex justify-content-center gap-3 mb-3">
+                <button
+                  className={`btn rounded-pill px-4 ${option === 'Delivery' ? 'btn-danger' : 'btn-outline-danger'}`}
+                  onClick={() => setOption('Delivery')}
+                >
+                  Delivery
+                </button>
+                <button
+                  className={`btn rounded-pill px-4 ${option === 'Pickup' ? 'btn-danger' : 'btn-outline-danger'}`}
+                  onClick={() => setOption('Pickup')}
+                >
+                  Pickup
+                </button>
+              </div>
+              {showErrors && !option && <div className="text-danger text-center mb-2">Please select Delivery or Pickup.</div>}
+
+              {option === 'Delivery' && (
+                <>
+                  <div className="mb-3">
+                    <label className="form-label fw-bold">Select Delivery Area</label>
+                    <select
+                      className={`form-select ${showErrors && !deliveryArea ? 'is-invalid' : ''}`}
+                      value={deliveryArea}
+                      onChange={(e) => setDeliveryArea(e.target.value)}
+                    >
+                      <option value="">Choose area</option>
+                      <option value="Gulshan-e-Iqbal">Gulshan-e-Iqbal</option>
+                      <option value="DHA">DHA</option>
+                      <option value="North Nazimabad">North Nazimabad</option>
+                      <option value="Clifton">Clifton</option>
+                    </select>
+                    {showErrors && !deliveryArea && (
+                      <div className="text-danger mt-1">Please select a delivery area.</div>
+                    )}
+                  </div>
+                  <p className="text-danger mt-2 mb-0">🚚 Delivery only available in Karachi.</p>
+                </>
+              )}
+
+              {option === 'Pickup' && (
+                <div className="alert alert-info mt-3">
+                  📍 Pickup Location: Luxurious Spire Hotel, Main Shahrah-e-Faisal, Karachi
+                </div>
+              )}
+
+              <div className="d-grid mt-4">
+                <button className="btn btn-dark rounded-pill" onClick={handleContinue}>
+                  Continue
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* CSS */}
+      <style>
+        {`
+          .shake {
+            animation: shake 0.5s;
+          }
+
+          @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            50% { transform: translateX(8px); }
+            75% { transform: translateX(-8px); }
+            100% { transform: translateX(0); }
+          }
+
+          @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(-20px); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
+          }
+        `}
+      </style>
+    </>
   );
+};
+
+const styles = {
+  sessionAlert: {
+    position: 'fixed',
+    top: '20px',
+    right: '20px',
+    zIndex: 9999,
+    backgroundColor: '#ffe0e0',
+    color: '#a10000',
+    padding: '12px 20px',
+    borderRadius: '12px',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+    fontWeight: 'bold',
+    animation: 'fadeInOut 3s ease-in-out',
+  }
 };
