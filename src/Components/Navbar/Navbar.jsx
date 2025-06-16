@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 export const Navbar = ({ cartItems, setCartItems }) => {
   const [showModal, setShowModal] = useState(false);
@@ -107,8 +107,10 @@ export const Navbar = ({ cartItems, setCartItems }) => {
           {/* Home and About Us */}
           <ul className="d-flex list-unstyled mb-0" style={{ gap: '20px' }}>
             {[
-              { name: 'Home', path: '/' },
-              { name: 'About Us', path: '/about' }
+              { name: 'Home', path: 'home' },
+              { name: 'About Us', path: '/about' },
+              { name: 'Restaurant', path: '/restaurant' }
+
             ].map((item, index) => (
               <li key={index}>
                 <Link

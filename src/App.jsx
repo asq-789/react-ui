@@ -22,6 +22,8 @@ import { Rolls } from './Components/Food/Rolls';
 import { Sandwitches } from './Components/Food/Sandwitches';
 import { Deals } from './Components/Food/Deals';
 import { Loginmoadal } from './Components/Loginmoadal';
+import { Aboutus } from './Components/Aboutus';
+import { Restaurant } from './Components/Restaurant';
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -75,6 +77,8 @@ const handleToggleWishlist = (product) => {
 <Routes>
   <Route path="/" element={<Loginmoadal />} />
         <Route path='home' element={<Home handleAddToCart={handleAddToCart}/>}/>
+        <Route path='about' element={<Aboutus handleAddToCart={handleAddToCart}/>}/>
+        <Route path='restaurant' element={<Restaurant handleAddToCart={handleAddToCart}/>}/>
         <Route path="/anime" element={<AnimeeDeals handleAddToCart={handleAddToCart} />} />
         <Route path="/fastfood" element={<FastFoodDeals handleAddToCart={handleAddToCart} />} />
         <Route path="/chinese" element={<PopularItems handleAddToCart={handleAddToCart} />} />
