@@ -56,7 +56,7 @@ const PizzaProducts = [
     description: 'Loaded with pepperoni, sausage, beef, ham, and bacon' 
   },
 ];
-export const Pizza = () => {
+export const Pizza = ({handleAddToCart}) => {
   return (
     <div>  {/* Pixa */}
           <div className="container mt-5">

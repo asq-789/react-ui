@@ -13,27 +13,18 @@ export const Navbarname = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-const handleToggleWishlist = (product) => {
-  const exists = wishlistItems.find(item => item.name === product.name);
-  if (exists) {
-    setWishlistItems(wishlistItems.filter(item => item.name !== product.name));
-  } else {
-    setWishlistItems([...wishlistItems, product]);
-  }
-};
+
   const styles = {
-    navbar: {
-      backgroundColor: 'red',
-      padding: '10px 0',
-      display: 'flex',
-      justifyContent: isMobile ? 'space-between' : 'center',
-      alignItems: 'center',
-      paddingLeft: '20px',
-      paddingRight: '20px',
-      position: 'sticky',
-      top: 0,
-      zIndex: 1001,
-    },
+navbar: {
+  backgroundColor: 'red',
+  padding: '10px 20px',
+  display: 'flex',
+  justifyContent: isMobile ? 'space-between' : 'center',
+  alignItems: 'center',
+  width: '100%',
+  boxSizing: 'border-box',
+},
+
     hamburger: {
       fontSize: '24px',
       color: 'white',
@@ -96,7 +87,8 @@ const handleToggleWishlist = (product) => {
       position: 'relative',
       flex: 1,
       width: '100%',
-      overflow: 'hidden',
+      overflowX: 'auto',
+      boxSizing: 'border-box',
     },
     desktopList: {
       listStyle: 'none',
@@ -108,10 +100,13 @@ const handleToggleWishlist = (product) => {
       whiteSpace: 'nowrap',
       scrollbarWidth: 'none',
       msOverflowStyle: 'none',
+      width: '100%',
+      boxSizing: 'border-box',
     },
     desktopItem: {
       position: 'relative',
       padding: '0 10px',
+      flexShrink: 0,
     },
     divider: {
       position: 'absolute',
@@ -146,7 +141,7 @@ const handleToggleWishlist = (product) => {
   const menuItems = [
     { label: "Anime Deal", path: "/anime" },
     { label: "Burger Deal", path: "/deal" },
-        { label: "Fast Food", path: "/fastfood" },
+    { label: "Fast Food", path: "/fastfood" },
     { label: "Chinese Deal", path: "/chinese" },
     { label: "Pizza", path: "/pizza" },
     { label: "Burger", path: "/burger" },
@@ -156,18 +151,15 @@ const handleToggleWishlist = (product) => {
     { label: "Appetizers", path: "/appetizers" },
     { label: "Rolls", path: "/rolls" },
     { label: "Drinks", path: "/drinks" },
-    { label: "Desserts", path: "/desserts" }
+    { label: "Desserts", path: "/desserts" },
   ];
 
   return (
     <>
       <nav style={styles.navbar}>
         <h5 style={{ color: 'white', margin: 0 }}>🍽️ Menu</h5>
-
-        {/* Hamburger Icon */}
         <div style={styles.hamburger} onClick={() => setMenuOpen(true)}>☰</div>
 
-        {/* Desktop Menu */}
         {!isMobile && (
           <div style={styles.desktopScrollWrapper}>
             <div style={styles.fadeLeft}></div>
@@ -191,7 +183,6 @@ const handleToggleWishlist = (product) => {
         )}
       </nav>
 
-      {/* Mobile Bottom Menu */}
       {isMobile && menuOpen && (
         <div style={styles.mobileMenuWrapper}>
           <div style={styles.closeIcon} onClick={() => setMenuOpen(false)}>×</div>
@@ -216,9 +207,14 @@ const handleToggleWishlist = (product) => {
         </div>
       )}
 
-      {/* Global scrollbar hide */}
       <style>
         {`
+          html, body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* 🚫 No horizontal scroll */
+            box-sizing: border-box;
+          }
           ul::-webkit-scrollbar {
             display: none;
           }

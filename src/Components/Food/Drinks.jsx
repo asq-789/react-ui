@@ -39,7 +39,7 @@ const drinkProducts = [
   }
 ];
 
-export const Drinks = () => {
+export const Drinks = ({handleAddToCart}) => {
   return (
     <div> {/*drinks*/}
           <div className="container mt-5">

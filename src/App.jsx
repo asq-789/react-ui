@@ -21,6 +21,7 @@ import { Pizza } from './Components/Food/Pizza';
 import { Rolls } from './Components/Food/Rolls';
 import { Sandwitches } from './Components/Food/Sandwitches';
 import { Deals } from './Components/Food/Deals';
+import { Loginmoadal } from './Components/Loginmoadal';
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -65,13 +66,15 @@ const handleToggleWishlist = (product) => {
 
   return (
     <>
-     
+     <Loginmoadal/>
       <Navbar cartItems={cartItems} setCartItems={setCartItems} />
       <Carousel />
-      <Navbarname />
+     <div style={{ overflowX: 'hidden', maxWidth: '100vw' }}>
+  <Navbarname />
+</div>
 <Routes>
-  <Route path='/' element={<Home handleAddToCart={handleAddToCart}/>}/>
-  
+  <Route path="/" element={<Loginmoadal />} />
+        <Route path='home' element={<Home handleAddToCart={handleAddToCart}/>}/>
         <Route path="/anime" element={<AnimeeDeals handleAddToCart={handleAddToCart} />} />
         <Route path="/fastfood" element={<FastFoodDeals handleAddToCart={handleAddToCart} />} />
         <Route path="/chinese" element={<PopularItems handleAddToCart={handleAddToCart} />} />

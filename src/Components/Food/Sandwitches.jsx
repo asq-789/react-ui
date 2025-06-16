@@ -39,7 +39,7 @@ const sandwitchesProducts = [
   },
   
 ];
-export const Sandwitches = () => {
+export const Sandwitches = ({handleAddToCart}) => {
   return (
     <div>{/* Sandwitches Deals */}
           <div className="container mt-5">

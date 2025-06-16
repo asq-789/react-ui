@@ -12,7 +12,7 @@ const DessertsProducts = [
   { name: 'Brownie Sundae', price: 900, img: '/brownie.jpg', description: 'Fudgy brownie topped with ice cream, nuts, and chocolate syrup.' },
 ];
 
-export const Desert = () => {
+export const Desert = ({handleAddToCart}) => {
   return (
     <div> {/* Desserts */}
           <div className="container mt-5">
@@ -40,7 +40,7 @@ export const Desert = () => {
                   name={prod.name}
                   price={prod.price}
                   img={prod.img}
-                                description={prod.description}
+                  description={prod.description}
     
                   onAddToCart={() => handleAddToCart(prod)}
                 />

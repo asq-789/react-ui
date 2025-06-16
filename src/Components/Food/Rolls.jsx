@@ -38,7 +38,7 @@ const rollProducts = [
     description: 'Melted cheese and chicken chunks combined in a delicious cheesy roll.'
   }
 ];
-export const Rolls = () => {
+export const Rolls = ({handleAddToCart}) => {
   return (
     <div> {/* Rolls */}
           <div className="container mt-5">

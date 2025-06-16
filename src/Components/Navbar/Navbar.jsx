@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 export const Navbar = ({ cartItems, setCartItems }) => {
   const [showModal, setShowModal] = useState(false);
@@ -10,7 +11,6 @@ export const Navbar = ({ cartItems, setCartItems }) => {
   const [orderConfirmed, setOrderConfirmed] = useState(false);
   const [deliveryErrors, setDeliveryErrors] = useState({});
   const [showWishlistModal, setShowWishlistModal] = useState(false);
-
 
   const [deliveryInfo, setDeliveryInfo] = useState({
     name: '',
@@ -30,7 +30,6 @@ export const Navbar = ({ cartItems, setCartItems }) => {
   };
 
   const deliveryCharge = areaCharges[deliveryInfo.area] || 0;
-
   const totalAmount = cartItems.reduce(
     (sum, item) => sum + item.price * (item.quantity || 1),
     0
@@ -67,107 +66,138 @@ export const Navbar = ({ cartItems, setCartItems }) => {
     return errors;
   };
 
-const handleConfirmOrder = () => {
-  const errors = validateDeliveryInfo();
-  setDeliveryErrors(errors);
+  const handleConfirmOrder = () => {
+    const errors = validateDeliveryInfo();
+    setDeliveryErrors(errors);
 
-  if (Object.keys(errors).length > 0) return;
+    if (Object.keys(errors).length > 0) return;
 
-  setShowOrderModal(false);
-  setShowConfirmation(true);
-  setOrderConfirmed(true);
+    setShowOrderModal(false);
+    setShowConfirmation(true);
+    setOrderConfirmed(true);
+    setCartItems([]);
 
-  // Immediately clear the cart after confirmation
-  setCartItems([]); 
-
-  let timeLeft = 15 * 60;
-  const interval = setInterval(() => {
-    timeLeft--;
-    setCountdown(Math.ceil(timeLeft / 60));
-    if (timeLeft <= 0) {
-      clearInterval(interval);
-      setShowConfirmation(false);
-      setOrderConfirmed(false);
-    }
-  }, 1000);
-};
+    let timeLeft = 15 * 60;
+    const interval = setInterval(() => {
+      timeLeft--;
+      setCountdown(Math.ceil(timeLeft / 60));
+      if (timeLeft <= 0) {
+        clearInterval(interval);
+        setShowConfirmation(false);
+        setOrderConfirmed(false);
+      }
+    }, 1000);
+  };
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg w-100" style={{ backgroundColor: 'red', padding: '10px 20px' }}>
-        <div className="container-fluid d-flex justify-content-between align-items-center">
-          <a className="navbar-brand d-flex align-items-center" href="#" style={{ color: 'white', fontWeight: 'bold', fontSize: '24px' }}>
+      {/* Navbar */}
+      <nav className="navbar navbar-expand-lg" style={{ backgroundColor: 'red', padding: '10px 0', width: '100vw', overflowX: 'hidden' }}>
+        <div className="d-flex align-items-center gap-4">
+          {/* Logo */}
+          <Link to="/" className="navbar-brand d-flex align-items-center" style={{ color: 'white', fontWeight: 'bold', fontSize: '24px', textDecoration: 'none' }}>
             <img
               src="https://img.icons8.com/ios-filled/50/ffffff/hamburger.png"
               alt="Food Logo"
               style={{ width: '30px', height: '30px', marginRight: '10px' }}
             />
             FoodieSpot
-          </a>
+          </Link>
 
-          <div className="d-flex align-items-center gap-3">
-            {showSearch && (
-              <input
-                type="text"
-                className="form-control rounded-pill px-4"
-                placeholder="Search for dishes..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                onBlur={() => {
-                  if (searchQuery === '') setShowSearch(false);
-                }}
-                style={{ maxWidth: '300px' }}
-                autoFocus
-              />
-            )}
-            {!showSearch && (
-              <button onClick={() => setShowSearch(true)} className="btn text-white" style={{ fontSize: '20px' }}>
-                🔍
-              </button>
-            )}
-            <button className="btn position-relative" onClick={handleCartClick} style={{ backgroundColor: 'transparent', border: 'none' }}>
-              <img src="https://img.icons8.com/ios-filled/24/ffffff/shopping-cart.png" alt="Cart" />
-              {cartItems.length > 0 && (
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark" style={{ fontSize: '12px' }}>
-                  {cartItems.length}
-                </span>
-              )}
+          {/* Home and About Us */}
+          <ul className="d-flex list-unstyled mb-0" style={{ gap: '20px' }}>
+            {[
+              { name: 'Home', path: '/' },
+              { name: 'About Us', path: '/about' }
+            ].map((item, index) => (
+              <li key={index}>
+                <Link
+                  to={item.path}
+                  style={{
+                    color: 'white',
+                    textDecoration: 'none',
+                    fontSize: '18px',
+                    fontWeight: '500',
+                    padding: '5px 10px'
+                  }}
+                  onMouseOver={(e) => (e.target.style.color = '#ffd700')}
+                  onMouseOut={(e) => (e.target.style.color = 'white')}
+                >
+                  {item.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Search / Cart / Wishlist */}
+        <div className="d-flex align-items-center gap-3 ms-auto">
+          {showSearch ? (
+            <input
+              type="text"
+              className="form-control rounded-pill px-4"
+              placeholder="Search for dishes..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              onBlur={() => {
+                if (searchQuery === '') setShowSearch(false);
+              }}
+              style={{ maxWidth: '100%', width: '250px' }}
+              autoFocus
+            />
+          ) : (
+            <button
+              onClick={() => setShowSearch(true)}
+              className="btn text-white"
+              style={{ fontSize: '20px' }}
+            >
+              🔍
             </button>
-              {/* ❤️ Wishlist Icon */}
-  <button
-  className="btn text-white"
-  style={{ fontSize: '20px', backgroundColor: 'transparent', border: 'none' }}
-  onClick={() => setShowWishlistModal(true)}
->
-  ❤️
-</button>
+          )}
 
-          </div>
-        </div>
-      </nav>
-{/* Wishlist Modal */}
-{showWishlistModal && (
-  <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
-    <div className="modal-dialog modal-lg">
-      <div className="modal-content">
-        <div className="modal-header">
-          <h5 className="modal-title">💖 Wishlist</h5>
-          <button type="button" className="btn-close" onClick={() => setShowWishlistModal(false)}></button>
-        </div>
-        <div className="modal-body">
-          {/* Replace this with actual wishlist logic */}
-          <p>Your wishlist is empty.</p>
-        </div>
-        <div className="modal-footer">
-          <button className="btn btn-secondary" onClick={() => setShowWishlistModal(false)}>
-            Close
+          <button
+            className="btn position-relative"
+            onClick={handleCartClick}
+            style={{ backgroundColor: 'transparent', border: 'none' }}
+          >
+            <img src="https://img.icons8.com/ios-filled/24/ffffff/shopping-cart.png" alt="Cart" />
+            {cartItems.length > 0 && (
+              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark" style={{ fontSize: '12px' }}>
+                {cartItems.length}
+              </span>
+            )}
+          </button>
+
+          <button
+            className="btn text-white"
+            style={{ fontSize: '20px', backgroundColor: 'transparent', border: 'none' }}
+            onClick={() => setShowWishlistModal(true)}
+          >
+            ❤️
           </button>
         </div>
-      </div>
-    </div>
-  </div>
-)}
+      </nav>
 
+      {/* Other Components (Modals) */}
+      {/* Wishlist Modal */}
+      {showWishlistModal && (
+        <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-lg" style={{ maxWidth: '100%', margin: 'auto' }}>
+            <div className="modal-content" style={{ overflowX: 'hidden' }}>
+              <div className="modal-header">
+                <h5 className="modal-title">💖 Wishlist</h5>
+                <button type="button" className="btn-close" onClick={() => setShowWishlistModal(false)}></button>
+              </div>
+              <div className="modal-body">
+                <p>Your wishlist is empty.</p>
+              </div>
+              <div className="modal-footer">
+                <button className="btn btn-secondary" onClick={() => setShowWishlistModal(false)}>Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Cart Modal */}
       {showModal && (
         <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>

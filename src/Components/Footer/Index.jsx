@@ -2,40 +2,45 @@ import React from 'react';
 
 export const Footer = () => {
   const footerStyle = {
-    backgroundColor: '#d32f2f', // red
+    backgroundColor: '#d32f2f',
     color: '#fff',
-    padding: '40px 30px',
+    padding: '40px 20px',
     marginTop: '30px',
-    width: '100%'
+    width: '105%',
+    boxSizing: 'border-box',
+    overflowX: 'hidden',
   };
 
   const sectionStyle = {
     display: 'flex',
     justifyContent: 'space-between',
     flexWrap: 'wrap',
+    maxWidth: '1200px', // Optional max width for centering
+    margin: '0 auto',
+    boxSizing: 'border-box',
     width: '100%',
-    maxWidth: '100%', // Full width
-    margin: '0 auto'
   };
 
   const columnStyle = {
-    flex: '1 1 300px', // Wider columns
+    flex: '1 1 250px',
+    minWidth: '200px',
     marginBottom: '20px',
-    padding: '0 15px'
+    padding: '0 10px',
+    boxSizing: 'border-box',
   };
 
   const headingStyle = {
     fontSize: '20px',
     marginBottom: '12px',
     borderBottom: '1px solid #fff',
-    paddingBottom: '8px'
+    paddingBottom: '8px',
   };
 
   const linkStyle = {
     color: '#fff',
     textDecoration: 'none',
     display: 'block',
-    marginBottom: '8px'
+    marginBottom: '8px',
   };
 
   const bottomStyle = {
@@ -43,7 +48,7 @@ export const Footer = () => {
     paddingTop: '20px',
     borderTop: '1px solid #fff',
     marginTop: '20px',
-    fontSize: '14px'
+    fontSize: '14px',
   };
 
   return (
@@ -51,7 +56,10 @@ export const Footer = () => {
       <div style={sectionStyle}>
         <div style={columnStyle}>
           <h4 style={headingStyle}>About Us</h4>
-          <p>We serve fresh, organic, and delicious food straight from our kitchen to your table. Taste the difference with every bite!</p>
+          <p>
+            We serve fresh, organic, and delicious food straight from our kitchen to your table.
+            Taste the difference with every bite!
+          </p>
         </div>
 
         <div style={columnStyle}>
@@ -79,6 +87,20 @@ export const Footer = () => {
       <div style={bottomStyle}>
         © 2025 Foodie Delight. All rights reserved.
       </div>
+
+      <style>
+        {`
+          body {
+            margin: 0;
+            overflow-x: hidden;
+          }
+
+          html, body {
+            max-width: 100vw;
+            overflow-x: hidden;
+          }
+        `}
+      </style>
     </footer>
   );
 };
