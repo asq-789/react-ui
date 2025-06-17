@@ -76,11 +76,13 @@ function App() {
   return (
     <>
       <Loginmoadal setUserEmail={setUserEmail} />
-      <Navbar cartItems={cartItems} setCartItems={setCartItems} />
-      <Carousel />
-      <div style={{ overflowX: 'hidden', maxWidth: '100vw' }}>
-        <Navbarname />
-      </div>
+      <div style={{ width: '200%', maxWidth: '100vw', overflowX: 'hidden' }}>
+  <Navbar cartItems={cartItems} setCartItems={setCartItems} />
+  <Carousel />
+  <Navbarname />
+</div>
+
+      
       <Routes>
         <Route path="/" element={<Loginmoadal setUserEmail={setUserEmail} />} />
         <Route path='home' element={<Home handleAddToCart={handleAddToCart} />} />
@@ -100,7 +102,10 @@ function App() {
         <Route path="/rolls" element={<Rolls handleAddToCart={handleAddToCart} />} />
         <Route path="/sandwiches" element={<Sandwitches handleAddToCart={handleAddToCart} />} />
       </Routes>
-      <Footer />
+      <div style={{ width: '200%', maxWidth: '100vw', overflowX: 'hidden' }}>
+ <Footer/>
+</div>
+
     </>
   );
 }

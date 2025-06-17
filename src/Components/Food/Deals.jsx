@@ -24,7 +24,7 @@ export const Deals = () => {
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-4">
       <div className="heading-section">
         <h3 style={{
           fontWeight: 'bold',

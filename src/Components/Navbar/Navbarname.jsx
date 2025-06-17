@@ -140,7 +140,7 @@ navbar: {
 
   const menuItems = [
     { label: "Anime Deal", path: "/anime" },
-    { label: "Burger Deal", path: "/deal" },
+    { label: "Burger Deal", path: "/burgerdeal" },
     { label: "Fast Food", path: "/fastfood" },
     { label: "Chinese Deal", path: "/chinese" },
     { label: "Pizza", path: "/pizza" },
