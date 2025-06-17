@@ -2,60 +2,70 @@ import React from 'react'
 import { Cards } from '../Cards/Cards';
 const PizzaProducts = [
   { 
-    name: 'Margherita', 
+    name: '🍕 Margherita', 
     price: 700, 
     img: '/piz1.jpg', 
-    description: 'Classic with tomato, mozzarella, and fresh basil' 
+    description: 'Classic with tomato, mozzarella, and fresh basil',
+    badge: '🌿 Classic'
   },
   { 
-    name: 'Pepperoni', 
+    name: '🌶️ Pepperoni', 
     price: 1699, 
     img: '/piz2.jpg', 
-    description: 'Topped with spicy pepperoni slices and mozzarella' 
+    description: 'Topped with spicy pepperoni slices and mozzarella',
+    badge: '🔥 Spicy'
   },
   { 
-    name: 'BBQ Chicken', 
+    name: '🍗 BBQ Chicken', 
     price: 2699, 
     img: '/piz3.jpg', 
-    description: 'Grilled chicken, smoky BBQ sauce, and onions' 
+    description: 'Grilled chicken, smoky BBQ sauce, and onions',
+    badge: '🍖 BBQ Special'
   },
   { 
-    name: 'Vegetarian', 
+    name: '🥦 Vegetarian', 
     price: 1599, 
     img: '/piz4.jpg', 
-    description: 'Loaded with mushrooms, olives, bell peppers, and onions' 
+    description: 'Loaded with mushrooms, olives, bell peppers, and onions',
+    badge: '🌱 Veg'
   },
   { 
-    name: 'Hawaiian', 
+    name: '🍍 Hawaiian', 
     price: 1060, 
     img: '/piz5.jpg', 
-    description: 'A sweet and savory combo of pineapple and ham' 
+    description: 'A sweet and savory combo of pineapple and ham',
+    badge: '🍍 Sweet & Savory'
   },
   { 
-    name: 'Four Cheese', 
+    name: '🧀 Four Cheese', 
     price: 1060, 
     img: '/piz6.jpg', 
-    description: 'Blend of mozzarella, cheddar, parmesan, and gorgonzola' 
+    description: 'Blend of mozzarella, cheddar, parmesan, and gorgonzola',
+    badge: '🧀 Cheesy'
   },
   { 
-    name: 'Tandoori Chicken', 
+    name: '🔥 Tandoori Chicken', 
     price: 500, 
     img: '/piz7.jpg', 
-    description: 'Spicy tandoori-marinated chicken with red onions' 
+    description: 'Spicy tandoori-marinated chicken with red onions',
+    badge: '🌶️ Spicy'
   },
   { 
-    name: 'Fajita Pizza', 
+    name: '🌮 Fajita Pizza', 
     price: 650, 
     img: '/piz8.jpg', 
-    description: 'Chicken or beef fajita strips, jalapeños, and capsicum' 
+    description: 'Chicken or beef fajita strips, jalapeños, and capsicum',
+    badge: '💥 Hot Pick'
   },
   { 
-    name: 'Meat Lovers', 
+    name: '🥩 Meat Lovers', 
     price: 900, 
     img: '/piz9.jpg', 
-    description: 'Loaded with pepperoni, sausage, beef, ham, and bacon' 
-  },
+    description: 'Loaded with pepperoni, sausage, beef, ham, and bacon',
+    badge: '🍖 Loaded'
+  }
 ];
+
 export const Pizza = ({handleAddToCart}) => {
   return (
     <div>  {/* Pixa */}

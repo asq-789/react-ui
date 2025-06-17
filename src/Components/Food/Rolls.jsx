@@ -2,42 +2,47 @@ import React from 'react'
 import { Cards } from '../Cards/Cards';
 const rollProducts = [
   {
-    name: 'Chicken Roll',
+    name: '🌯 Chicken Roll',
     price: 450,
     img: '/r1.jpg',
-    description: 'Juicy grilled chicken wrapped in soft paratha with tangy sauces.'
+    description: 'Juicy grilled chicken wrapped in soft paratha with tangy sauces.',
+    badge: '🔥 Popular'
   },
   {
-    name: 'Beef Bihari Roll',
+    name: '🥩 Beef Bihari Roll',
     price: 480,
     img: '/r2.jpg',
     description: 'Tender Bihari-style beef strips in a spicy marinade, wrapped fresh.'
   },
   {
-    name: 'Zinger Roll',
+    name: '🍗 Zinger Roll',
     price: 500,
     img: '/r3.jpg',
-    description: 'Crispy zinger fillet with lettuce and mayo, rolled in a crispy wrap.'
+    description: 'Crispy zinger fillet with lettuce and mayo, rolled in a crispy wrap.',
+    badge: '⭐ Bestseller'
   },
   {
-    name: 'Chicken Malai Roll',
+    name: '🥛 Chicken Malai Roll',
     price: 470,
     img: '/r4.jpg',
     description: 'Creamy malai chicken grilled to perfection with herbs and wrapped warm.'
   },
   {
-    name: 'Vegetable Roll',
+    name: '🥬 Vegetable Roll',
     price: 400,
     img: '/r5.jpg',
-    description: 'A mix of spicy sautéed veggies and sauces rolled in a soft paratha.'
+    description: 'A mix of spicy sautéed veggies and sauces rolled in a soft paratha.',
+    badge: '🌱 Veg'
   },
   {
-    name: 'Cheese Chicken Roll',
+    name: '🧀 Cheese Chicken Roll',
     price: 520,
     img: '/r6.jpg',
-    description: 'Melted cheese and chicken chunks combined in a delicious cheesy roll.'
+    description: 'Melted cheese and chicken chunks combined in a delicious cheesy roll.',
+    badge: '🧀 Cheesy'
   }
 ];
+
 export const Rolls = ({handleAddToCart}) => {
   return (
     <div> {/* Rolls */}

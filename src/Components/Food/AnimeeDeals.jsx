@@ -3,24 +3,28 @@ import { Animeecards } from '../Cards/Animeecards';
 
 const AnimeeProducts = [
   {
-    name: 'Animee Lovers',
+    name: '🍱 Animee Lovers Special',
     price: 700,
     img: '/animee1.jpeg',
-    description: 'Special shrimp chowmin served in anime-style themed packaging.'
+    description: 'Special shrimp chowmin served in anime-style themed packaging.',
+    badge: '🍱 Otaku Pick'
   },
   {
-    name: 'Mighty Deal',
+    name: '🎭 Mighty Deal Bento',
     price: 1599,
     img: '/animee2.jpeg',
-    description: 'Colorful and aromatic veg fried rice from our Animee deals.'
+    description: 'Colorful and aromatic veg fried rice from our Animee deals.',
+    badge: '🎭 Cosplay Favorite'
   },
   {
-    name: 'Animee Combo Deal',
+    name: '🔥 Animee Combo Deal',
     price: 1599,
     img: '/animee3.jpeg',
-    description: 'Another flavor twist on veg fried rice for anime lovers.'
-  },
+    description: 'Another flavor twist on veg fried rice for anime lovers.',
+    badge: '🔥 Top Combo'
+  }
 ];
+
 
 const AnimeeDeals = ({ handleAddToCart }) => {
   return (

@@ -11,6 +11,8 @@ export const Navbar = ({ cartItems, setCartItems }) => {
   const [orderConfirmed, setOrderConfirmed] = useState(false);
   const [deliveryErrors, setDeliveryErrors] = useState({});
   const [showWishlistModal, setShowWishlistModal] = useState(false);
+const [showReservationModal, setShowReservationModal] = useState(false);
+const [reservedTables, setReservedTables] = useState([]); // initially empty
 
   const [deliveryInfo, setDeliveryInfo] = useState({
     name: '',
@@ -109,7 +111,7 @@ export const Navbar = ({ cartItems, setCartItems }) => {
             {[
               { name: 'Home', path: 'home' },
               { name: 'About Us', path: '/about' },
-              { name: 'Restaurant', path: '/restaurant' }
+              { name: 'Dine & Reserve	', path: '/restaurant' }
 
             ].map((item, index) => (
               <li key={index}>
@@ -178,9 +180,63 @@ export const Navbar = ({ cartItems, setCartItems }) => {
             ❤️
           </button>
         </div>
+        <button
+  className="btn text-white"
+  style={{ fontSize: '20px', backgroundColor: 'transparent', border: 'none' }}
+  onClick={() => setShowReservationModal(true)}
+  title="Dine & Reserve"
+>
+  🍽️
+</button>
+
       </nav>
 
       {/* Other Components (Modals) */}
+      {showReservationModal && (
+  <div
+    className="modal d-block"
+    style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+    onClick={() => setShowReservationModal(false)}
+  >
+    <div
+      className="modal-dialog modal-dialog-centered"
+      onClick={(e) => e.stopPropagation()} // prevent background click
+    >
+      <div className="modal-content">
+        <div className="modal-header">
+          <h5 className="modal-title">🍽️ Reserved Tables</h5>
+          <button
+            type="button"
+            className="btn-close"
+            onClick={() => setShowReservationModal(false)}
+          ></button>
+        </div>
+        <div className="modal-body">
+          {reservedTables.length === 0 ? (
+            <p className="text-muted text-center">No reservations yet.</p>
+          ) : (
+            <ul className="list-group">
+              {reservedTables.map((res) => (
+                <li key={res.id} className="list-group-item">
+                  <strong>{res.table}</strong> at <em>{res.time}</em>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <div className="modal-footer">
+          <button
+            className="btn btn-secondary"
+            onClick={() => setShowReservationModal(false)}
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
       {/* Wishlist Modal */}
       {showWishlistModal && (
         <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>

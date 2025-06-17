@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const Cards = ({ name, price, img, description, onAddToCart, onToggleWishlist, isWished, customClass }) => {
+export const Cards = ({ name, price, img, description, onAddToCart, onToggleWishlist, isWished, customClass, badge }) => {
   return (
     <>
       {/* Internal CSS styles */}
@@ -11,14 +11,14 @@ export const Cards = ({ name, price, img, description, onAddToCart, onToggleWish
             border-radius: 16px;
             overflow: hidden;
             background-color: #fff;
-            border: 2px solid #ddd; /* Border added */
+            border: 2px solid #ddd;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
           }
 
           .animee-card:hover {
             transform: translateY(-8px) scale(1.02);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-            border-color: #E8380DF3; /* Highlight border on hover */
+            border-color: #E8380DF3;
           }
 
           .animee-card .wishlist-icon {
@@ -78,6 +78,18 @@ export const Cards = ({ name, price, img, description, onAddToCart, onToggleWish
             align-items: center;
             gap: 0.5rem;
           }
+
+          .animee-card .badge-top {
+            display: inline-block;
+            background-color: #e8380d;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 12px;
+            margin-bottom: 0.3rem;
+            text-align: center;
+          }
         `}
       </style>
 
@@ -87,6 +99,9 @@ export const Cards = ({ name, price, img, description, onAddToCart, onToggleWish
           <img src={img} className="card-img-top" alt={name} />
 
           <div className="card-body">
+            {/* Badge above title */}
+            {badge && <div className="badge-top">{badge}</div>}
+
             <h5 className="card-title">{name}</h5>
 
             {description && <p className="card-text">{description}</p>}

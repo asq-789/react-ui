@@ -20,10 +20,10 @@ import { Drinks } from './Components/Food/Drinks';
 import { Pizza } from './Components/Food/Pizza';
 import { Rolls } from './Components/Food/Rolls';
 import { Sandwitches } from './Components/Food/Sandwitches';
-import { Deals } from './Components/Food/Deals';
 import { Loginmoadal } from './Components/Loginmoadal';
 import { Aboutus } from './Components/Aboutus';
 import { Restaurant } from './Components/Restaurant';
+import { Deal } from './Components/Deal';
 
 function App() {
   const [userEmail, setUserEmail] = useState(localStorage.getItem('userEmail') || '');
@@ -95,7 +95,7 @@ function App() {
         <Route path="/appetizers" element={<Appetizers handleAddToCart={handleAddToCart} />} />
         <Route path="/bbq" element={<BBQ handleAddToCart={handleAddToCart} />} />
         <Route path="/biryani" element={<Biryani handleAddToCart={handleAddToCart} />} />
-        <Route path="/burgerdeal" element={<Deals handleAddToCart={handleAddToCart} />} />
+        <Route path="/burgerdeal" element={<Deal handleAddToCart={handleAddToCart} />} />
         <Route path="/desserts" element={<Desert handleAddToCart={handleAddToCart} />} />
         <Route path="/drinks" element={<Drinks handleAddToCart={handleAddToCart} />} />
         <Route path="/pizza" element={<Pizza handleAddToCart={handleAddToCart} />} />

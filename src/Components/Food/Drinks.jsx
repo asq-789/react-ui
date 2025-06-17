@@ -2,42 +2,49 @@ import React from 'react'
 import { Cards } from '../Cards/Cards';
 const drinkProducts = [
   {
-    name: 'Mint Margarita',
+    name: '🌿 Mint Margarita',
     price: 350,
     img: '/d1.jpg',
-    description: 'A refreshing blend of mint, lemon, and soda served chilled.'
+    description: 'A refreshing blend of mint, lemon, and soda served chilled.',
+    badge: '❄️ Chilled'
   },
   {
-    name: 'Cold Coffee',
+    name: '☕ Cold Coffee',
     price: 400,
     img: '/d2.jpg',
-    description: 'Creamy iced coffee topped with whipped cream.'
+    description: 'Creamy iced coffee topped with whipped cream.',
+    badge: '⭐ Bestseller'
   },
   {
-    name: 'Fresh Lime Soda',
+    name: '🍋 Fresh Lime Soda',
     price: 300,
     img: '/d3.jpg',
-    description: 'Zesty lime soda available in sweet, salty, or mixed flavor.'
+    description: 'Zesty lime soda available in sweet, salty, or mixed flavor.',
+    badge: '🧊 Refreshing'
   },
   {
-    name: 'Pina Colada',
+    name: '🍍 Pina Colada',
     price: 450,
     img: '/d4.jpg',
-    description: 'Pineapple and coconut mocktail served over crushed ice.'
+    description: 'Pineapple and coconut mocktail served over crushed ice.',
+    badge: '🍹 Mocktail'
   },
   {
-    name: 'Strawberry Shake',
+    name: '🍓 Strawberry Shake',
     price: 420,
     img: '/d5.jpg',
-    description: 'Smooth strawberry milkshake topped with fresh cream.'
+    description: 'Smooth strawberry milkshake topped with fresh cream.',
+    badge: '🍓 Fresh'
   },
   {
-    name: 'Peach Iced Tea',
+    name: '🍑 Peach Iced Tea',
     price: 390,
     img: '/d6.jpg',
-    description: 'Chilled black tea infused with juicy peach flavor.'
+    description: 'Chilled black tea infused with juicy peach flavor.',
+    badge: '🌞 Summer Hit'
   }
 ];
+
 
 export const Drinks = ({handleAddToCart}) => {
   return (

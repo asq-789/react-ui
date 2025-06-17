@@ -2,16 +2,62 @@ import React from 'react';
 import { Cards } from '../Cards/Cards';
 
 const PopularProducts = [
-  { name: 'Shrimp Chowmin', price: 700, img: '/chowmin.jpg' },
-  { name: 'Vegetable Chowmin', price: 1699, img: '/noodles.jpg' },
-  { name: 'Mapo Tafu', price: 2699, img: '/tofu.jpg', description: ' Spicy tofu and minced meat in chili sauce.' },
-  { name: 'Veg fried rice', price: 1599, img: '/veg.jpg' },
-  { name: 'Mix Chowmin', price: 1060, img: '/prawnsnoodles.jpg' },
-  { name: 'Hakka Noodles', price: 1060, img: '/hakka.jpg' },
-  { name: 'Chicken Momos', price: 500, img: '/momos.jpg' },
-  { name: 'Red Sauce', price: 650, img: '/pasta.jpg' },
-  { name: 'Alferado Pasta', price: 900, img: '/alferado.jpg' },
+  { 
+    name: '🍤 Shrimp Chowmin', 
+    price: 700, 
+    img: '/chowmin.jpg',
+    badge: '🌟 Bestseller'
+  },
+  { 
+    name: '🥕 Vegetable Chowmin', 
+    price: 1699, 
+    img: '/noodles.jpg',
+    badge: '🌱 Veg'
+  },
+  { 
+    name: '🌶️ Mapo Tafu', 
+    price: 2699, 
+    img: '/tofu.jpg', 
+    description: 'Spicy tofu and minced meat in chili sauce.',
+    badge: '🔥 Spicy'
+  },
+  { 
+    name: '🥦 Veg Fried Rice', 
+    price: 1599, 
+    img: '/veg.jpg',
+    badge: '🌱 Veg'
+  },
+  { 
+    name: '🍜 Mix Chowmin', 
+    price: 1060, 
+    img: '/prawnsnoodles.jpg',
+    badge: '✨ Combo'
+  },
+  { 
+    name: '🍝 Hakka Noodles', 
+    price: 1060, 
+    img: '/hakka.jpg'
+  },
+  { 
+    name: '🥟 Chicken Momos', 
+    price: 500, 
+    img: '/momos.jpg',
+    badge: '💥 New'
+  },
+  { 
+    name: '🍅 Red Sauce Pasta', 
+    price: 650, 
+    img: '/pasta.jpg',
+    badge: '🍅 Tangy'
+  },
+  { 
+    name: '🧀 Alfredo Pasta', 
+    price: 900, 
+    img: '/alferado.jpg',
+    badge: '🧀 Cheesy'
+  }
 ];
+
 
 const PopularItems = ({ handleAddToCart }) => {
   return (
