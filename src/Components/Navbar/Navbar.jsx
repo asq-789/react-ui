@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 
-export const Navbar = ({ cartItems, setCartItems }) => {
+export const Navbar = ({ cartItems, setCartItems, userEmail }) => {
   const [showModal, setShowModal] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -11,8 +11,9 @@ export const Navbar = ({ cartItems, setCartItems }) => {
   const [orderConfirmed, setOrderConfirmed] = useState(false);
   const [deliveryErrors, setDeliveryErrors] = useState({});
   const [showWishlistModal, setShowWishlistModal] = useState(false);
-const [showReservationModal, setShowReservationModal] = useState(false);
-const [reservedTables, setReservedTables] = useState([]); // initially empty
+
+  const [showReservationModal, setShowReservationModal] = useState(false);
+  const [reservedTables, setReservedTables] = useState([]);
 
   const [deliveryInfo, setDeliveryInfo] = useState({
     name: '',
@@ -22,6 +23,26 @@ const [reservedTables, setReservedTables] = useState([]); // initially empty
     email: '',
     area: '',
   });
+
+  // ✅ FIXED: Fetch and handle reservation data correctly
+useEffect(() => {
+  if (showReservationModal && userEmail) {
+    try {
+      const stored = JSON.parse(localStorage.getItem(`reservations_${userEmail}`));
+      if (Array.isArray(stored)) {
+        setReservedTables(stored);
+      } else if (stored && typeof stored === 'object') {
+        setReservedTables([stored]);
+      } else {
+        setReservedTables([]);
+      }
+    } catch (err) {
+      console.error('Failed to fetch reservation data:', err);
+      setReservedTables([]);
+    }
+  }
+}, [showReservationModal, userEmail]);
+
 
   const areaCharges = {
     'Select Area': 0,
@@ -96,23 +117,16 @@ const [reservedTables, setReservedTables] = useState([]); // initially empty
       {/* Navbar */}
       <nav className="navbar navbar-expand-lg" style={{ backgroundColor: 'red', padding: '10px 0', width: '100vw', overflowX: 'hidden' }}>
         <div className="d-flex align-items-center gap-4">
-          {/* Logo */}
           <Link to="/" className="navbar-brand d-flex align-items-center" style={{ color: 'white', fontWeight: 'bold', fontSize: '24px', textDecoration: 'none' }}>
-            <img
-              src="https://img.icons8.com/ios-filled/50/ffffff/hamburger.png"
-              alt="Food Logo"
-              style={{ width: '30px', height: '30px', marginRight: '10px' }}
-            />
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/hamburger.png" alt="Food Logo" style={{ width: '30px', height: '30px', marginRight: '10px' }} />
             FoodieSpot
           </Link>
 
-          {/* Home and About Us */}
           <ul className="d-flex list-unstyled mb-0" style={{ gap: '20px' }}>
             {[
               { name: 'Home', path: 'home' },
               { name: 'About Us', path: '/about' },
-              { name: 'Dine & Reserve	', path: '/restaurant' }
-
+              { name: 'Dine & Reserve', path: '/restaurant' }
             ].map((item, index) => (
               <li key={index}>
                 <Link
@@ -134,7 +148,6 @@ const [reservedTables, setReservedTables] = useState([]); // initially empty
           </ul>
         </div>
 
-        {/* Search / Cart / Wishlist */}
         <div className="d-flex align-items-center gap-3 ms-auto">
           {showSearch ? (
             <input
@@ -150,20 +163,12 @@ const [reservedTables, setReservedTables] = useState([]); // initially empty
               autoFocus
             />
           ) : (
-            <button
-              onClick={() => setShowSearch(true)}
-              className="btn text-white"
-              style={{ fontSize: '20px' }}
-            >
+            <button onClick={() => setShowSearch(true)} className="btn text-white" style={{ fontSize: '20px' }}>
               🔍
             </button>
           )}
 
-          <button
-            className="btn position-relative"
-            onClick={handleCartClick}
-            style={{ backgroundColor: 'transparent', border: 'none' }}
-          >
+          <button className="btn position-relative" onClick={handleCartClick} style={{ backgroundColor: 'transparent', border: 'none' }}>
             <img src="https://img.icons8.com/ios-filled/24/ffffff/shopping-cart.png" alt="Cart" />
             {cartItems.length > 0 && (
               <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark" style={{ fontSize: '12px' }}>
@@ -172,70 +177,57 @@ const [reservedTables, setReservedTables] = useState([]); // initially empty
             )}
           </button>
 
+          <button className="btn text-white" style={{ fontSize: '20px', backgroundColor: 'transparent', border: 'none' }} onClick={() => setShowWishlistModal(true)}>
+            ❤️
+          </button>
+
           <button
             className="btn text-white"
             style={{ fontSize: '20px', backgroundColor: 'transparent', border: 'none' }}
-            onClick={() => setShowWishlistModal(true)}
+            onClick={() => setShowReservationModal(true)}
+            title="Dine & Reserve"
           >
-            ❤️
+            🍽️
           </button>
         </div>
-        <button
-  className="btn text-white"
-  style={{ fontSize: '20px', backgroundColor: 'transparent', border: 'none' }}
-  onClick={() => setShowReservationModal(true)}
-  title="Dine & Reserve"
->
-  🍽️
-</button>
-
       </nav>
 
-      {/* Other Components (Modals) */}
+      {/* Reservation Modal */}
       {showReservationModal && (
-  <div
-    className="modal d-block"
-    style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
-    onClick={() => setShowReservationModal(false)}
-  >
-    <div
-      className="modal-dialog modal-dialog-centered"
-      onClick={(e) => e.stopPropagation()} // prevent background click
-    >
-      <div className="modal-content">
-        <div className="modal-header">
-          <h5 className="modal-title">🍽️ Reserved Tables</h5>
-          <button
-            type="button"
-            className="btn-close"
-            onClick={() => setShowReservationModal(false)}
-          ></button>
+        <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} onClick={() => setShowReservationModal(false)}>
+          <div className="modal-dialog modal-dialog-centered" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">🍽️ Your Reservation</h5>
+                <button type="button" className="btn-close" onClick={() => setShowReservationModal(false)}></button>
+              </div>
+              <div className="modal-body">
+                {reservedTables.length === 0 ? (
+                  <p className="text-muted text-center">No reservations yet.</p>
+                ) : (
+                  reservedTables.map((res, index) => (
+                    <div key={index} className="mb-3">
+                      <p><strong>Name:</strong> {res.name}</p>
+                      <p><strong>Email:</strong> {res.email}</p>
+                      <p><strong>Phone:</strong> {res.phone}</p>
+                      <p><strong>Date:</strong> {res.date}</p>
+                      <p><strong>Time:</strong> {res.time}</p>
+                      <p><strong>Guests:</strong> {res.guests}</p>
+                      <p><strong>Area:</strong> {res.area}</p>
+                    </div>
+                  ))
+                )}
+              </div>
+              <div className="modal-footer">
+                <button className="btn btn-secondary" onClick={() => setShowReservationModal(false)}>Close</button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="modal-body">
-          {reservedTables.length === 0 ? (
-            <p className="text-muted text-center">No reservations yet.</p>
-          ) : (
-            <ul className="list-group">
-              {reservedTables.map((res) => (
-                <li key={res.id} className="list-group-item">
-                  <strong>{res.table}</strong> at <em>{res.time}</em>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-        <div className="modal-footer">
-          <button
-            className="btn btn-secondary"
-            onClick={() => setShowReservationModal(false)}
-          >
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
+      )}
+
+
+
 
       {/* Wishlist Modal */}
       {showWishlistModal && (

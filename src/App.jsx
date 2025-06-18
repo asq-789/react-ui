@@ -26,7 +26,7 @@ import { Restaurant } from './Components/Restaurant';
 import { Deal } from './Components/Deal';
 
 function App() {
-  const [userEmail, setUserEmail] = useState(localStorage.getItem('userEmail') || '');
+ const [userEmail, setUserEmail] = useState(localStorage.getItem('userEmail') || '');
   const [cartItems, setCartItems] = useState([]);
   const [wishlistItems, setWishlistItems] = useState([]);
   const [isCartLoaded, setIsCartLoaded] = useState(false);
@@ -77,7 +77,7 @@ function App() {
     <>
       <Loginmoadal setUserEmail={setUserEmail} />
       <div style={{ width: '200%', maxWidth: '100vw', overflowX: 'hidden' }}>
-        <Navbar cartItems={cartItems} setCartItems={setCartItems} />
+        <Navbar cartItems={cartItems} setCartItems={setCartItems} userEmail={userEmail} />
         <Carousel />
         <Navbarname />
       </div>

@@ -58,52 +58,57 @@ export const Restaurant = ({ userEmail, onReservationSubmit }) => {
     return Object.values(formData).every(val => val.trim() !== '');
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+ const handleSubmit = (e) => {
+  e.preventDefault();
 
-    if (!isValid()) {
-      setShake(true);
-      toast.error('Please fill all fields!');
-      setTimeout(() => setShake(false), 500);
-      return;
-    }
+  if (!isValid()) {
+    setShake(true);
+    toast.error('Please fill all fields!');
+    setTimeout(() => setShake(false), 500);
+    return;
+  }
 
-    if (isSunday(formData.date)) {
-      toast.error('❌ We are closed on Sundays.');
-      return;
-    }
+  if (isSunday(formData.date)) {
+    toast.error('❌ We are closed on Sundays.');
+    return;
+  }
 
-    if (isPastTime(formData.time, formData.date)) {
-      toast.error('⏰ Selected time is in the past.');
-      return;
-    }
+  if (isPastTime(formData.time, formData.date)) {
+    toast.error('⏰ Selected time is in the past.');
+    return;
+  }
 
-    const reservation = {
-      ...formData,
-      id: Date.now()
-    };
-
-    const key = `reservations_${userEmail}`;
-    const existing = JSON.parse(localStorage.getItem(key)) || [];
-    const updated = [...existing, reservation];
-    localStorage.setItem(key, JSON.stringify(updated));
-
-    if (onReservationSubmit) {
-      onReservationSubmit(reservation);
-    }
-
-    toast.success('🎉 Reservation Confirmed!');
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      guests: '',
-      area: '',
-      date: '',
-      time: '',
-      tableType: ''
-    });
+  // ✅ reservation with all fields
+  const reservation = {
+    ...formData,
+    id: Date.now()
   };
+
+  // ✅ save to localStorage as array
+  const key = `reservations_${userEmail}`;
+  const existing = JSON.parse(localStorage.getItem(key)) || [];
+  const updated = [...existing, reservation];
+  localStorage.setItem(key, JSON.stringify(updated));
+
+  // ✅ optionally inform parent (e.g. Navbar)
+  if (onReservationSubmit) {
+    onReservationSubmit(reservation);
+  }
+
+  // ✅ show success + reset form
+  toast.success('🎉 Reservation Confirmed!');
+  setFormData({
+    name: '',
+    email: '',
+    phone: '',
+    guests: '',
+    area: '',
+    date: '',
+    time: '',
+    tableType: ''
+  });
+};
+
 
   return (
     <div className="restaurant">
