@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-import { Animeecards } from './Components/Cards/Animeecards';
-import { Cards } from './Components/Cards/Cards';
+import React from 'react'
 
 const AnimeeProducts = [
   {
@@ -650,438 +648,100 @@ const sandwitchesProducts = [
     badge: '🌶️ Spicy'
   },
 ];
+export const Alldishes = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
 
-export const Home = ({ handleAddToCart }) => {
-  const [isWished, setIsWished] = useState(false);
+  const categories = [
+    { title: '🔥 Popular Items', data: PopularProducts },
+    { title: '🍱 Animee Deals', data: AnimeeProducts },
+    { title: '🍔 Burgers', data: burgerProducts },
+    { title: '🥩 BBQ Items', data: bbqProducts },
+    { title: '🍛 Biryani', data: biryaniProducts },
+    { title: '🍟 Appetizers', data: appetizerProducts },
+    { title: '🌯 Rolls', data: rollProducts },
+    { title: '🥪 Sandwiches', data: sandwitchesProducts },
+    { title: '🍕 Pizza', data: PizzaProducts },
+    { title: '🍽️ Combos', data: burgerdealProducts },
+    { title: '🍧 Desserts', data: DessertsProducts },
+    { title: '🥤 Drinks', data: drinkProducts },
+    { title: '🥡 Main Products', data: Products }
+  ];
 
-  const handleToggleWishlist = () => {
-    setIsWished(!isWished);
+  const handleSearchChange = (e) => setSearchQuery(e.target.value);
+
+  const filterProducts = (products) => {
+    return products.filter((item) =>
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
   };
 
+  const filteredCategories = categories
+    .map(category => ({
+      ...category,
+      data: filterProducts(category.data)
+    }))
+    .filter(category => category.data.length > 0);
+
   return (
-    <div>
-      {/* Animee Deals */}
-      <div className="container mt-5">
-        <div className="heading-section">
-    <h3
-  className="bold-heading"
-  style={{
-    fontWeight: 'bold',
-    fontSize: '1.8rem',
-    color: '#000',
-    display: 'flex',
-    alignItems: 'center'
-  }}
->
-  <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🍱</span>
-  Animee Delights
-</h3>
-
-
-          <h6>Crunchy, spicy, anime-style cravings await you!</h6>
-        </div>
-        <div className="row mt-4">
-          {AnimeeProducts.map((prod, index) => (
-            <Animeecards
-              key={index}
-              name={prod.name}
-              price={prod.price}
-              img={prod.img}
-              description={prod.description}
-
-              onAddToCart={() => handleAddToCart(prod)}
-              customClass="animee-card"
-            />
-          ))}
-        </div>
-      </div>
-{/* Burger Deal Section */}
-<div className="container mt-5">
-  <div className="heading-section">
-    <h3
-      style={{
-        fontWeight: 'bold',
-        fontSize: '1.8rem',
-        color: '#000',
-        display: 'flex',
-        alignItems: 'center',
-      }}
-    >
-      <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🍔</span>
-     Smash the Hunger
-    </h3>
-    <h6 style={{ fontSize: '1rem', color: '#666', marginTop: '4px' }}>
-      Juicy, cheesy, and oh-so-satisfying burger combos!
-    </h6>
-  </div>
-
-  <div className="row mt-4">
-    {burgerProducts.map((prod, index) => (
-      <Cards
-        key={index}
-        name={prod.name}
-        price={prod.price}
-        img={prod.img}
-        description={prod.description}
-        onAddToCart={() => handleAddToCart(prod)}
-      />
-    ))}
-  </div>
-</div>
-
-      {/* Fast Food Deals */}
-      <div className="container mt-5">
-        <div className="heading-section">
-          <h3 style={{ fontWeight: 'bold', fontSize: '1.8rem', color: '#000', display: 'flex', alignItems: 'center' }}>
-            <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🔥</span>
-            Fast Food Frenzy
-          </h3>
-          <h6 style={{ fontSize: '1rem', color: '#666', marginTop: '4px' }}>
-Grab-n-go meals that hit the spot every time!
-          </h6>
-        </div>
-        <div className="row mt-4">
-          {Products.map((prod, index) => (
-            <Cards
-              key={index}
-              name={prod.name}
-              price={prod.price}
-              img={prod.img}
-            description={prod.description}
-
-           onAddToCart={() => handleAddToCart(prod)}
-            />
-          ))}
-        </div>
+    <div className="container mt-5">
+      {/* Search Bar */}
+      <div className="d-flex align-items-center justify-content-end mb-4">
+        {showSearch ? (
+          <input
+            type="text"
+            className="form-control rounded-pill px-4"
+            placeholder="Search for dishes..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            onBlur={() => { if (searchQuery === '') setShowSearch(false); }}
+            style={{ maxWidth: '100%', width: '250px' }}
+            autoFocus
+          />
+        ) : (
+          <button
+            onClick={() => setShowSearch(true)}
+            className="btn btn-danger text-white rounded-circle"
+            style={{ fontSize: '20px', padding: '8px 14px' }}
+          >
+            🔍
+          </button>
+        )}
       </div>
 
-      {/* Popular Items */}
-      <div className="container mt-5">
-        <div className="heading-section">
-<h3
-  style={{
-    fontWeight: 'bold',
-    fontSize: '1.8rem',
-    color: '#000',
-    display: 'flex',
-    alignItems: 'center'
-  }}
->
-  <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🍜</span>
-  Chinese Special
-</h3>
-<h6>“From noodles to fried rice — taste the magic!”
-
-</h6>
-
-
-        </div>
-        <div className="row mt-4">
-          {PopularProducts.map((prod, index) => (
-            <Cards
-              key={index}
-              name={prod.name}
-              price={prod.price}
-              img={prod.img}
-                            description={prod.description}
-
-              onAddToCart={() => handleAddToCart(prod)}
-            />
-          ))}
-        </div>
-      </div>
-      {/* Pixa */}
-      <div className="container mt-5">
-        <div className="heading-section">
-       <h3
-  style={{
-    fontWeight: 'bold',
-    fontSize: '1.8rem',
-    color: '#000',
-    display: 'flex',
-    alignItems: 'center'
-  }}
->
-  <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🍕</span>
-  Cheesy Pizza Bliss
-</h3>
-
-<h6>Melted cheese, crispy crust – pizza heaven starts here!</h6>
-
-        </div>
-        <div className="row mt-4">
-          {PizzaProducts.map((prod, index) => (
-            <Cards
-              key={index}
-              name={prod.name}
-              price={prod.price}
-              img={prod.img}
-              description={prod.description}
-              onAddToCart={() => handleAddToCart(prod)}
-            />
-          ))}
-        </div>
-      </div>
-      {/* burgers Deals */}
-      <div className="container mt-5">
-        <div className="heading-section">
-      <h3
-  style={{
-    fontWeight: 'bold',
-    fontSize: '1.8rem',
-    color: '#000',
-    display: 'flex',
-    alignItems: 'center'
-  }}
->
-  <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🍔</span>
-  Burger Bonanza
-</h3>
-
-<h6>Stacked, saucy, and totally irresistible!</h6>
-
-        </div>
-        <div className="row mt-4">
-          {burgerProducts.map((prod, index) => (
-            <Cards
-              key={index}
-              name={prod.name}
-              price={prod.price}
-              img={prod.img}
-           description={prod.description}
-              onAddToCart={() => handleAddToCart(prod)}
-            />
-          ))}
-        </div>
-      </div>
-      {/* Sandwitches Deals */}
-      <div className="container mt-5">
-        <div className="heading-section">
-        <h3
-  style={{
-    fontWeight: 'bold',
-    fontSize: '1.8rem',
-    color: '#000',
-    display: 'flex',
-    alignItems: 'center'
-  }}
->
-  <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🥪</span>
-  Sandwich Mania
-</h3>
-
-<h6>Layered love between slices of joy</h6>
-
-        </div>
-        <div className="row mt-4">
-          {sandwitchesProducts.map((prod, index) => (
-            <Cards
-              key={index}
-              name={prod.name}
-              price={prod.price}
-              img={prod.img}
-                         description={prod.description}
-
-              onAddToCart={() => handleAddToCart(prod)}
-            />
-          ))}
-        </div>
-      </div>
-      {/* bbq Food Deals */}
-      <div className="container mt-5">
-        <div className="heading-section">
-        <h3
-  style={{
-    fontWeight: 'bold',
-    fontSize: '1.8rem',
-    color: '#000',
-    display: 'flex',
-    alignItems: 'center'
-  }}
->
-  <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🍖</span>
-  BBQ Feast Fiesta
-</h3>
-
-<h6>Savor the smoky bites, grilled to perfection!</h6>
-
-        </div>
-        <div className="row mt-4">
-          {bbqProducts.map((prod, index) => (
-            <Cards
-              key={index}
-              name={prod.name}
-              price={prod.price}
-              img={prod.img}
-   description={prod.description}
-              onAddToCart={() => handleAddToCart(prod)}
-            />
-          ))}
-        </div>
-      </div>
-      {/* biryani Deals */}
-      <div className="container mt-5">
-        <div className="heading-section">
-         <h3
-  style={{
-    fontWeight: 'bold',
-    fontSize: '1.8rem',
-    color: '#000',
-    display: 'flex',
-    alignItems: 'center'
-  }}
->
-  <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🍛</span>
-  Royal Biryani Treats
-</h3>
-
-<h6>Aromatic rice meets bold spices in every spoonful</h6>
-
-        </div>
-        <div className="row mt-4">
-          { biryaniProducts.map((prod, index) => (
-            <Cards
-              key={index}
-              name={prod.name}
-              price={prod.price}
-              img={prod.img}
-                            description={prod.description}
-
-              onAddToCart={() => handleAddToCart(prod)}
-            />
-          ))}
-        </div>
-      </div>
-      {/* appetizers Deals */}
-      <div className="container mt-5">
-        <div className="heading-section">
-          <h3
-  style={{
-    fontWeight: 'bold',
-    fontSize: '1.8rem',
-    color: '#000',
-    display: 'flex',
-    alignItems: 'center'
-  }}
->
-  <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🧆</span>
-  Irresistible Appetizers
-</h3>
-
-<h6>Small plates, BIG flavor!</h6>
-
-        </div>
-        <div className="row mt-4">
-          {appetizerProducts.map((prod, index) => (
-            <Cards
-              key={index}
-              name={prod.name}
-              price={prod.price}
-              img={prod.img}
-             description={prod.description}
-
-              onAddToCart={() => handleAddToCart(prod)}
-            />
-          ))}
-        </div>
-      </div>
-      {/* Rolls */}
-      <div className="container mt-5">
-        <div className="heading-section">
-        <h3
-  style={{
-    fontWeight: 'bold',
-    fontSize: '1.8rem',
-    color: '#000',
-    display: 'flex',
-    alignItems: 'center'
-  }}
->
-  <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🌯</span>
-  Flavor-Packed Rolls
-</h3>
-
-<h6>Wrapped to perfection, bursting with taste</h6>
-
-        </div>
-        <div className="row mt-4">
-          {rollProducts.map((prod, index) => (
-            <Cards
-              key={index}
-              name={prod.name}
-              price={prod.price}
-              img={prod.img}
-            description={prod.description}
-              onAddToCart={() => handleAddToCart(prod)}
-            />
-          ))}
-        </div>
-      </div>
-      {/*drinks*/}
-      <div className="container mt-5">
-        <div className="heading-section">
-      <h3
-  style={{
-    fontWeight: 'bold',
-    fontSize: '1.8rem',
-    color: '#000',
-    display: 'flex',
-    alignItems: 'center'
-  }}
->
-  <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🥤</span>
-  Cool Refreshments
-</h3>
-
-<h6>Fizz, chill, and flavor in every sip!</h6>
-
-        </div>
-        <div className="row mt-4">
-          {drinkProducts.map((prod, index) => (
-            <Cards
-              key={index}
-              name={prod.name}
-              price={prod.price}
-              img={prod.img}
-            description={prod.description}
-              onAddToCart={() => handleAddToCart(prod)}
-            />
-          ))}
-        </div>
-      </div>
-      {/* Desserts */}
-      <div className="container mt-5">
-        <div className="heading-section">
-       <h3
-  style={{
-    fontWeight: 'bold',
-    fontSize: '1.8rem',
-    color: '#000',
-    display: 'flex',
-    alignItems: 'center'
-  }}
->
-  <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🍨</span>
-  Sweet Dessert Dreams
-</h3>
-
-<h6>End on a sweet note – treat yourself!</h6>
-
-        </div>
-        <div className="row mt-4">
-          {DessertsProducts.map((prod, index) => (
-            <Cards
-              key={index}
-              name={prod.name}
-              price={prod.price}
-              img={prod.img}
-                            description={prod.description}
-
-              onAddToCart={() => handleAddToCart(prod)}
-            />
-          ))}
-        </div>
-      </div>
-      </div>
+      {/* Render Filtered Categories */}
+      {filteredCategories.length > 0 ? (
+        filteredCategories.map((category, index) => (
+          <div key={index} className="mb-5">
+            <h3 className="mb-3">{category.title}</h3>
+            <div className="row">
+              {category.data.map((item, idx) => (
+                <div className="col-md-4 col-sm-6 mb-4" key={idx}>
+                  <div className="card h-100 shadow-sm">
+                    <img
+                      src={item.img}
+                      className="card-img-top"
+                      alt={item.name}
+                      style={{ height: '200px', objectFit: 'cover' }}
+                    />
+                    <div className="card-body d-flex flex-column">
+                      <h5 className="card-title">{item.name}</h5>
+                      <p className="card-text">{item.description}</p>
+                      {item.badge && (
+                        <span className="badge bg-warning text-dark mb-2">{item.badge}</span>
+                      )}
+                      <p className="fw-bold mt-auto">Rs {item.price}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))
+      ) : (
+        <p className="text-center text-danger fs-5">No dishes found for "{searchQuery}"</p>
+      )}
+    </div>
   );
 };

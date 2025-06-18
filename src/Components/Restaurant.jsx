@@ -1,184 +1,362 @@
 import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-export const Restaurant = ({ userEmail, onReservationSubmit }) => {
+
+export const Restaurant = ({ userEmail }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    guests: '',
     area: '',
     date: '',
     time: '',
-    tableType: ''
+    guests: '',
+    tableType: '',
   });
 
   const [shake, setShake] = useState(false);
+  const [showSummaryModal, setShowSummaryModal] = useState(false);
+  const [availableSlots, setAvailableSlots] = useState([]);
 
-  const areas = ['Indoor', 'Outdoor', 'Rooftop'];
+  const diningOptions = ['Roof Top Garden Dining', 'Indoor Dining', 'Outdoor Dining'];
   const tableTypes = ['Standard', 'Couple', 'Family'];
+const generateTimeSlots = () => {
+  const times = [];
 
-  const generateTimeSlots = () => {
-    const times = [];
-    for (let h = 13; h <= 23; h++) {
-      times.push(`${h.toString().padStart(2, '0')}:00`);
-      times.push(`${h.toString().padStart(2, '0')}:30`);
-    }
-    ['00:00', '00:30', '01:00'].forEach(t => times.push(t));
-    return times;
-  };
-
-  const availableTimes = generateTimeSlots();
-
-  const getMinDate = () => {
-    const today = new Date();
-    return today.toISOString().split('T')[0];
-  };
-
-  const isSunday = (dateStr) => {
-    const day = new Date(dateStr).getDay();
-    return day === 0;
-  };
-
-  const isPastTime = (time, date) => {
-    if (!time || !date) return false;
-    const now = new Date();
-    const selected = new Date(`${date}T${time}`);
-    return selected < now;
-  };
-
-  const handleChange = (e) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
-  };
-
-  const isValid = () => {
-    return Object.values(formData).every(val => val.trim() !== '');
-  };
-
- const handleSubmit = (e) => {
-  e.preventDefault();
-
-  if (!isValid()) {
-    setShake(true);
-    toast.error('Please fill all fields!');
-    setTimeout(() => setShake(false), 500);
-    return;
+  for (let h = 13; h <= 23; h++) {
+    times.push(convertTo12Hour(`${h.toString().padStart(2, '0')}:00`));
+    times.push(convertTo12Hour(`${h.toString().padStart(2, '0')}:30`));
   }
 
-  if (isSunday(formData.date)) {
-    toast.error('❌ We are closed on Sundays.');
-    return;
-  }
+  ['00:00', '00:30', '01:00'].forEach(t => times.push(convertTo12Hour(t)));
+  return times;
+};
 
-  if (isPastTime(formData.time, formData.date)) {
-    toast.error('⏰ Selected time is in the past.');
-    return;
-  }
-
-  // ✅ reservation with all fields
-  const reservation = {
-    ...formData,
-    id: Date.now()
-  };
-
-  // ✅ save to localStorage as array
-  const key = `reservations_${userEmail}`;
-  const existing = JSON.parse(localStorage.getItem(key)) || [];
-  const updated = [...existing, reservation];
-  localStorage.setItem(key, JSON.stringify(updated));
-
-  // ✅ optionally inform parent (e.g. Navbar)
-  if (onReservationSubmit) {
-    onReservationSubmit(reservation);
-  }
-
-  // ✅ show success + reset form
-  toast.success('🎉 Reservation Confirmed!');
-  setFormData({
-    name: '',
-    email: '',
-    phone: '',
-    guests: '',
-    area: '',
-    date: '',
-    time: '',
-    tableType: ''
-  });
+const convertTo12Hour = (time24) => {
+  const [hourStr, minutes] = time24.split(':');
+  let hour = parseInt(hourStr);
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  hour = hour % 12 || 12;
+  return `${hour}:${minutes} ${ampm}`;
 };
 
 
+  const getUserReservations = () => {
+    const key = `reservations_${formData.email.toLowerCase().trim()}`;
+    return JSON.parse(localStorage.getItem(key)) || [];
+  };
+
+  const generateAvailableTimeSlots = () => {
+    const allSlots = generateTimeSlots();
+    if (!formData.date || !formData.email) return allSlots;
+    const reserved = getUserReservations()
+      .filter(r => r.date === formData.date)
+      .map(r => r.time);
+    return allSlots.filter(slot => !reserved.includes(slot));
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const isFormValid = () => {
+    return Object.values(formData).every((val) => val.trim() !== '');
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const selectedDate = new Date(formData.date);
+    const selectedDay = selectedDate.getDay();
+    const [hour] = formData.time.split(':').map(Number);
+
+    if (!isFormValid()) {
+      setShake(true);
+      toast.error('Please fill all fields.');
+      setTimeout(() => setShake(false), 500);
+      return;
+    }
+
+    if (selectedDay === 0) {
+      toast.error('❌ We are closed on Sundays.');
+      return;
+    }
+
+    if ((hour < 13 && hour !== 0) || hour > 23) {
+      toast.error('⏰ Reservation allowed only from 1 PM to 1 AM.');
+      return;
+    }
+
+    setShowSummaryModal(true);
+  };
+
+  const confirmSaveReservation = () => {
+    const key = `reservations_${formData.email.toLowerCase().trim()}`;
+    const existing = JSON.parse(localStorage.getItem(key)) || [];
+    const updated = [...existing, formData];
+    localStorage.setItem(key, JSON.stringify(updated));
+
+    toast.success('🎉 Reservation Confirmed!');
+    setFormData({ name: '', email: '', phone: '', area: '', date: '', time: '', guests: '', tableType: '' });
+    setShowSummaryModal(false);
+  };
+
+  const todayDate = new Date().toISOString().split('T')[0];
+  const shakeClass = shake ? 'shake border border-danger' : '';
+  const imageStyle = { width: '100%', height: '100%', objectFit: 'cover' };
+
+  const cardContainerStyle = {
+    height: '250px',
+    borderRadius: '12px',
+    overflow: 'hidden',
+    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+
+  const cardHoverStyle = {
+    transform: 'scale(1.03)',
+    boxShadow: '0 8px 25px rgba(0, 0, 0, 0.2)',
+  };
+
   return (
-    <div className="restaurant">
-      <ToastContainer position="top-right" />
-      <section className="reservation-form">
-        <h2>Reserve Your Table 🍽️</h2>
-        <form onSubmit={handleSubmit} className={shake ? 'shake' : ''}>
-          <input type="text" name="name" placeholder="Full Name" value={formData.name} onChange={handleChange} />
-          <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} />
-          <input type="text" name="phone" placeholder="Phone Number" value={formData.phone} onChange={handleChange} />
-          <input type="number" name="guests" placeholder="No. of Guests" value={formData.guests} onChange={handleChange} />
+    <div className="container py-5">
+      {/* Hero */}
+      <div className="text-center mb-5">
+        <h1 className="display-4 text-danger fw-bold">🏛️ Welcome to Our Restaurant</h1>
+        <p className="lead text-muted">Experience delicious food in a cozy and welcoming atmosphere.</p>
+        <div style={{ height: '400px', maxWidth: '800px', margin: '20px auto', borderRadius: '12px', overflow: 'hidden' }}>
+          <img src="/resc.png" alt="Restaurant Hero" style={imageStyle} />
+        </div>
+      </div>
 
-          <select name="area" value={formData.area} onChange={handleChange}>
-            <option value="">Select Area</option>
-            {areas.map(area => (
-              <option key={area} value={area}>{area}</option>
+      {/* Gallery */}
+      <div className="mb-5">
+        <h2 className="text-danger mb-4 text-center">📸 Restaurant Gallery</h2>
+        <div className="row g-4">
+          {["/dining.jpg", "/dining2.jpg", "/dining3.jpg", "/dining4.jpg", "/dining5.jpg", "/dining6.jpg"].map((src, i) => (
+            <div className="col-md-4" key={i}>
+              <div
+                style={cardContainerStyle}
+                onMouseOver={(e) => Object.assign(e.currentTarget.style, { ...cardContainerStyle, ...cardHoverStyle })}
+                onMouseOut={(e) => Object.assign(e.currentTarget.style, cardContainerStyle)}
+              >
+                <img src={src} alt={`Gallery ${i}`} style={imageStyle} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Carousel */}
+      <div className="my-5">
+        <h2 className="text-center text-danger mb-4">🍽️ A Peek Inside</h2>
+        <div id="restaurantCarousel" className="carousel slide" data-bs-ride="carousel">
+          <div className="carousel-inner">
+            {["peek.png", "roof.jpg", "resc.png"].map((img, i) => (
+              <div className={`carousel-item ${i === 0 ? 'active' : ''}`} key={i}>
+                <div style={{ height: '500px', overflow: 'hidden', borderRadius: '12px' }}>
+                  <img src={img} className="d-block w-100" alt={`Slide ${i}`} style={imageStyle} />
+                </div>
+              </div>
             ))}
-          </select>
+          </div>
+          <button className="carousel-control-prev" type="button" data-bs-target="#restaurantCarousel" data-bs-slide="prev">
+            <span className="carousel-control-prev-icon"></span>
+          </button>
+          <button className="carousel-control-next" type="button" data-bs-target="#restaurantCarousel" data-bs-slide="next">
+            <span className="carousel-control-next-icon"></span>
+          </button>
+        </div>
+      </div>
 
-          <select name="tableType" value={formData.tableType} onChange={handleChange}>
-            <option value="">Select Table Type</option>
-            {tableTypes.map(type => (
-              <option key={type} value={type}>{type}</option>
-            ))}
-          </select>
-
+     {/* Reservation Form */}
+{/* Reservation Form */}
+<div style={{ backgroundColor: '#f8f9fa', padding: '2rem', borderRadius: '0.75rem', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', marginBottom: '3rem' }}>
+  <h2 className="text-center text-danger mb-4">📅 Reserve a Table</h2>
+  <form onSubmit={handleSubmit} className={shakeClass}>
+    <div className="row g-3">
+      {/* Common style applied to all inputs/selects */}
+      {[
+        { name: 'name', type: 'text', placeholder: 'Name', title: 'Enter your full name', col: 'col-md-6' },
+        { name: 'email', type: 'email', placeholder: 'Email', title: 'Enter a valid email', col: 'col-md-6' },
+        { name: 'phone', type: 'tel', placeholder: 'Phone', title: 'Enter your phone number', col: 'col-md-6' },
+        { name: 'guests', type: 'number', placeholder: 'Guests', title: 'Total guests', col: 'col-md-4', min: 1 },
+        { name: 'date', type: 'date', title: 'Pick a date', col: 'col-md-4', min: todayDate }
+      ].map(({ name, type, placeholder, title, col, min }) => (
+        <div className={col} key={name}>
           <input
-            type="date"
-            name="date"
-            min={getMinDate()}
-            value={formData.date}
-            onChange={(e) => {
-              const selectedDate = e.target.value;
-              if (isSunday(selectedDate)) {
-                toast.error('❌ We are closed on Sundays.');
-                return;
-              }
-              handleChange(e);
+            type={type}
+            name={name}
+            value={formData[name]}
+            placeholder={placeholder}
+            min={min}
+            title={title}
+            onChange={handleChange}
+            onFocus={(e) => Object.assign(e.target.style, { border: '2px solid red', boxShadow: '0 0 10px rgba(255,0,0,0.5)' })}
+            onBlur={(e) => Object.assign(e.target.style, { border: '1px solid #ccc', boxShadow: 'none' })}
+            onMouseEnter={(e) => Object.assign(e.target.style, { border: '2px solid red', boxShadow: '0 0 6px rgba(255,0,0,0.4)' })}
+            onMouseLeave={(e) => !e.target.matches(':focus') && Object.assign(e.target.style, { border: '1px solid #ccc', boxShadow: 'none' })}
+            style={{
+              width: '100%',
+              height: '48px',
+              padding: '10px',
+              borderRadius: '6px',
+              border: '1px solid #ccc',
+              transition: 'all 0.3s ease'
             }}
           />
+        </div>
+      ))}
 
-          <select
-            name="time"
-            value={formData.time}
-            onChange={(e) => {
-              if (!formData.date) {
-                toast.error("📅 Please select a date first");
-                return;
-              }
-              if (isPastTime(e.target.value, formData.date)) {
-                toast.error("⏰ Cannot choose a past time");
-                return;
-              }
-              handleChange(e);
-            }}
-          >
-            <option value="">Select Time</option>
-            {availableTimes.map((t) => {
-              const disabled = formData.date && isPastTime(t, formData.date);
-              return (
-                <option key={t} value={t} disabled={disabled}>
-                  {t}
-                </option>
-              );
-            })}
-          </select>
+      {/* Select: Dining Area */}
+      <div className="col-md-6">
+        <select
+          name="area"
+          value={formData.area}
+          onChange={handleChange}
+          title="Choose dining area"
+          onFocus={(e) => Object.assign(e.target.style, { border: '2px solid red', boxShadow: '0 0 10px rgba(255,0,0,0.5)' })}
+          onBlur={(e) => Object.assign(e.target.style, { border: '1px solid #ccc', boxShadow: 'none' })}
+          onMouseEnter={(e) => Object.assign(e.target.style, { border: '2px solid red', boxShadow: '0 0 6px rgba(255,0,0,0.4)' })}
+          onMouseLeave={(e) => !e.target.matches(':focus') && Object.assign(e.target.style, { border: '1px solid #ccc', boxShadow: 'none' })}
+          style={{
+            width: '100%',
+            height: '48px',
+            padding: '10px',
+            borderRadius: '6px',
+            border: '1px solid #ccc',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          <option value="">Select Dining Area</option>
+          {diningOptions.map((opt, i) => (
+            <option key={i} value={opt}>{opt}</option>
+          ))}
+        </select>
+      </div>
 
-          <button type="submit">Confirm Reservation</button>
-        </form>
-      </section>
+      {/* Select: Table Type */}
+      <div className="col-md-6">
+        <select
+          name="tableType"
+          value={formData.tableType}
+          onChange={handleChange}
+          title="Select table type"
+          onFocus={(e) => Object.assign(e.target.style, { border: '2px solid red', boxShadow: '0 0 10px rgba(255,0,0,0.5)' })}
+          onBlur={(e) => Object.assign(e.target.style, { border: '1px solid #ccc', boxShadow: 'none' })}
+          onMouseEnter={(e) => Object.assign(e.target.style, { border: '2px solid red', boxShadow: '0 0 6px rgba(255,0,0,0.4)' })}
+          onMouseLeave={(e) => !e.target.matches(':focus') && Object.assign(e.target.style, { border: '1px solid #ccc', boxShadow: 'none' })}
+          style={{
+            width: '100%',
+            height: '48px',
+            padding: '10px',
+            borderRadius: '6px',
+            border: '1px solid #ccc',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          <option value="">Select Table Type</option>
+          {tableTypes.map((type, i) => (
+            <option key={i} value={type}>{type}</option>
+          ))}
+        </select>
+      </div>
+
+      {/* Select: Time */}
+      <div className="col-md-4">
+        <select
+          name="time"
+          value={formData.time}
+          onChange={handleChange}
+          title="Pick a time"
+          onClick={() => setAvailableSlots(generateAvailableTimeSlots())}
+          onFocus={(e) => Object.assign(e.target.style, { border: '2px solid red', boxShadow: '0 0 10px rgba(255,0,0,0.5)' })}
+          onBlur={(e) => Object.assign(e.target.style, { border: '1px solid #ccc', boxShadow: 'none' })}
+          onMouseEnter={(e) => Object.assign(e.target.style, { border: '2px solid red', boxShadow: '0 0 6px rgba(255,0,0,0.4)' })}
+          onMouseLeave={(e) => !e.target.matches(':focus') && Object.assign(e.target.style, { border: '1px solid #ccc', boxShadow: 'none' })}
+          style={{
+            width: '100%',
+            height: '48px',
+            padding: '10px',
+            borderRadius: '6px',
+            border: '1px solid #ccc',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          <option value="">Select Time</option>
+          {availableSlots.map((slot, i) => (
+            <option key={i} value={slot}>{slot}</option>
+          ))}
+        </select>
+      </div>
+    </div>
+
+    <div className="text-center mt-4">
+      <button type="submit" className="btn btn-danger px-4">Confirm Reservation</button>
+    </div>
+  </form>
+</div>
+
+
+      {/* Summary Modal */}
+      {showSummaryModal && (
+        <div className="modal d-block" style={{ background: 'rgba(0,0,0,0.6)' }} onClick={() => setShowSummaryModal(false)}>
+          <div className="modal-dialog modal-dialog-centered" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-content">
+              <div className="modal-header bg-danger text-white">
+                <h5 className="modal-title">Confirm Reservation</h5>
+                <button type="button" className="btn-close btn-close-white" onClick={() => setShowSummaryModal(false)}></button>
+              </div>
+              <div className="modal-body">
+                <p><strong>Name:</strong> {formData.name}</p>
+                <p><strong>Email:</strong> {formData.email}</p>
+                <p><strong>Phone:</strong> {formData.phone}</p>
+                <p><strong>Guests:</strong> {formData.guests}</p>
+                <p><strong>Date:</strong> {formData.date}</p>
+                <p><strong>Time:</strong> {formData.time}</p>
+                <p><strong>Area:</strong> {formData.area}</p>
+                <p><strong>Table Type:</strong> {formData.tableType}</p>
+              </div>
+              <div className="modal-footer">
+                <button className="btn btn-secondary" onClick={() => setShowSummaryModal(false)}>Cancel</button>
+                <button className="btn btn-danger" onClick={confirmSaveReservation}>Confirm & Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Contact Info & Map */}
+      <div className="row mb-5">
+        <div className="col-md-6">
+          <h2 className="text-danger">📍 Find Us</h2>
+          <p><strong>Address:</strong> 123 Food Street, Karachi<br /><strong>Phone:</strong> +92 300 1234567<br /><strong>Email:</strong> hello@yourrestaurant.com</p>
+          <h5 className="text-dark">🕒 Opening Hours:</h5>
+          <ul className="list-unstyled text-muted">
+            <li>Mon–Fri: 12 PM – 11 PM</li>
+            <li>Sat–Sun: 1 PM – 10 PM</li>
+          </ul>
+        </div>
+        <div className="col-md-6">
+          <div style={{ height: '300px', borderRadius: '12px', overflow: 'hidden' }}>
+            <iframe
+              title="Map"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3621.891234090477!2d67.06302997537196!3d24.86073494579047!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3eb33e9e50b92e6d%3A0x909a40c8b5d124e2!2sKarachi!5e0!3m2!1sen!2s!4v1718576880000"
+              width="100%" height="100%" style={{ border: 0 }} allowFullScreen="" loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="text-center mb-5">
+        <h2 className="text-danger mb-3">🚗 How to Reach Us</h2>
+        <p className="text-muted">We’re located near the main market with plenty of parking available. Easy access by bus and ride-sharing services.</p>
+      </div>
+
+      <ToastContainer position="top-center" />
     </div>
   );
 };

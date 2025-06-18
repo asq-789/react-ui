@@ -24,6 +24,7 @@ import { Loginmoadal } from './Components/Loginmoadal';
 import { Aboutus } from './Components/Aboutus';
 import { Restaurant } from './Components/Restaurant';
 import { Deal } from './Components/Deal';
+import { Alldishes } from './Components/Alldishes';
 
 function App() {
  const [userEmail, setUserEmail] = useState(localStorage.getItem('userEmail') || '');
@@ -84,6 +85,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Loginmoadal setUserEmail={setUserEmail} />} />
+        <Route path="alldishes" element={<Alldishes handleAddToCart={handleAddToCart} />} />
         <Route path="home" element={<Home handleAddToCart={handleAddToCart} />} />
         <Route path="about" element={<Aboutus handleAddToCart={handleAddToCart} />} />
         <Route path="restaurant" element={<Restaurant userEmail={userEmail} onReservationSubmit={(r) => console.log('Reservation:', r)} />} />

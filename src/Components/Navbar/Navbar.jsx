@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router';
+import { toast } from 'react-toastify';
 
 export const Navbar = ({ cartItems, setCartItems, userEmail }) => {
   const [showModal, setShowModal] = useState(false);
@@ -11,51 +12,62 @@ export const Navbar = ({ cartItems, setCartItems, userEmail }) => {
   const [orderConfirmed, setOrderConfirmed] = useState(false);
   const [deliveryErrors, setDeliveryErrors] = useState({});
   const [showWishlistModal, setShowWishlistModal] = useState(false);
+const [deleteIndex, setDeleteIndex] = useState(null);
+const [showSummaryModal, setShowSummaryModal] = useState(false);
 
   const [showReservationModal, setShowReservationModal] = useState(false);
   const [reservedTables, setReservedTables] = useState([]);
-
-  const [deliveryInfo, setDeliveryInfo] = useState({
-    name: '',
-    address: '',
-    phone: '',
-    aphone: '',
-    email: '',
-    area: '',
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editData, setEditData] = useState({
+    name: '', email: '', phone: '', date: '', time: '', guests: '', area: ''
   });
 
-  // ✅ FIXED: Fetch and handle reservation data correctly
-useEffect(() => {
-  if (showReservationModal && userEmail) {
-    try {
-      const stored = JSON.parse(localStorage.getItem(`reservations_${userEmail}`));
-      if (Array.isArray(stored)) {
-        setReservedTables(stored);
-      } else if (stored && typeof stored === 'object') {
-        setReservedTables([stored]);
-      } else {
+  const [deliveryInfo, setDeliveryInfo] = useState({
+    name: '', address: '', phone: '', aphone: '', email: '', area: ''
+  });
+
+  useEffect(() => {
+    if (showReservationModal && userEmail) {
+      try {
+        const stored = JSON.parse(localStorage.getItem(`reservations_${userEmail}`));
+        setReservedTables(Array.isArray(stored) ? stored : stored ? [stored] : []);
+      } catch (err) {
+        console.error('Failed to fetch reservation data:', err);
         setReservedTables([]);
       }
-    } catch (err) {
-      console.error('Failed to fetch reservation data:', err);
-      setReservedTables([]);
     }
-  }
-}, [showReservationModal, userEmail]);
+  }, [showReservationModal, userEmail]);
 
+  const handleEditChange = (e) => {
+    setEditData({ ...editData, [e.target.name]: e.target.value });
+  };
+
+  const startEdit = (index) => {
+    setEditingIndex(index);
+    setEditData(reservedTables[index]);
+  };
+
+
+  const saveEdit = () => {
+    const updated = [...reservedTables];
+    updated[editingIndex] = editData;
+    localStorage.setItem(`reservations_${userEmail}`, JSON.stringify(updated));
+    setReservedTables(updated);
+    setEditingIndex(null);
+    toast.success('Reservation updated!');
+  };
+
+  const cancelEdit = () => {
+    setEditingIndex(null);
+  };
 
   const areaCharges = {
-    'Select Area': 0,
-    'DHA': 150,
-    'Gulshan': 120,
-    'Nazimabad': 100,
-    'Malir': 130,
+    'Select Area': 0, 'DHA': 150, 'Gulshan': 120, 'Nazimabad': 100, 'Malir': 130
   };
 
   const deliveryCharge = areaCharges[deliveryInfo.area] || 0;
   const totalAmount = cartItems.reduce(
-    (sum, item) => sum + item.price * (item.quantity || 1),
-    0
+    (sum, item) => sum + item.price * (item.quantity || 1), 0
   ) + deliveryCharge;
 
   const handleCartClick = () => setShowModal(true);
@@ -76,6 +88,22 @@ useEffect(() => {
     setShowModal(false);
     setShowOrderModal(true);
   };
+const confirmDelete = (index) => {
+  setDeleteIndex(index);
+};
+
+// toast.error("Reservation deleted", {
+//   style: {
+//     backgroundColor: '#fff0f0',
+//     color: '#a70000',
+//     borderLeft: '5px solid red',
+//     fontWeight: '500',
+//   },
+//   progressStyle: {
+//     background: 'red',
+//   },
+// });
+
 
   const validateDeliveryInfo = () => {
     const errors = {};
@@ -114,30 +142,19 @@ useEffect(() => {
 
   return (
     <>
-      {/* Navbar */}
       <nav className="navbar navbar-expand-lg" style={{ backgroundColor: 'red', padding: '10px 0', width: '100vw', overflowX: 'hidden' }}>
         <div className="d-flex align-items-center gap-4">
           <Link to="/" className="navbar-brand d-flex align-items-center" style={{ color: 'white', fontWeight: 'bold', fontSize: '24px', textDecoration: 'none' }}>
             <img src="https://img.icons8.com/ios-filled/50/ffffff/hamburger.png" alt="Food Logo" style={{ width: '30px', height: '30px', marginRight: '10px' }} />
-            FoodieSpot
+            Luxurious Spire Spot
           </Link>
 
           <ul className="d-flex list-unstyled mb-0" style={{ gap: '20px' }}>
-            {[
-              { name: 'Home', path: 'home' },
-              { name: 'About Us', path: '/about' },
-              { name: 'Dine & Reserve', path: '/restaurant' }
-            ].map((item, index) => (
+            {[{ name: 'Home', path: 'home' }, { name: 'About Us', path: '/about' }, { name: 'Dine & Reserve', path: '/restaurant' }].map((item, index) => (
               <li key={index}>
                 <Link
                   to={item.path}
-                  style={{
-                    color: 'white',
-                    textDecoration: 'none',
-                    fontSize: '18px',
-                    fontWeight: '500',
-                    padding: '5px 10px'
-                  }}
+                  style={{ color: 'white', textDecoration: 'none', fontSize: '18px', fontWeight: '500', padding: '5px 10px' }}
                   onMouseOver={(e) => (e.target.style.color = '#ffd700')}
                   onMouseOut={(e) => (e.target.style.color = 'white')}
                 >
@@ -156,16 +173,12 @@ useEffect(() => {
               placeholder="Search for dishes..."
               value={searchQuery}
               onChange={handleSearchChange}
-              onBlur={() => {
-                if (searchQuery === '') setShowSearch(false);
-              }}
+              onBlur={() => { if (searchQuery === '') setShowSearch(false); }}
               style={{ maxWidth: '100%', width: '250px' }}
               autoFocus
             />
           ) : (
-            <button onClick={() => setShowSearch(true)} className="btn text-white" style={{ fontSize: '20px' }}>
-              🔍
-            </button>
+            <button onClick={() => setShowSearch(true)} className="btn text-white" style={{ fontSize: '20px' }}>🔍</button>
           )}
 
           <button className="btn position-relative" onClick={handleCartClick} style={{ backgroundColor: 'transparent', border: 'none' }}>
@@ -177,36 +190,113 @@ useEffect(() => {
             )}
           </button>
 
-          <button className="btn text-white" style={{ fontSize: '20px', backgroundColor: 'transparent', border: 'none' }} onClick={() => setShowWishlistModal(true)}>
-            ❤️
-          </button>
+          <button className="btn text-white" style={{ fontSize: '20px', backgroundColor: 'transparent', border: 'none' }} onClick={() => setShowWishlistModal(true)}>❤️</button>
 
           <button
             className="btn text-white"
             style={{ fontSize: '20px', backgroundColor: 'transparent', border: 'none' }}
             onClick={() => setShowReservationModal(true)}
             title="Dine & Reserve"
-          >
-            🍽️
-          </button>
+          >🍽️</button>
         </div>
       </nav>
+{showReservationModal && (
+  <div
+    className="modal d-block"
+    style={{ backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1050 }}
+    onClick={() => setShowReservationModal(false)}
+  >
+    <div
+      className="modal-dialog modal-dialog-centered"
+      onClick={(e) => e.stopPropagation()}
+      style={{ width: '100%', maxWidth: '700px', margin: 'auto' }}
+    >
+      <div
+        className="modal-content"
+        style={{
+          borderRadius: '20px',
+          background: '#fff',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          boxShadow: '0 8px 30px rgba(0,0,0,0.2)',
+        }}
+      >
+        {/* Header */}
+        <div
+          className="modal-header"
+  style={{
+    backgroundColor: '#D62713FF',
+    color: '#fff',
+    padding: '1rem 1.5rem',
+    borderTopLeftRadius: '20px',
+    borderTopRightRadius: '20px',
+          }}
+        >
+          <h5 className="modal-title">🍽️ Your Reservations</h5>
+          {/*  */}
+        </div>
 
-      {/* Reservation Modal */}
-      {showReservationModal && (
-        <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} onClick={() => setShowReservationModal(false)}>
-          <div className="modal-dialog modal-dialog-centered" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">🍽️ Your Reservation</h5>
-                <button type="button" className="btn-close" onClick={() => setShowReservationModal(false)}></button>
-              </div>
-              <div className="modal-body">
-                {reservedTables.length === 0 ? (
-                  <p className="text-muted text-center">No reservations yet.</p>
-                ) : (
-                  reservedTables.map((res, index) => (
-                    <div key={index} className="mb-3">
+        {/* Body */}
+        <div
+          className="modal-body"
+          style={{
+            padding: '1.5rem',
+            backgroundColor: '#fafafa',
+          }}
+        >
+          {reservedTables.length === 0 ? (
+            <p className="text-muted text-center mb-0">No reservations yet.</p>
+          ) : (
+            <div
+              className="reservation-wrapper"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: reservedTables.length >= 3 ? '1fr 1fr' : '1fr',
+                gap: '1rem',
+              }}
+            >
+              {reservedTables.map((res, index) => (
+                <div
+                  key={index}
+                  className="reservation-card"
+                  style={{
+                    backgroundColor: '#fff',
+                    border: '1px solid #ddd',
+                    borderRadius: '14px',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                    padding: '1rem',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                    cursor: 'default',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-3px)';
+                    e.currentTarget.style.boxShadow = '0 6px 18px rgba(0,0,0,0.15)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'none';
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+                  }}
+                >
+                  {editingIndex === index ? (
+                    <>
+                      {['name', 'email', 'phone', 'date', 'time', 'guests', 'area'].map((field) => (
+                        <input
+                          key={field}
+                          name={field}
+                          value={editData[field]}
+                          onChange={handleEditChange}
+                          className="form-control mb-2"
+                          placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                        />
+                      ))}
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
+                        <button className="btn btn-success btn-sm" onClick={saveEdit}>💾 Save</button>
+                        <button className="btn btn-outline-secondary btn-sm" onClick={cancelEdit}>Cancel</button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
                       <p><strong>Name:</strong> {res.name}</p>
                       <p><strong>Email:</strong> {res.email}</p>
                       <p><strong>Phone:</strong> {res.phone}</p>
@@ -214,20 +304,110 @@ useEffect(() => {
                       <p><strong>Time:</strong> {res.time}</p>
                       <p><strong>Guests:</strong> {res.guests}</p>
                       <p><strong>Area:</strong> {res.area}</p>
-                    </div>
-                  ))
-                )}
-              </div>
-              <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={() => setShowReservationModal(false)}>Close</button>
-              </div>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
+                        <button className="btn btn-outline-danger btn-sm" onClick={() => confirmDelete(index)}>🗑️</button>
+                        <button className="btn btn-outline-warning btn-sm" onClick={() => startEdit(index)}>✏️</button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))}
             </div>
-          </div>
+          )}
         </div>
-      )}
+
+        {/* Footer */}
+        <div
+          className="modal-footer d-flex justify-content-between align-items-center"
+          style={{
+            borderTop: '1px solid #eee',
+            padding: '1rem',
+            backgroundColor: '#f9f9f9',
+            borderBottomLeftRadius: '20px',
+            borderBottomRightRadius: '20px',
+          }}
+        >
+          <button className="btn btn-outline-secondary" onClick={() => setShowReservationModal(false)}>Close</button>
+          {reservedTables.length >= 3 && (
+            <button
+              className="btn btn-danger"
+              onClick={() => setShowSummaryModal(true)}
+            >
+              📋 View Summary
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+{/* SUMMARY MODAL */}
+{showSummaryModal && (
+  <div
+    className="modal d-block"
+    style={{
+      backgroundColor: 'rgba(0,0,0,0.6)',
+      zIndex: 1060,
+    }}
+    onClick={() => setShowSummaryModal(false)}
+  >
+    <div
+      className="modal-dialog modal-dialog-centered"
+      onClick={(e) => e.stopPropagation()}
+      style={{
+        width: '100%',
+        maxWidth: '600px',
+        margin: 'auto',
+      }}
+    >
+      <div
+        className="modal-content"
+        style={{
+          borderRadius: '20px',
+          backgroundColor: '#fff',
+          padding: '1.5rem',
+        }}
+      >
+        <h4 className="mb-3">📋 Reservation Summary</h4>
+        <ul className="list-group mb-3">
+          {reservedTables.map((res, index) => (
+            <li key={index} className="list-group-item">
+              <strong>{res.name}</strong> — {res.guests} guests at {res.time} on {res.date} in <em>{res.area}</em>
+            </li>
+          ))}
+        </ul>
+        <p><strong>Total Guests:</strong> {reservedTables.reduce((sum, r) => sum + parseInt(r.guests), 0)}</p>
+        <p><strong>Areas Reserved:</strong> {[...new Set(reservedTables.map(r => r.area))].join(', ')}</p>
+        <div className="text-end">
+          <button className="btn btn-secondary" onClick={() => setShowSummaryModal(false)}>Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
 
 
+{/* Delete Confirmation Modal */}
+{deleteIndex !== null && (
+  <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1060 }} onClick={() => setDeleteIndex(null)}>
+    <div className="modal-dialog modal-dialog-centered" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-content" style={{ borderRadius: '10px' }}>
+        <div className="modal-header bg-danger text-white">
+          <h5 className="modal-title">Confirm Delete</h5>
+          <button className="btn-close" onClick={() => setDeleteIndex(null)}></button>
+        </div>
+        <div className="modal-body text-center">
+          <p>Are you sure you want to delete this reservation?</p>
+          <button className="btn btn-danger me-2" onClick={() => handleDeleteReservation(deleteIndex)}>Yes, Delete</button>
+          <button className="btn btn-secondary" onClick={() => setDeleteIndex(null)}>Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
 
+  
 
       {/* Wishlist Modal */}
       {showWishlistModal && (
