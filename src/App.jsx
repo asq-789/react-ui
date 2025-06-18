@@ -77,17 +77,16 @@ function App() {
     <>
       <Loginmoadal setUserEmail={setUserEmail} />
       <div style={{ width: '200%', maxWidth: '100vw', overflowX: 'hidden' }}>
-  <Navbar cartItems={cartItems} setCartItems={setCartItems} />
-  <Carousel />
-  <Navbarname />
-</div>
+        <Navbar cartItems={cartItems} setCartItems={setCartItems} />
+        <Carousel />
+        <Navbarname />
+      </div>
 
-      
       <Routes>
         <Route path="/" element={<Loginmoadal setUserEmail={setUserEmail} />} />
-        <Route path='home' element={<Home handleAddToCart={handleAddToCart} />} />
-        <Route path='about' element={<Aboutus handleAddToCart={handleAddToCart} />} />
-        <Route path='restaurant' element={<Restaurant handleAddToCart={handleAddToCart} />} />
+        <Route path="home" element={<Home handleAddToCart={handleAddToCart} />} />
+        <Route path="about" element={<Aboutus handleAddToCart={handleAddToCart} />} />
+        <Route path="restaurant" element={<Restaurant userEmail={userEmail} onReservationSubmit={(r) => console.log('Reservation:', r)} />} />
         <Route path="/anime" element={<AnimeeDeals handleAddToCart={handleAddToCart} />} />
         <Route path="/fastfood" element={<FastFoodDeals handleAddToCart={handleAddToCart} />} />
         <Route path="/chinese" element={<PopularItems handleAddToCart={handleAddToCart} />} />
@@ -102,10 +101,10 @@ function App() {
         <Route path="/rolls" element={<Rolls handleAddToCart={handleAddToCart} />} />
         <Route path="/sandwiches" element={<Sandwitches handleAddToCart={handleAddToCart} />} />
       </Routes>
-      <div style={{ width: '200%', maxWidth: '100vw', overflowX: 'hidden' }}>
- <Footer/>
-</div>
 
+      <div style={{ width: '200%', maxWidth: '100vw', overflowX: 'hidden' }}>
+        <Footer />
+      </div>
     </>
   );
 }
