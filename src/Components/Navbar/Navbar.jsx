@@ -19,7 +19,7 @@ const [showSummaryModal, setShowSummaryModal] = useState(false);
   const [reservedTables, setReservedTables] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
   const [editData, setEditData] = useState({
-    name: '', email: '', phone: '', date: '', time: '', guests: '', area: ''
+    name: '', email: '', phone: '', date: '', time: '', guests: '', area: '' , occasion: ''
   });
 
   const [deliveryInfo, setDeliveryInfo] = useState({
@@ -37,6 +37,25 @@ const [showSummaryModal, setShowSummaryModal] = useState(false);
       }
     }
   }, [showReservationModal, userEmail]);
+const handleDeleteReservation = (index) => {
+  const updated = [...reservedTables];
+  updated.splice(index, 1);
+  setReservedTables(updated);
+  localStorage.setItem(`reservations_${userEmail}`, JSON.stringify(updated));
+  setDeleteIndex(null);
+
+  toast.error("Reservation deleted", {
+    style: {
+      backgroundColor: '#fff0f0',
+      color: '#a70000',
+      borderLeft: '5px solid red',
+      fontWeight: '500',
+    },
+    progressStyle: {
+      background: 'red',
+    },
+  });
+};
 
   const handleEditChange = (e) => {
     setEditData({ ...editData, [e.target.name]: e.target.value });
@@ -45,17 +64,29 @@ const [showSummaryModal, setShowSummaryModal] = useState(false);
   const startEdit = (index) => {
     setEditingIndex(index);
     setEditData(reservedTables[index]);
+
   };
 
+const saveEdit = () => {
+  const updated = [...reservedTables];
+  updated[editingIndex] = editData;
+  localStorage.setItem(`reservations_${userEmail}`, JSON.stringify(updated));
+  setReservedTables(updated);
+  setEditingIndex(null);
 
-  const saveEdit = () => {
-    const updated = [...reservedTables];
-    updated[editingIndex] = editData;
-    localStorage.setItem(`reservations_${userEmail}`, JSON.stringify(updated));
-    setReservedTables(updated);
-    setEditingIndex(null);
-    toast.success('Reservation updated!');
-  };
+  toast.success('✅ Reservation updated successfully!', {
+    position: 'top-right',
+    style: {
+      backgroundColor: '#e6fff0',
+      color: '#007a3d',
+      borderLeft: '5px solid #00b894',
+      fontWeight: '500',
+    },
+    progressStyle: {
+      background: '#00b894',
+    },
+  });
+};
 
   const cancelEdit = () => {
     setEditingIndex(null);
@@ -150,7 +181,7 @@ const confirmDelete = (index) => {
           </Link>
 
           <ul className="d-flex list-unstyled mb-0" style={{ gap: '20px' }}>
-            {[{ name: 'Home', path: 'home' }, { name: 'About Us', path: '/about' }, { name: 'Dine & Reserve', path: '/restaurant' }].map((item, index) => (
+            {[{ name: 'Home', path: 'home' }, { name: 'About Us', path: '/about' }, { name: 'Dine & Reserve', path: '/restaurant' }, {name:'Events', path: 'events'}].map((item, index) => (
               <li key={index}>
                 <Link
                   to={item.path}
@@ -200,6 +231,7 @@ const confirmDelete = (index) => {
           >🍽️</button>
         </div>
       </nav>
+
 {showReservationModal && (
   <div
     className="modal d-block"
@@ -278,33 +310,52 @@ const confirmDelete = (index) => {
                     e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
                   }}
                 >
-                  {editingIndex === index ? (
-                    <>
-                      {['name', 'email', 'phone', 'date', 'time', 'guests', 'area'].map((field) => (
-                        <input
-                          key={field}
-                          name={field}
-                          value={editData[field]}
-                          onChange={handleEditChange}
-                          className="form-control mb-2"
-                          placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-                        />
-                      ))}
+                {editingIndex === index ? (
+  <>
+    {['name', 'email', 'phone', 'date', 'time', 'guests', 'area'].map((field) => (
+      <input
+        key={field}
+        name={field}
+        value={editData[field]}
+        onChange={handleEditChange}
+        className="form-control mb-2"
+        placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+      />
+    ))}
+
+    <select
+  name="occasion"
+  value={editData.occasion}
+  onChange={handleEditChange}
+  className="form-control mb-2"
+>
+  <option value="">🎉 Select Occasion</option>
+  <option value="Birthday">🎂 Birthday Bash</option>
+  <option value="Anniversary">💖 Anniversary Special</option>
+  <option value="Graduation Dinner">🎓 Graduation Dinner</option>
+  <option value="Farewell Gathering">👋 Farewell Gathering</option>
+  <option value="Corporate Dinner">🏢 Corporate Dinner</option>
+</select>
+
+
+    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
+      <button className="btn btn-success btn-sm" onClick={saveEdit}>💾 Save</button>
+      <button className="btn btn-outline-secondary btn-sm" onClick={cancelEdit}>Cancel</button>
+    </div>
+  </>
+) : (
+  <>
+    <p><strong>Name:</strong> {res.name}</p>
+    <p><strong>Email:</strong> {res.email}</p>
+    <p><strong>Phone:</strong> {res.phone}</p>
+    <p><strong>Date:</strong> {res.date}</p>
+    <p><strong>Time:</strong> {res.time}</p>
+    <p><strong>Guests:</strong> {res.guests}</p>
+    <p><strong>Area:</strong> {res.area}</p>
+    {res.occasion && <p><strong>Occasion:</strong> {res.occasion}</p>}
+
                       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
-                        <button className="btn btn-success btn-sm" onClick={saveEdit}>💾 Save</button>
-                        <button className="btn btn-outline-secondary btn-sm" onClick={cancelEdit}>Cancel</button>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <p><strong>Name:</strong> {res.name}</p>
-                      <p><strong>Email:</strong> {res.email}</p>
-                      <p><strong>Phone:</strong> {res.phone}</p>
-                      <p><strong>Date:</strong> {res.date}</p>
-                      <p><strong>Time:</strong> {res.time}</p>
-                      <p><strong>Guests:</strong> {res.guests}</p>
-                      <p><strong>Area:</strong> {res.area}</p>
-                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
+                        
                         <button className="btn btn-outline-danger btn-sm" onClick={() => confirmDelete(index)}>🗑️</button>
                         <button className="btn btn-outline-warning btn-sm" onClick={() => startEdit(index)}>✏️</button>
                       </div>

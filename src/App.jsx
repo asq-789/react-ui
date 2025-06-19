@@ -25,6 +25,7 @@ import { Aboutus } from './Components/Aboutus';
 import { Restaurant } from './Components/Restaurant';
 import { Deal } from './Components/Deal';
 import { Alldishes } from './Components/Alldishes';
+import { Events } from './Components/Events';
 
 function App() {
  const [userEmail, setUserEmail] = useState(localStorage.getItem('userEmail') || '');
@@ -85,10 +86,21 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Loginmoadal setUserEmail={setUserEmail} />} />
+        <Route path="events" element={<Events setUserEmail={setUserEmail} />} />
         <Route path="alldishes" element={<Alldishes handleAddToCart={handleAddToCart} />} />
         <Route path="home" element={<Home handleAddToCart={handleAddToCart} />} />
         <Route path="about" element={<Aboutus handleAddToCart={handleAddToCart} />} />
-        <Route path="restaurant" element={<Restaurant userEmail={userEmail} onReservationSubmit={(r) => console.log('Reservation:', r)} />} />
+<Route
+  path="/restaurant"
+  element={
+    <Restaurant
+      userEmail={userEmail}
+      onReservationSubmit={(reservation) =>
+        console.log('Reservation submitted:', reservation)
+      }
+    />
+  }
+/>
         <Route path="/anime" element={<AnimeeDeals handleAddToCart={handleAddToCart} />} />
         <Route path="/fastfood" element={<FastFoodDeals handleAddToCart={handleAddToCart} />} />
         <Route path="/chinese" element={<PopularItems handleAddToCart={handleAddToCart} />} />

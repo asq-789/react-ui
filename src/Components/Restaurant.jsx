@@ -12,6 +12,7 @@ export const Restaurant = ({ userEmail }) => {
     time: '',
     guests: '',
     tableType: '',
+    occasion:'',
   });
 
   const [shake, setShake] = useState(false);
@@ -39,7 +40,7 @@ const convertTo12Hour = (time24) => {
   hour = hour % 12 || 12;
   return `${hour}:${minutes} ${ampm}`;
 };
-
+ 
 
   const getUserReservations = () => {
     const key = `reservations_${formData.email.toLowerCase().trim()}`;
@@ -65,30 +66,36 @@ const convertTo12Hour = (time24) => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    const selectedDate = new Date(formData.date);
-    const selectedDay = selectedDate.getDay();
-    const [hour] = formData.time.split(':').map(Number);
+  e.preventDefault();
+  const selectedDate = new Date(formData.date);
+  const selectedDay = selectedDate.getDay();
 
-    if (!isFormValid()) {
-      setShake(true);
-      toast.error('Please fill all fields.');
-      setTimeout(() => setShake(false), 500);
-      return;
-    }
+  if (!isFormValid()) {
+    setShake(true);
+    toast.error('Please fill all fields.');
+    setTimeout(() => setShake(false), 500);
+    return;
+  }
 
-    if (selectedDay === 0) {
-      toast.error('❌ We are closed on Sundays.');
-      return;
-    }
+  if (selectedDay === 0) {
+    toast.error('❌ We are closed on Sundays.');
+    return;
+  }
 
-    if ((hour < 13 && hour !== 0) || hour > 23) {
-      toast.error('⏰ Reservation allowed only from 1 PM to 1 AM.');
-      return;
-    }
+  // ✅ Convert 12-hour format to 24-hour
+  const [timePart, modifier] = formData.time.split(' ');
+  let [hour, minutes] = timePart.split(':').map(Number);
+  if (modifier === 'PM' && hour !== 12) hour += 12;
+  if (modifier === 'AM' && hour === 12) hour = 0;
 
-    setShowSummaryModal(true);
-  };
+  // ✅ Check if time is within 1 PM (13) to 1 AM (01)
+  if (!(hour >= 13 || hour === 0 || hour === 1)) {
+    toast.error('⏰ Reservation allowed only from 1 PM to 1 AM.');
+    return;
+  }
+
+  setShowSummaryModal(true);
+};
 
   const confirmSaveReservation = () => {
     const key = `reservations_${formData.email.toLowerCase().trim()}`;
@@ -172,19 +179,19 @@ const convertTo12Hour = (time24) => {
         </div>
       </div>
 
-     {/* Reservation Form */}
+  
+{/* Reservation Form */}
 {/* Reservation Form */}
 <div style={{ backgroundColor: '#f8f9fa', padding: '2rem', borderRadius: '0.75rem', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', marginBottom: '3rem' }}>
   <h2 className="text-center text-danger mb-4">📅 Reserve a Table</h2>
   <form onSubmit={handleSubmit} className={shakeClass}>
     <div className="row g-3">
-      {/* Common style applied to all inputs/selects */}
       {[
         { name: 'name', type: 'text', placeholder: 'Name', title: 'Enter your full name', col: 'col-md-6' },
         { name: 'email', type: 'email', placeholder: 'Email', title: 'Enter a valid email', col: 'col-md-6' },
         { name: 'phone', type: 'tel', placeholder: 'Phone', title: 'Enter your phone number', col: 'col-md-6' },
-        { name: 'guests', type: 'number', placeholder: 'Guests', title: 'Total guests', col: 'col-md-4', min: 1 },
-        { name: 'date', type: 'date', title: 'Pick a date', col: 'col-md-4', min: todayDate }
+        { name: 'guests', type: 'number', placeholder: 'Guests', title: 'Total guests', col: 'col-md-2', min: 1 },
+        { name: 'date', type: 'date', title: 'Pick a date', col: 'col-md-3', min: todayDate },
       ].map(({ name, type, placeholder, title, col, min }) => (
         <div className={col} key={name}>
           <input
@@ -211,72 +218,13 @@ const convertTo12Hour = (time24) => {
         </div>
       ))}
 
-      {/* Select: Dining Area */}
-      <div className="col-md-6">
-        <select
-          name="area"
-          value={formData.area}
-          onChange={handleChange}
-          title="Choose dining area"
-          onFocus={(e) => Object.assign(e.target.style, { border: '2px solid red', boxShadow: '0 0 10px rgba(255,0,0,0.5)' })}
-          onBlur={(e) => Object.assign(e.target.style, { border: '1px solid #ccc', boxShadow: 'none' })}
-          onMouseEnter={(e) => Object.assign(e.target.style, { border: '2px solid red', boxShadow: '0 0 6px rgba(255,0,0,0.4)' })}
-          onMouseLeave={(e) => !e.target.matches(':focus') && Object.assign(e.target.style, { border: '1px solid #ccc', boxShadow: 'none' })}
-          style={{
-            width: '100%',
-            height: '48px',
-            padding: '10px',
-            borderRadius: '6px',
-            border: '1px solid #ccc',
-            transition: 'all 0.3s ease'
-          }}
-        >
-          <option value="">Select Dining Area</option>
-          {diningOptions.map((opt, i) => (
-            <option key={i} value={opt}>{opt}</option>
-          ))}
-        </select>
-      </div>
-
-      {/* Select: Table Type */}
-      <div className="col-md-6">
-        <select
-          name="tableType"
-          value={formData.tableType}
-          onChange={handleChange}
-          title="Select table type"
-          onFocus={(e) => Object.assign(e.target.style, { border: '2px solid red', boxShadow: '0 0 10px rgba(255,0,0,0.5)' })}
-          onBlur={(e) => Object.assign(e.target.style, { border: '1px solid #ccc', boxShadow: 'none' })}
-          onMouseEnter={(e) => Object.assign(e.target.style, { border: '2px solid red', boxShadow: '0 0 6px rgba(255,0,0,0.4)' })}
-          onMouseLeave={(e) => !e.target.matches(':focus') && Object.assign(e.target.style, { border: '1px solid #ccc', boxShadow: 'none' })}
-          style={{
-            width: '100%',
-            height: '48px',
-            padding: '10px',
-            borderRadius: '6px',
-            border: '1px solid #ccc',
-            transition: 'all 0.3s ease'
-          }}
-        >
-          <option value="">Select Table Type</option>
-          {tableTypes.map((type, i) => (
-            <option key={i} value={type}>{type}</option>
-          ))}
-        </select>
-      </div>
-
-      {/* Select: Time */}
+      {/* Time Select */}
       <div className="col-md-4">
         <select
           name="time"
           value={formData.time}
           onChange={handleChange}
-          title="Pick a time"
-          onClick={() => setAvailableSlots(generateAvailableTimeSlots())}
-          onFocus={(e) => Object.assign(e.target.style, { border: '2px solid red', boxShadow: '0 0 10px rgba(255,0,0,0.5)' })}
-          onBlur={(e) => Object.assign(e.target.style, { border: '1px solid #ccc', boxShadow: 'none' })}
-          onMouseEnter={(e) => Object.assign(e.target.style, { border: '2px solid red', boxShadow: '0 0 6px rgba(255,0,0,0.4)' })}
-          onMouseLeave={(e) => !e.target.matches(':focus') && Object.assign(e.target.style, { border: '1px solid #ccc', boxShadow: 'none' })}
+          required
           style={{
             width: '100%',
             height: '48px',
@@ -285,49 +233,150 @@ const convertTo12Hour = (time24) => {
             border: '1px solid #ccc',
             transition: 'all 0.3s ease'
           }}
+          onFocus={(e) => Object.assign(e.target.style, { border: '2px solid red', boxShadow: '0 0 10px rgba(255,0,0,0.5)' })}
+          onBlur={(e) => Object.assign(e.target.style, { border: '1px solid #ccc', boxShadow: 'none' })}
         >
           <option value="">Select Time</option>
-          {availableSlots.map((slot, i) => (
-            <option key={i} value={slot}>{slot}</option>
+          {generateAvailableTimeSlots().map((slot, index) => (
+            <option key={index} value={slot}>{slot}</option>
           ))}
+        </select>
+      </div>
+
+      {/* Area Select */}
+      <div className="col-md-3">
+        <select
+          name="area"
+          value={formData.area}
+          onChange={handleChange}
+          required
+          style={{
+            width: '100%',
+            height: '48px',
+            padding: '10px',
+            borderRadius: '6px',
+            border: '1px solid #ccc',
+            transition: 'all 0.3s ease'
+          }}
+          onFocus={(e) => Object.assign(e.target.style, { border: '2px solid red', boxShadow: '0 0 10px rgba(255,0,0,0.5)' })}
+          onBlur={(e) => Object.assign(e.target.style, { border: '1px solid #ccc', boxShadow: 'none' })}
+        >
+          <option value="">Select Area</option>
+          <option value="indoor">Indoor</option>
+          <option value="rooftop">Rooftop</option>
+          <option value="garden">Garden</option>
+        </select>
+      </div>
+
+      {/* Table Type */}
+      <div className="col-md-3">
+        <select
+          name="tableType"
+          value={formData.tableType}
+          onChange={handleChange}
+          required
+          style={{
+            width: '100%',
+            height: '48px',
+            padding: '10px',
+            borderRadius: '6px',
+            border: '1px solid #ccc',
+            transition: 'all 0.3s ease'
+          }}
+          onFocus={(e) => Object.assign(e.target.style, { border: '2px solid red', boxShadow: '0 0 10px rgba(255,0,0,0.5)' })}
+          onBlur={(e) => Object.assign(e.target.style, { border: '1px solid #ccc', boxShadow: 'none' })}
+        >
+          <option value="">Select Table Type</option>
+          <option value="indoor">Indoor</option>
+          <option value="outdoor">Outdoor</option>
+          <option value="private">Private Room</option>
+        </select>
+      </div>
+
+      {/* Occasion Select */}
+      <div className="col-md-6">
+        <select
+          name="occasion"
+          value={formData.occasion || ''}
+          onChange={handleChange}
+          required
+          style={{
+            width: '100%',
+            height: '48px',
+            padding: '10px',
+            borderRadius: '6px',
+            border: '1px solid #ccc',
+            transition: 'all 0.3s ease'
+          }}
+          onFocus={(e) => Object.assign(e.target.style, { border: '2px solid red', boxShadow: '0 0 10px rgba(255,0,0,0.5)' })}
+          onBlur={(e) => Object.assign(e.target.style, { border: '1px solid #ccc', boxShadow: 'none' })}
+        >
+          <option value="">🎉 Select Occasion</option>
+          <option value="Birthday"> Birthday Bash</option>
+          <option value="Engagement">💍 Engagement Night</option>
+          <option value="Graduation">🎓 Graduation Dinner</option>
+          <option value="Farewell">👋 Farewell Gathering</option>
+          <option value="Anniversary">💘 Anniversary Special</option>
+          <option value="Corporate Dinner">🍽️ Corporate Dinner</option>
         </select>
       </div>
     </div>
 
     <div className="text-center mt-4">
-      <button type="submit" className="btn btn-danger px-4">Confirm Reservation</button>
+      <button type="submit" className="btn btn-danger px-4 py-2">Confirm Reservation</button>
     </div>
   </form>
 </div>
 
-
-      {/* Summary Modal */}
-      {showSummaryModal && (
-        <div className="modal d-block" style={{ background: 'rgba(0,0,0,0.6)' }} onClick={() => setShowSummaryModal(false)}>
-          <div className="modal-dialog modal-dialog-centered" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-content">
-              <div className="modal-header bg-danger text-white">
-                <h5 className="modal-title">Confirm Reservation</h5>
-                <button type="button" className="btn-close btn-close-white" onClick={() => setShowSummaryModal(false)}></button>
-              </div>
-              <div className="modal-body">
-                <p><strong>Name:</strong> {formData.name}</p>
-                <p><strong>Email:</strong> {formData.email}</p>
-                <p><strong>Phone:</strong> {formData.phone}</p>
-                <p><strong>Guests:</strong> {formData.guests}</p>
-                <p><strong>Date:</strong> {formData.date}</p>
-                <p><strong>Time:</strong> {formData.time}</p>
-                <p><strong>Area:</strong> {formData.area}</p>
-                <p><strong>Table Type:</strong> {formData.tableType}</p>
-              </div>
-              <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={() => setShowSummaryModal(false)}>Cancel</button>
-                <button className="btn btn-danger" onClick={confirmSaveReservation}>Confirm & Save</button>
-              </div>
-            </div>
-          </div>
+    {/* Summary Modal */}
+{showSummaryModal && (
+  <div
+    className="modal d-block"
+    style={{ background: 'rgba(0,0,0,0.6)' }}
+    onClick={() => setShowSummaryModal(false)}
+  >
+    <div
+      className="modal-dialog modal-dialog-centered"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="modal-content">
+        <div className="modal-header bg-danger text-white">
+          <h5 className="modal-title">📋 Confirm Reservation Summary</h5>
+          <button
+            type="button"
+            className="btn-close btn-close-white"
+            onClick={() => setShowSummaryModal(false)}
+          ></button>
         </div>
-      )}
+        <div className="modal-body">
+          <p><strong>👤 Name:</strong> {formData.name}</p>
+          <p><strong>📧 Email:</strong> {formData.email}</p>
+          <p><strong>📱 Phone:</strong> {formData.phone}</p>
+          <p><strong>👥 Guests:</strong> {formData.guests}</p>
+          <p><strong>📅 Date:</strong> {formData.date}</p>
+          <p><strong>⏰ Time:</strong> {formData.time}</p>
+          <p><strong>📍 Area:</strong> {formData.area}</p>
+          <p><strong>🪑 Table Type:</strong> {formData.tableType}</p>
+          <p><strong>🎊 Occasion:</strong> {formData.occasion}</p>
+        </div>
+        <div className="modal-footer">
+          <button
+            className="btn btn-secondary"
+            onClick={() => setShowSummaryModal(false)}
+          >
+            Cancel
+          </button>
+          <button
+            className="btn btn-danger"
+            onClick={confirmSaveReservation}
+          >
+            Confirm & Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
 
       {/* Contact Info & Map */}
       <div className="row mb-5">
