@@ -61,18 +61,20 @@ const convertTo12Hour = (time24) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const isFormValid = () => {
-    return Object.values(formData).every((val) => val.trim() !== '');
-  };
+ const isFormValid = () => {
+  const { name, email, phone, area, date, time, guests, tableType } = formData;
+  return [name, email, phone, area, date, time, guests, tableType].every(val => val.trim() !== '');
+};
 
-  const handleSubmit = (e) => {
+const handleSubmit = (e) => {
   e.preventDefault();
+
   const selectedDate = new Date(formData.date);
   const selectedDay = selectedDate.getDay();
 
   if (!isFormValid()) {
     setShake(true);
-    toast.error('Please fill all fields.');
+    toast.error('❌ Please fill all required fields.');
     setTimeout(() => setShake(false), 500);
     return;
   }
@@ -82,13 +84,11 @@ const convertTo12Hour = (time24) => {
     return;
   }
 
-  // ✅ Convert 12-hour format to 24-hour
   const [timePart, modifier] = formData.time.split(' ');
   let [hour, minutes] = timePart.split(':').map(Number);
   if (modifier === 'PM' && hour !== 12) hour += 12;
   if (modifier === 'AM' && hour === 12) hour = 0;
 
-  // ✅ Check if time is within 1 PM (13) to 1 AM (01)
   if (!(hour >= 13 || hour === 0 || hour === 1)) {
     toast.error('⏰ Reservation allowed only from 1 PM to 1 AM.');
     return;
@@ -96,6 +96,7 @@ const convertTo12Hour = (time24) => {
 
   setShowSummaryModal(true);
 };
+
 
   const confirmSaveReservation = () => {
     const key = `reservations_${formData.email.toLowerCase().trim()}`;
@@ -129,6 +130,7 @@ const convertTo12Hour = (time24) => {
   };
 
   return (
+    
     <div className="container py-5">
       {/* Hero */}
       <div className="text-center mb-5">
@@ -162,7 +164,7 @@ const convertTo12Hour = (time24) => {
         <h2 className="text-center text-danger mb-4">🍽️ A Peek Inside</h2>
         <div id="restaurantCarousel" className="carousel slide" data-bs-ride="carousel">
           <div className="carousel-inner">
-            {["peek.png", "roof.jpg", "resc.png"].map((img, i) => (
+            {["peek.png", "res.jpg", "resc.png"].map((img, i) => (
               <div className={`carousel-item ${i === 0 ? 'active' : ''}`} key={i}>
                 <div style={{ height: '500px', overflow: 'hidden', borderRadius: '12px' }}>
                   <img src={img} className="d-block w-100" alt={`Slide ${i}`} style={imageStyle} />

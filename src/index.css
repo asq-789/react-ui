@@ -322,3 +322,128 @@ input[type=number]::-webkit-outer-spin-button {
   font-size: 0.75rem;
   border-radius: 12px;
 }
+.gallery-container {
+  position: relative;
+}
+
+.scroll-btn {
+  position: absolute;
+  top: 40%;
+  z-index: 10;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.scroll-btn.left {
+  left: 0;
+}
+
+.scroll-btn.right {
+  right: 0;
+}
+
+.gallery-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding: 10px;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Hide scrollbar for Webkit browsers */
+.gallery-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.gallery-item {
+  flex: 0 0 auto;
+  width: 350px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.gallery-img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.gallery-img.zoom {
+  transform: scale(1.05);
+}
+/* aboutus */
+.about-container {
+  padding: 3rem 1rem;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.about-title {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #dc3545;
+  animation: slideInDown 0.8s ease-in-out;
+}
+
+.about-subtitle {
+  font-size: 1.2rem;
+  color: #6c757d;
+}
+
+.about-section {
+  margin-bottom: 4rem;
+  animation: fadeUp 1s ease;
+}
+
+.team-img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.counter {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #dc3545;
+  animation: counterZoom 0.8s ease;
+}
+
+.testimonial-card {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  0% { opacity: 0; transform: scale(0.98); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInDown {
+  0% { opacity: 0; transform: translateY(-30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(40px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes counterZoom {
+  0% { transform: scale(0.8); opacity: 0.3; }
+  100% { transform: scale(1); opacity: 1; }
+}
+ 
