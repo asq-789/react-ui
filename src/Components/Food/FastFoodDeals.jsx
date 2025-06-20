@@ -47,7 +47,7 @@ const Products = [
 ];
 
 
-const FastFoodDeals = ({ handleAddToCart }) => {
+const FastFoodDeals = ({ handleAddToCart,handleToggleWishlist, wishlistItems }) => {
   return (
     <div className="container mt-5">
       <div className="heading-section">
@@ -65,7 +65,9 @@ const FastFoodDeals = ({ handleAddToCart }) => {
             name={prod.name}
             price={prod.price}
             img={prod.img}
-                              description={prod.description}
+           description={prod.description}
+            onToggleWishlist={() => handleToggleWishlist(prod)}
+              isWished={wishlistItems.some((item) => item.name === prod.name)}
             onAddToCart={() => handleAddToCart(prod)}
           />
         ))}

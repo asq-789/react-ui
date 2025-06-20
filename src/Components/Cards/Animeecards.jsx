@@ -1,15 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export const Animeecards = ({ name, price, img, onAddToCart, description, customClass }) => {
-  const [isWished, setIsWished] = useState(false);
-
-  const handleToggleWishlist = () => {
-    setIsWished(!isWished);
-  };
+export const Animeecards = ({ product, handleAddToCart, handleToggleWishlist, wishlistItems, customClass }) => {
+  const isWished = wishlistItems.some(item => item.name === product.name);
 
   return (
     <>
-      {/* Internal CSS */}
       <style>
         {`
           .animee-card {
@@ -20,20 +15,21 @@ export const Animeecards = ({ name, price, img, onAddToCart, description, custom
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
-            border: 2px solid transparent; /* Hidden by default */
+            border: 2px solid transparent;
             background-color: #fff;
           }
 
           .animee-card:hover {
             transform: translateY(-6px) scale(1.01);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-            border-color: red; /* Show red border on hover */
+            border-color: red;
           }
 
           .animee-card .card-img-top {
             height: 400px;
             border-top-left-radius: 10px;
             border-top-right-radius: 10px;
+            object-fit: cover;
           }
 
           .animee-card .card-body {
@@ -100,34 +96,33 @@ export const Animeecards = ({ name, price, img, onAddToCart, description, custom
         `}
       </style>
 
-      {/* Card JSX */}
       <div className="col-lg-4 col-md-6 col-sm-12 mb-4">
         <div className={`card ${customClass || 'animee-card'}`}>
-          <img src={img} className="card-img-top" alt={name} />
+          <img src={product.img} className="card-img-top" alt={product.name} />
 
           <div className="card-body">
-            <h5 className="card-title">{name}</h5>
+            <h5 className="card-title">{product.name}</h5>
 
-            <p className="card-text">{description}</p>
+            <p className="card-text">{product.description}</p>
 
             <div className="rating">★ ★ ★ ★ ★</div>
 
             <div className="d-flex justify-content-between align-items-center mt-auto">
-              <span className="price">Rs. {price}</span>
+              <span className="price">Rs. {product.price}</span>
 
               <div className="d-flex align-items-center gap-2">
                 <span
-                  onClick={handleToggleWishlist}
+                  onClick={() => handleToggleWishlist(product)}
                   className="wishlist-icon"
                   style={{
                     color: isWished ? 'red' : '#aaa',
                   }}
-                  title="Add to Wishlist"
+                  title={isWished ? 'Remove from Wishlist' : 'Add to Wishlist'}
                 >
                   {isWished ? '❤️' : '🤍'}
                 </span>
 
-                <button className="btn btn-danger" onClick={onAddToCart}>
+                <button className="btn btn-danger" onClick={() => handleAddToCart(product)}>
                   Add to Cart
                 </button>
               </div>

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Animeecards } from './Components/Cards/Animeecards';
 import { Cards } from './Components/Cards/Cards';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const AnimeeProducts = [
   {
@@ -651,12 +654,9 @@ const sandwitchesProducts = [
   },
 ];
 
-export const Home = ({ handleAddToCart }) => {
-  const [isWished, setIsWished] = useState(false);
+export const Home = ({ handleAddToCart,handleToggleWishlist, wishlistItems }) => {
 
-  const handleToggleWishlist = () => {
-    setIsWished(!isWished);
-  };
+
 
   return (
     <div>
@@ -683,15 +683,13 @@ export const Home = ({ handleAddToCart }) => {
         <div className="row mt-4">
           {AnimeeProducts.map((prod, index) => (
             <Animeecards
-              key={index}
-              name={prod.name}
-              price={prod.price}
-              img={prod.img}
-              description={prod.description}
+  key={index}
+  product={prod}
+  handleAddToCart={handleAddToCart}
+  handleToggleWishlist={handleToggleWishlist}
+  wishlistItems={wishlistItems}
+/>
 
-              onAddToCart={() => handleAddToCart(prod)}
-              customClass="animee-card"
-            />
           ))}
         </div>
       </div>
@@ -723,6 +721,8 @@ export const Home = ({ handleAddToCart }) => {
         price={prod.price}
         img={prod.img}
         description={prod.description}
+         onToggleWishlist={() => handleToggleWishlist(prod)}
+              isWished={wishlistItems.some((item) => item.name === prod.name)}
         onAddToCart={() => handleAddToCart(prod)}
       />
     ))}
@@ -748,7 +748,8 @@ Grab-n-go meals that hit the spot every time!
               price={prod.price}
               img={prod.img}
             description={prod.description}
-
+ onToggleWishlist={() => handleToggleWishlist(prod)}
+              isWished={wishlistItems.some((item) => item.name === prod.name)}
            onAddToCart={() => handleAddToCart(prod)}
             />
           ))}
@@ -783,8 +784,9 @@ Grab-n-go meals that hit the spot every time!
               name={prod.name}
               price={prod.price}
               img={prod.img}
-                            description={prod.description}
-
+             description={prod.description}
+ onToggleWishlist={() => handleToggleWishlist(prod)}
+              isWished={wishlistItems.some((item) => item.name === prod.name)}
               onAddToCart={() => handleAddToCart(prod)}
             />
           ))}
@@ -817,6 +819,8 @@ Grab-n-go meals that hit the spot every time!
               price={prod.price}
               img={prod.img}
               description={prod.description}
+               onToggleWishlist={() => handleToggleWishlist(prod)}
+              isWished={wishlistItems.some((item) => item.name === prod.name)}
               onAddToCart={() => handleAddToCart(prod)}
             />
           ))}
@@ -849,6 +853,8 @@ Grab-n-go meals that hit the spot every time!
               price={prod.price}
               img={prod.img}
            description={prod.description}
+            onToggleWishlist={() => handleToggleWishlist(prod)}
+              isWished={wishlistItems.some((item) => item.name === prod.name)}
               onAddToCart={() => handleAddToCart(prod)}
             />
           ))}
@@ -880,8 +886,9 @@ Grab-n-go meals that hit the spot every time!
               name={prod.name}
               price={prod.price}
               img={prod.img}
-                         description={prod.description}
-
+              description={prod.description}
+ onToggleWishlist={() => handleToggleWishlist(prod)}
+              isWished={wishlistItems.some((item) => item.name === prod.name)}
               onAddToCart={() => handleAddToCart(prod)}
             />
           ))}
@@ -914,6 +921,8 @@ Grab-n-go meals that hit the spot every time!
               price={prod.price}
               img={prod.img}
    description={prod.description}
+    onToggleWishlist={() => handleToggleWishlist(prod)}
+              isWished={wishlistItems.some((item) => item.name === prod.name)}
               onAddToCart={() => handleAddToCart(prod)}
             />
           ))}
@@ -945,8 +954,9 @@ Grab-n-go meals that hit the spot every time!
               name={prod.name}
               price={prod.price}
               img={prod.img}
-                            description={prod.description}
-
+               description={prod.description}
+ onToggleWishlist={() => handleToggleWishlist(prod)}
+              isWished={wishlistItems.some((item) => item.name === prod.name)}
               onAddToCart={() => handleAddToCart(prod)}
             />
           ))}
@@ -979,7 +989,8 @@ Grab-n-go meals that hit the spot every time!
               price={prod.price}
               img={prod.img}
              description={prod.description}
-
+ onToggleWishlist={() => handleToggleWishlist(prod)}
+              isWished={wishlistItems.some((item) => item.name === prod.name)}
               onAddToCart={() => handleAddToCart(prod)}
             />
           ))}
@@ -1012,6 +1023,8 @@ Grab-n-go meals that hit the spot every time!
               price={prod.price}
               img={prod.img}
             description={prod.description}
+             onToggleWishlist={() => handleToggleWishlist(prod)}
+              isWished={wishlistItems.some((item) => item.name === prod.name)}
               onAddToCart={() => handleAddToCart(prod)}
             />
           ))}
@@ -1075,8 +1088,9 @@ Grab-n-go meals that hit the spot every time!
               name={prod.name}
               price={prod.price}
               img={prod.img}
-                            description={prod.description}
-
+             description={prod.description}
+ onToggleWishlist={() => handleToggleWishlist(prod)}
+              isWished={wishlistItems.some((item) => item.name === prod.name)}
               onAddToCart={() => handleAddToCart(prod)}
             />
           ))}

@@ -9,8 +9,6 @@ export const Loginmoadal = ({ setUserEmail }) => {
   const [email, setEmail] = useState('');
   const [showErrors, setShowErrors] = useState(false);
   const [showSessionAlert, setShowSessionAlert] = useState(false);
-  const [showReservationSummary, setShowReservationSummary] = useState(false);
-  const [reservation, setReservation] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,6 +38,7 @@ export const Loginmoadal = ({ setUserEmail }) => {
 
   const handleContinue = () => {
     setShowErrors(true);
+
     if (!email || !option || (option === 'Delivery' && !deliveryArea)) return;
 
     localStorage.setItem('userEmail', email);
@@ -50,13 +49,12 @@ export const Loginmoadal = ({ setUserEmail }) => {
     const savedCart = JSON.parse(localStorage.getItem(`cart_${email}`)) || [];
     const savedWishlist = JSON.parse(localStorage.getItem(`wishlist_${email}`)) || [];
 
-    const reservationData = JSON.parse(localStorage.getItem(`reservations_${email}`));
-    if (reservationData) {
-      setReservation(reservationData);
-      setShowReservationSummary(true);
-    } else if (savedCart.length > 0 || savedWishlist.length > 0) {
+    if (savedCart.length > 0 || savedWishlist.length > 0) {
       setShowSessionAlert(true);
-      setTimeout(() => setShowSessionAlert(false), 3000);
+      setTimeout(() => {
+        setShowSessionAlert(false);
+        closeModalAndNavigate();
+      }, 2000);
     } else {
       closeModalAndNavigate();
     }
@@ -71,11 +69,6 @@ export const Loginmoadal = ({ setUserEmail }) => {
       document.querySelector('.modal-backdrop')?.remove();
       navigate('/home');
     }, 350);
-  };
-
-  const handleReservationContinue = () => {
-    setShowReservationSummary(false);
-    closeModalAndNavigate();
   };
 
   return (
@@ -93,86 +86,68 @@ export const Loginmoadal = ({ setUserEmail }) => {
               <h5 className="modal-title">Welcome to Luxurious Spire 🍽</h5>
             </div>
             <div className="modal-body">
-              {showReservationSummary && reservation ? (
-                <div>
-                  <h6 className="text-danger fw-bold">🍽️ Reservation Summary</h6>
-                  <p><strong>Name:</strong> {reservation.name}</p>
-                  <p><strong>Email:</strong> {reservation.email}</p>
-                  <p><strong>Phone:</strong> {reservation.phone}</p>
-                  <p><strong>Date:</strong> {reservation.date}</p>
-                  <p><strong>Time:</strong> {reservation.time}</p>
-                  <p><strong>Guests:</strong> {reservation.guests}</p>
-                  <p><strong>Area:</strong> {reservation.area}</p>
-                  <button className="btn btn-danger rounded-pill w-100 mt-3" onClick={handleReservationContinue}>
-                    Continue to Home
-                  </button>
-                </div>
-              ) : (
+              <div className="mb-3">
+                <label className="form-label fw-bold">Email address</label>
+                <input
+                  type="email"
+                  className={`form-control ${showErrors && !email ? 'is-invalid' : ''}`}
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                {showErrors && !email && <div className="text-danger mt-1">Please enter your email.</div>}
+              </div>
+
+              <div className="d-flex justify-content-center gap-3 mb-3">
+                <button
+                  className={`btn rounded-pill px-4 ${option === 'Delivery' ? 'btn-danger' : 'btn-outline-danger'}`}
+                  onClick={() => setOption('Delivery')}
+                >
+                  Delivery
+                </button>
+                <button
+                  className={`btn rounded-pill px-4 ${option === 'Pickup' ? 'btn-danger' : 'btn-outline-danger'}`}
+                  onClick={() => setOption('Pickup')}
+                >
+                  Pickup
+                </button>
+              </div>
+              {showErrors && !option && <div className="text-danger text-center mb-2">Please select Delivery or Pickup.</div>}
+
+              {option === 'Delivery' && (
                 <>
                   <div className="mb-3">
-                    <label className="form-label fw-bold">Email address</label>
-                    <input
-                      type="email"
-                      className={`form-control ${showErrors && !email ? 'is-invalid' : ''}`}
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                    {showErrors && !email && <div className="text-danger mt-1">Please enter your email.</div>}
-                  </div>
-
-                  <div className="d-flex justify-content-center gap-3 mb-3">
-                    <button
-                      className={`btn rounded-pill px-4 ${option === 'Delivery' ? 'btn-danger' : 'btn-outline-danger'}`}
-                      onClick={() => setOption('Delivery')}
+                    <label className="form-label fw-bold">Select Delivery Area</label>
+                    <select
+                      className={`form-select ${showErrors && !deliveryArea ? 'is-invalid' : ''}`}
+                      value={deliveryArea}
+                      onChange={(e) => setDeliveryArea(e.target.value)}
                     >
-                      Delivery
-                    </button>
-                    <button
-                      className={`btn rounded-pill px-4 ${option === 'Pickup' ? 'btn-danger' : 'btn-outline-danger'}`}
-                      onClick={() => setOption('Pickup')}
-                    >
-                      Pickup
-                    </button>
+                      <option value="">Choose area</option>
+                      <option value="Gulshan-e-Iqbal">Gulshan-e-Iqbal</option>
+                      <option value="DHA">DHA</option>
+                      <option value="North Nazimabad">North Nazimabad</option>
+                      <option value="Clifton">Clifton</option>
+                    </select>
+                    {showErrors && !deliveryArea && (
+                      <div className="text-danger mt-1">Please select a delivery area.</div>
+                    )}
                   </div>
-                  {showErrors && !option && <div className="text-danger text-center mb-2">Please select Delivery or Pickup.</div>}
-
-                  {option === 'Delivery' && (
-                    <>
-                      <div className="mb-3">
-                        <label className="form-label fw-bold">Select Delivery Area</label>
-                        <select
-                          className={`form-select ${showErrors && !deliveryArea ? 'is-invalid' : ''}`}
-                          value={deliveryArea}
-                          onChange={(e) => setDeliveryArea(e.target.value)}
-                        >
-                          <option value="">Choose area</option>
-                          <option value="Gulshan-e-Iqbal">Gulshan-e-Iqbal</option>
-                          <option value="DHA">DHA</option>
-                          <option value="North Nazimabad">North Nazimabad</option>
-                          <option value="Clifton">Clifton</option>
-                        </select>
-                        {showErrors && !deliveryArea && (
-                          <div className="text-danger mt-1">Please select a delivery area.</div>
-                        )}
-                      </div>
-                      <p className="text-danger mt-2 mb-0">🚚 Delivery only available in Karachi.</p>
-                    </>
-                  )}
-
-                  {option === 'Pickup' && (
-                    <div className="alert alert-info mt-3">
-                      📍 Pickup Location: Luxurious Spire Hotel, Main Shahrah-e-Faisal, Karachi
-                    </div>
-                  )}
-
-                  <div className="d-grid mt-4">
-                    <button className="btn btn-dark rounded-pill" onClick={handleContinue}>
-                      Continue
-                    </button>
-                  </div>
+                  <p className="text-danger mt-2 mb-0">🚚 Delivery only available in Karachi.</p>
                 </>
               )}
+
+              {option === 'Pickup' && (
+                <div className="alert alert-info mt-3">
+                  📍 Pickup Location: Luxurious Spire Hotel, Main Shahrah-e-Faisal, Karachi
+                </div>
+              )}
+
+              <div className="d-grid mt-4">
+                <button className="btn btn-dark rounded-pill" onClick={handleContinue}>
+                  Continue
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -66,7 +66,7 @@ const PizzaProducts = [
   }
 ];
 
-export const Pizza = ({handleAddToCart}) => {
+export const Pizza = ({handleAddToCart,handleToggleWishlist, wishlistItems}) => {
   return (
     <div>  {/* Pixa */}
           <div className="container mt-5">

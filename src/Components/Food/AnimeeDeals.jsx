@@ -25,42 +25,28 @@ const AnimeeProducts = [
   }
 ];
 
-
-const AnimeeDeals = ({ handleAddToCart }) => {
+const AnimeeDeals = ({ handleAddToCart, handleToggleWishlist, wishlistItems }) => {
   return (
-    <div>
-      {/* Animee Deals */}
-      <div className="container mt-5">
-        <div className="heading-section">
-          <h3
-            className="bold-heading"
-            style={{
-              fontWeight: 'bold',
-              fontSize: '1.8rem',
-              color: '#000',
-              display: 'flex',
-              alignItems: 'center'
-            }}
-          >
-            <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🍱</span>
-            Animee Delights
-          </h3>
-          <h6>Crunchy, spicy, anime-style cravings await you!</h6>
-        </div>
+    <div className="container mt-5">
+      <div className="heading-section">
+        <h3 className="bold-heading" style={{ fontWeight: 'bold', fontSize: '1.8rem', color: '#000' }}>
+          <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🍱</span>
+          Animee Delights
+        </h3>
+        <h6>Crunchy, spicy, anime-style cravings await you!</h6>
+      </div>
 
-        <div className="row mt-4">
-          {AnimeeProducts.map((prod, index) => (
-            <Animeecards
-              key={index}
-              name={prod.name}
-              price={prod.price}
-              img={prod.img}
-              description={prod.description}
-              onAddToCart={() => handleAddToCart(prod)}
-              customClass="animee-card"
-            />
-          ))}
-        </div>
+      <div className="row mt-4">
+        {AnimeeProducts.map((prod, index) => (
+         <Animeecards
+  key={index}
+  product={prod}
+  handleAddToCart={handleAddToCart}
+  handleToggleWishlist={handleToggleWishlist}
+  wishlistItems={wishlistItems}
+/>
+
+        ))}
       </div>
     </div>
   );

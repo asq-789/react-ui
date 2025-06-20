@@ -59,7 +59,7 @@ const PopularProducts = [
 ];
 
 
-const PopularItems = ({ handleAddToCart }) => {
+const PopularItems = ({ handleAddToCart,handleToggleWishlist, wishlistItems }) => {
   return (
     <div className="container mt-5">
       <div className="heading-section">

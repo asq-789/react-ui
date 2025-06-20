@@ -24,24 +24,47 @@ import { Loginmoadal } from './Components/Loginmoadal';
 import { Aboutus } from './Components/Aboutus';
 import { Restaurant } from './Components/Restaurant';
 import { Deal } from './Components/Deal';
-import { Alldishes } from './Components/Alldishes';
+import { Alldishes } from './Components/Search/Alldishes';
 import { Events } from './Components/Events';
+import { ToastContainer, toast } from 'react-toastify';
+// search
+// import { AnimeeProducts } from './Components/Search/AllProducts';
+// import { bbqProducts } from './Components/Search/AllProducts';
+// import { biryaniProducts } from './Components/Search/AllProducts';
+// import { PopularProducts } from './Components/Search/AllProducts';
+// import { Products } from './Components/Search/AllProducts';
+// import { DessertsProducts } from './Components/Search/AllProducts';
+// import { appetizerProducts } from './Components/Search/AllProducts';
+// import { drinkProducts } from './Components/Search/AllProducts';
+// import { PizzaProducts } from './Components/Search/AllProducts';
+// import { sandwitchesProducts } from './Components/Search/AllProducts';
+// import { rollProducts } from './Components/Search/AllProducts';
+// import { burgerProducts } from './Components/Search/AllProducts';
+// import { burgerdealProducts } from './Components/Search/AllProducts';
+import 'react-toastify/dist/ReactToastify.css';
+// import { Products, PopularProducts, AnimeeProducts,appetizerProducts, bbqProducts, burgerdealProducts,DessertsProducts,drinkProducts,PizzaProducts,rollProducts,sandwitchesProducts} from './allProducts';
+// import { allProducts } from './Components/Search/Alldishes';
 
 function App() {
- const [userEmail, setUserEmail] = useState(localStorage.getItem('userEmail') || '');
+  const [userEmail, setUserEmail] = useState(localStorage.getItem('userEmail') || '');
   const [cartItems, setCartItems] = useState([]);
   const [wishlistItems, setWishlistItems] = useState([]);
+  const [reservationCount, setReservationCount] = useState(0);
   const [isCartLoaded, setIsCartLoaded] = useState(false);
 
   useEffect(() => {
     if (userEmail) {
       const storedCart = JSON.parse(localStorage.getItem(`cart_${userEmail}`)) || [];
       const storedWishlist = JSON.parse(localStorage.getItem(`wishlist_${userEmail}`)) || [];
+      const storedReservations = JSON.parse(localStorage.getItem(`reservations_${userEmail}`)) || [];
+
       setCartItems(storedCart);
       setWishlistItems(storedWishlist);
+      setReservationCount(storedReservations.length || 0);
     } else {
       setCartItems([]);
       setWishlistItems([]);
+      setReservationCount(0);
     }
     setIsCartLoaded(true);
   }, [userEmail]);
@@ -62,14 +85,17 @@ function App() {
     } else {
       setCartItems([...cartItems, { ...product, quantity: 1 }]);
     }
+    toast.success("🛒 Added to cart");
   };
 
   const handleToggleWishlist = (product) => {
     const exists = wishlistItems.find(item => item.name === product.name);
     if (exists) {
       setWishlistItems(wishlistItems.filter(item => item.name !== product.name));
+      toast.error("💔 Removed from wishlist");
     } else {
       setWishlistItems([...wishlistItems, product]);
+      toast.success("💖 Added to wishlist");
     }
   };
 
@@ -78,8 +104,20 @@ function App() {
   return (
     <>
       <Loginmoadal setUserEmail={setUserEmail} />
+      <ToastContainer position="top-right" autoClose={2000} hideProgressBar />
+
       <div style={{ width: '200%', maxWidth: '100vw', overflowX: 'hidden' }}>
-        <Navbar cartItems={cartItems} setCartItems={setCartItems} userEmail={userEmail} />
+       <Navbar
+  cartItems={cartItems}
+  setCartItems={setCartItems}
+  wishlistItems={wishlistItems}
+  setWishlistItems={setWishlistItems}
+  handleAddToCart={handleAddToCart}
+  handleToggleWishlist={handleToggleWishlist}
+  userEmail={userEmail}
+  reservationCount={reservationCount} 
+/>
+
         <Carousel />
         <Navbarname />
       </div>
@@ -87,33 +125,24 @@ function App() {
       <Routes>
         <Route path="/" element={<Loginmoadal setUserEmail={setUserEmail} />} />
         <Route path="events" element={<Events setUserEmail={setUserEmail} />} />
+       <Route path="alldishes" element={<Alldishes setUserEmail={setUserEmail} />} />
         <Route path="alldishes" element={<Alldishes handleAddToCart={handleAddToCart} />} />
-        <Route path="home" element={<Home handleAddToCart={handleAddToCart} />} />
-        <Route path="about" element={<Aboutus handleAddToCart={handleAddToCart} />} />
-<Route
-  path="/restaurant"
-  element={
-    <Restaurant
-      userEmail={userEmail}
-      onReservationSubmit={(reservation) =>
-        console.log('Reservation submitted:', reservation)
-      }
-    />
-  }
-/>
-        <Route path="/anime" element={<AnimeeDeals handleAddToCart={handleAddToCart} />} />
-        <Route path="/fastfood" element={<FastFoodDeals handleAddToCart={handleAddToCart} />} />
-        <Route path="/chinese" element={<PopularItems handleAddToCart={handleAddToCart} />} />
-        <Route path="/burger" element={<Burgers handleAddToCart={handleAddToCart} />} />
-        <Route path="/appetizers" element={<Appetizers handleAddToCart={handleAddToCart} />} />
-        <Route path="/bbq" element={<BBQ handleAddToCart={handleAddToCart} />} />
-        <Route path="/biryani" element={<Biryani handleAddToCart={handleAddToCart} />} />
-        <Route path="/burgerdeal" element={<Deal handleAddToCart={handleAddToCart} />} />
-        <Route path="/desserts" element={<Desert handleAddToCart={handleAddToCart} />} />
-        <Route path="/drinks" element={<Drinks handleAddToCart={handleAddToCart} />} />
-        <Route path="/pizza" element={<Pizza handleAddToCart={handleAddToCart} />} />
-        <Route path="/rolls" element={<Rolls handleAddToCart={handleAddToCart} />} />
-        <Route path="/sandwiches" element={<Sandwitches handleAddToCart={handleAddToCart} />} />
+        <Route path="home" element={<Home handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} />} />
+        <Route path="about" element={<Aboutus handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} />} />
+        <Route path="/restaurant" element={<Restaurant userEmail={userEmail} onReservationSubmit={(reservation) => console.log('Reservation submitted:', reservation)} />} />
+        <Route path="/anime" element={<AnimeeDeals handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} />} />
+        <Route path="/fastfood" element={<FastFoodDeals handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} />} />
+        <Route path="/chinese" element={<PopularItems handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} />} />
+        <Route path="/burger" element={<Burgers handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} />} />
+        <Route path="/appetizers" element={<Appetizers handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} />} />
+        <Route path="/bbq" element={<BBQ handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} />} />
+        <Route path="/biryani" element={<Biryani handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} />} />
+        <Route path="/burgerdeal" element={<Deal handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} />} />
+        <Route path="/desserts" element={<Desert handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} />} />
+        <Route path="/drinks" element={<Drinks handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} />} />
+        <Route path="/pizza" element={<Pizza handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} />} />
+        <Route path="/rolls" element={<Rolls handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} />} />
+        <Route path="/sandwiches" element={<Sandwitches handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} />} />
       </Routes>
 
       <div style={{ width: '200%', maxWidth: '100vw', overflowX: 'hidden' }}>

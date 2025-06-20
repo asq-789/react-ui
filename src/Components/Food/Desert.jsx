@@ -67,7 +67,7 @@ const DessertsProducts = [
 ];
 
 
-export const Desert = ({handleAddToCart}) => {
+export const Desert = ({handleAddToCart,handleToggleWishlist, wishlistItems}) => {
   return (
     <div> {/* Desserts */}
           <div className="container mt-5">
@@ -96,7 +96,8 @@ export const Desert = ({handleAddToCart}) => {
                   price={prod.price}
                   img={prod.img}
                   description={prod.description}
-    
+     onToggleWishlist={() => handleToggleWishlist(prod)}
+              isWished={wishlistItems.some((item) => item.name === prod.name)}
                   onAddToCart={() => handleAddToCart(prod)}
                 />
               ))}

@@ -2,7 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { toast } from 'react-toastify';
 
-export const Navbar = ({ cartItems, setCartItems, userEmail }) => {
+export const Navbar = ({
+  cartItems,
+  setCartItems,
+  wishlistItems,
+  setWishlistItems,
+  handleAddToCart,
+  handleToggleWishlist,
+  // reservationCount,
+  userEmail
+}) => {
   const [showModal, setShowModal] = useState(false);
   const [showOrderModal, setShowOrderModal] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -12,19 +21,42 @@ export const Navbar = ({ cartItems, setCartItems, userEmail }) => {
   const [orderConfirmed, setOrderConfirmed] = useState(false);
   const [deliveryErrors, setDeliveryErrors] = useState({});
   const [showWishlistModal, setShowWishlistModal] = useState(false);
-const [deleteIndex, setDeleteIndex] = useState(null);
-const [showSummaryModal, setShowSummaryModal] = useState(false);
-
+  const [deleteIndex, setDeleteIndex] = useState(null);
+  const [showSummaryModal, setShowSummaryModal] = useState(false);
+  const [reservationCount, setReservationCount] = useState(0);
   const [showReservationModal, setShowReservationModal] = useState(false);
   const [reservedTables, setReservedTables] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
+
   const [editData, setEditData] = useState({
-    name: '', email: '', phone: '', date: '', time: '', guests: '', area: '' , occasion: ''
+    name: '', email: '', phone: '', date: '', time: '', guests: '', area: '', occasion: ''
   });
 
   const [deliveryInfo, setDeliveryInfo] = useState({
     name: '', address: '', phone: '', aphone: '', email: '', area: ''
   });
+
+  const areaCharges = {
+    'Select Area': 0,
+    'DHA': 150,
+    'Gulshan': 120,
+    'Nazimabad': 100,
+    'Malir': 130
+  };
+
+  const deliveryCharge = areaCharges[deliveryInfo.area] || 0;
+
+  const totalAmount = cartItems.reduce(
+    (sum, item) => sum + item.price * (item.quantity || 1),
+    0
+  ) + deliveryCharge;
+
+  useEffect(() => {
+    if (userEmail) {
+      const storedReservations = JSON.parse(localStorage.getItem(`reservations_${userEmail}`)) || [];
+      setReservationCount(storedReservations.length);
+    }
+  }, [userEmail]);
 
   useEffect(() => {
     if (showReservationModal && userEmail) {
@@ -37,25 +69,34 @@ const [showSummaryModal, setShowSummaryModal] = useState(false);
       }
     }
   }, [showReservationModal, userEmail]);
-const handleDeleteReservation = (index) => {
-  const updated = [...reservedTables];
-  updated.splice(index, 1);
-  setReservedTables(updated);
-  localStorage.setItem(`reservations_${userEmail}`, JSON.stringify(updated));
-  setDeleteIndex(null);
 
-  toast.error("Reservation deleted", {
-    style: {
-      backgroundColor: '#fff0f0',
-      color: '#a70000',
-      borderLeft: '5px solid red',
-      fontWeight: '500',
-    },
-    progressStyle: {
-      background: 'red',
-    },
-  });
-};
+  const handleCartClick = () => setShowModal(true);
+  const handleSearchChange = (e) => setSearchQuery(e.target.value);
+  const handlePlaceOrder = () => {
+    setShowModal(false);
+    setShowOrderModal(true);
+  };
+  const confirmDelete = (index) => setDeleteIndex(index);
+
+  const handleDeleteReservation = (index) => {
+    const updated = [...reservedTables];
+    updated.splice(index, 1);
+    setReservedTables(updated);
+    localStorage.setItem(`reservations_${userEmail}`, JSON.stringify(updated));
+    setDeleteIndex(null);
+
+    toast.error("Reservation deleted", {
+      style: {
+        backgroundColor: '#fff0f0',
+        color: '#a70000',
+        borderLeft: '5px solid red',
+        fontWeight: '500',
+      },
+      progressStyle: { background: 'red' },
+    });
+
+    setReservationCount(updated.length); // update count
+  };
 
   const handleEditChange = (e) => {
     setEditData({ ...editData, [e.target.name]: e.target.value });
@@ -64,77 +105,28 @@ const handleDeleteReservation = (index) => {
   const startEdit = (index) => {
     setEditingIndex(index);
     setEditData(reservedTables[index]);
-
   };
 
-const saveEdit = () => {
-  const updated = [...reservedTables];
-  updated[editingIndex] = editData;
-  localStorage.setItem(`reservations_${userEmail}`, JSON.stringify(updated));
-  setReservedTables(updated);
-  setEditingIndex(null);
-
-  toast.success('✅ Reservation updated successfully!', {
-    position: 'top-right',
-    style: {
-      backgroundColor: '#e6fff0',
-      color: '#007a3d',
-      borderLeft: '5px solid #00b894',
-      fontWeight: '500',
-    },
-    progressStyle: {
-      background: '#00b894',
-    },
-  });
-};
-
-  const cancelEdit = () => {
+  const saveEdit = () => {
+    const updated = [...reservedTables];
+    updated[editingIndex] = editData;
+    localStorage.setItem(`reservations_${userEmail}`, JSON.stringify(updated));
+    setReservedTables(updated);
     setEditingIndex(null);
+
+    toast.success('✅ Reservation updated successfully!', {
+      position: 'top-right',
+      style: {
+        backgroundColor: '#e6fff0',
+        color: '#007a3d',
+        borderLeft: '5px solid #00b894',
+        fontWeight: '500',
+      },
+      progressStyle: { background: '#00b894' },
+    });
   };
 
-  const areaCharges = {
-    'Select Area': 0, 'DHA': 150, 'Gulshan': 120, 'Nazimabad': 100, 'Malir': 130
-  };
-
-  const deliveryCharge = areaCharges[deliveryInfo.area] || 0;
-  const totalAmount = cartItems.reduce(
-    (sum, item) => sum + item.price * (item.quantity || 1), 0
-  ) + deliveryCharge;
-
-  const handleCartClick = () => setShowModal(true);
-  const handleClose = () => setShowModal(false);
-  const handleSearchChange = (e) => setSearchQuery(e.target.value);
-
-  const handleRemoveItem = (indexToRemove) => {
-    const updatedItems = cartItems.filter((_, index) => index !== indexToRemove);
-    setCartItems(updatedItems);
-  };
-
-  const handleAddMoreItems = () => {
-    setShowModal(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handlePlaceOrder = () => {
-    setShowModal(false);
-    setShowOrderModal(true);
-  };
-const confirmDelete = (index) => {
-  setDeleteIndex(index);
-};
-
-// toast.error("Reservation deleted", {
-//   style: {
-//     backgroundColor: '#fff0f0',
-//     color: '#a70000',
-//     borderLeft: '5px solid red',
-//     fontWeight: '500',
-//   },
-//   progressStyle: {
-//     background: 'red',
-//   },
-// });
-
+  const cancelEdit = () => setEditingIndex(null);
 
   const validateDeliveryInfo = () => {
     const errors = {};
@@ -170,6 +162,7 @@ const confirmDelete = (index) => {
       }
     }, 1000);
   };
+
 
   return (
     <>
@@ -221,14 +214,32 @@ const confirmDelete = (index) => {
             )}
           </button>
 
-          <button className="btn text-white" style={{ fontSize: '20px', backgroundColor: 'transparent', border: 'none' }} onClick={() => setShowWishlistModal(true)}>❤️</button>
+<button
+  className="btn position-relative"
+  style={{ backgroundColor: 'transparent', border: 'none' }}
+  onClick={() => setShowWishlistModal(true)}
+>
+  ❤️
+  {wishlistItems.length > 0 && (
+    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-white" style={{ fontSize: '12px' }}>
+      {wishlistItems.length}
+    </span>
+  )}
+</button>
 
-          <button
-            className="btn text-white"
-            style={{ fontSize: '20px', backgroundColor: 'transparent', border: 'none' }}
-            onClick={() => setShowReservationModal(true)}
-            title="Dine & Reserve"
-          >🍽️</button>
+        <button
+          className="btn text-white position-relative"
+          onClick={() => setShowReservationModal(true)}
+          style={{ fontSize: '20px', backgroundColor: 'transparent', border: 'none' }}
+          title="Dine & Reserve"
+        >
+          🍽️
+          {reservationCount > 0 && (
+            <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ fontSize: '12px' }}>
+              {reservationCount}
+            </span>
+          )}
+        </button>
         </div>
       </nav>
 
@@ -460,25 +471,51 @@ const confirmDelete = (index) => {
 
   
 
-      {/* Wishlist Modal */}
-      {showWishlistModal && (
-        <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog modal-lg" style={{ maxWidth: '100%', margin: 'auto' }}>
-            <div className="modal-content" style={{ overflowX: 'hidden' }}>
-              <div className="modal-header">
-                <h5 className="modal-title">💖 Wishlist</h5>
-                <button type="button" className="btn-close" onClick={() => setShowWishlistModal(false)}></button>
-              </div>
-              <div className="modal-body">
-                <p>Your wishlist is empty.</p>
-              </div>
-              <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={() => setShowWishlistModal(false)}>Close</button>
-              </div>
-            </div>
-          </div>
+ {showWishlistModal && (
+  <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+    <div className="modal-dialog modal-lg" style={{ maxWidth: '100%', margin: 'auto' }}>
+      <div className="modal-content" style={{ overflowX: 'hidden' }}>
+        <div className="modal-header">
+          <h5 className="modal-title">💖 Wishlist</h5>
+          <button type="button" className="btn-close" onClick={() => setShowWishlistModal(false)}></button>
         </div>
-      )}
+
+        <div className="modal-body">
+          {wishlistItems.length === 0 ? (
+            <p>Your wishlist is empty.</p>
+          ) : (
+            <div className="row">
+              {wishlistItems.map((item, index) => (
+                <div className="col-md-4 mb-3" key={index}>
+                  <div className="card h-100 shadow-sm">
+                    <img
+                      src={item.img}
+                      alt={item.name}
+                      className="card-img-top"
+                      style={{ height: '200px', objectFit: 'cover' }}
+                    />
+                    <div className="card-body">
+                      <h5 className="card-title">{item.name}</h5>
+                      <p className="card-text">{item.description}</p>
+                      <p className="card-text"><strong>Price:</strong> ${item.price}</p>
+                      <button className="btn btn-success me-2" onClick={() => handleAddToCart(item)}>Add to Cart 🛒</button>
+                      <button className="btn btn-outline-danger" onClick={() => handleToggleWishlist(item)}>Remove 💔</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="modal-footer">
+          <button className="btn btn-secondary" onClick={() => setShowWishlistModal(false)}>Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
       {/* Cart Modal */}
       {showModal && (
         <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
