@@ -1,7 +1,7 @@
 import React from 'react';
 import { Cards } from '../Cards/Cards';
 
-const burgerProducts = [
+export const burgerProducts = [
   {
     id: 1,
     name: '🍔 Classic Beef Burger',

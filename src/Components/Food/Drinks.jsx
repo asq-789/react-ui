@@ -1,6 +1,6 @@
 import React from 'react'
 import { Cards } from '../Cards/Cards';
-const drinkProducts = [
+export const drinkProducts = [
   {
     name: '🌿 Mint Margarita',
     price: 350,

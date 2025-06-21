@@ -1,7 +1,7 @@
 import React from 'react';
 import { Cards } from '../Cards/Cards';
 
-const Products = [
+export const Products = [
   {
     name: '🌶️ Beef Jalapeno Dynamite Burger',
     price: 700,

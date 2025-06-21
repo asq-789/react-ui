@@ -1,7 +1,7 @@
 import React from 'react';
 import { Cards } from '../Cards/Cards';
 
-const PopularProducts = [
+export const PopularProducts = [
   { 
     name: '🍤 Shrimp Chowmin', 
     price: 700, 

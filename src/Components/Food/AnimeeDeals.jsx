@@ -1,7 +1,7 @@
 import React from 'react';
 import { Animeecards } from '../Cards/Animeecards';
 
-const AnimeeProducts = [
+export const AnimeeProducts = [
   {
     name: '🍱 Animee Lovers Special',
     price: 700,

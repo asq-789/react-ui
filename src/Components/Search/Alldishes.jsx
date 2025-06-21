@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
-import {
-  AnimeeProducts,
-  appetizerProducts,
-  bbqProducts,
-  burgerdealProducts,
-  biryaniProducts,
-  burgerProducts,
-  DessertsProducts,
-  drinkProducts,
-  Products,
-  PizzaProducts,
-  PopularProducts,
-  rollProducts,
-  sandwitchesProducts
-} from '/Components/Search/AllProducts';
+import { AnimeeProducts } from '../Food/AnimeeDeals';
+import { burgerProducts } from '../Food/Burgers';
+import { drinkProducts } from '../Food/Drinks';
+import { DessertsProducts } from '../Food/Desert';
+import { PizzaProducts } from '../Food/Pizza';
+import { sandwitchesProducts } from '../Food/Sandwitches';
+import { rollProducts } from '../Food/Rolls';
+import { appetizerProducts } from '../Food/Appetizers';
+import { biryaniProducts } from '../Food/Biryani';
+import { bbqProducts } from '../Food/BBQ';
+import { PopularProducts } from '../Food/PopularItems';
+
+
 
 export const Alldishes = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -32,7 +30,7 @@ export const Alldishes = () => {
     { title: '🍽️ Combos', data: burgerdealProducts },
     { title: '🍧 Desserts', data: DessertsProducts },
     { title: '🥤 Drinks', data: drinkProducts },
-    { title: '🥡 Main Products', data: Products }
+    { title: '🥡 Main Products', data: burgerProducts }
   ];
 
   const handleSearchChange = (e) => setSearchQuery(e.target.value);

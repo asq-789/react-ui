@@ -1,7 +1,7 @@
 import React from 'react';
 import { Cards } from '../Cards/Cards';
 
-const biryaniProducts = [
+export const biryaniProducts = [
   {
     id: 1,
     name: '🍛 Hyderabadi Biryani',
