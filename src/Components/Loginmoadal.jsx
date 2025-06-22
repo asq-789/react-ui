@@ -5,7 +5,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 export const Loginmoadal = ({ setUserEmail }) => {
   const [option, setOption] = useState('');
-  const [deliveryArea, setDeliveryArea] = useState('');
+  const [deliveryCity, setDeliveryCity] = useState('');
   const [email, setEmail] = useState('');
   const [showErrors, setShowErrors] = useState(false);
   const [showSessionAlert, setShowSessionAlert] = useState(false);
@@ -39,11 +39,11 @@ export const Loginmoadal = ({ setUserEmail }) => {
   const handleContinue = () => {
     setShowErrors(true);
 
-    if (!email || !option || (option === 'Delivery' && !deliveryArea)) return;
+    if (!email || !option || (option === 'Delivery' && !deliveryCity)) return;
 
     localStorage.setItem('userEmail', email);
     localStorage.setItem('orderType', option);
-    localStorage.setItem('deliveryArea', deliveryArea || 'N/A');
+    localStorage.setItem('deliveryCity', deliveryCity || 'N/A');
     setUserEmail(email);
 
     const savedCart = JSON.parse(localStorage.getItem(`cart_${email}`)) || [];
@@ -73,12 +73,10 @@ export const Loginmoadal = ({ setUserEmail }) => {
 
   return (
     <>
-      {/* Session Toast */}
       {showSessionAlert && (
         <div style={styles.sessionAlert}>🔔 You have saved items from your last session.</div>
       )}
 
-      {/* Login Modal */}
       <div className="modal fade" id="loginModal" tabIndex="-1">
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content p-3">
@@ -117,23 +115,23 @@ export const Loginmoadal = ({ setUserEmail }) => {
               {option === 'Delivery' && (
                 <>
                   <div className="mb-3">
-                    <label className="form-label fw-bold">Select Delivery Area</label>
+                    <label className="form-label fw-bold">Select Delivery City</label>
                     <select
-                      className={`form-select ${showErrors && !deliveryArea ? 'is-invalid' : ''}`}
-                      value={deliveryArea}
-                      onChange={(e) => setDeliveryArea(e.target.value)}
+                      className={`form-select ${showErrors && !deliveryCity ? 'is-invalid' : ''}`}
+                      value={deliveryCity}
+                      onChange={(e) => setDeliveryCity(e.target.value)}
                     >
-                      <option value="">Choose area</option>
-                      <option value="Gulshan-e-Iqbal">Gulshan-e-Iqbal</option>
-                      <option value="DHA">DHA</option>
-                      <option value="North Nazimabad">North Nazimabad</option>
-                      <option value="Clifton">Clifton</option>
+                      <option value="">Choose City</option>
+                      <option value="Karachi">Karachi</option>
+                      <option value="Lahore">Lahore</option>
+                      <option value="Islamabad">Islamabad</option>
+                      <option value="Multan">Multan</option>
                     </select>
-                    {showErrors && !deliveryArea && (
-                      <div className="text-danger mt-1">Please select a delivery area.</div>
+                    {showErrors && !deliveryCity && (
+                      <div className="text-danger mt-1">Please select a city.</div>
                     )}
                   </div>
-                  <p className="text-danger mt-2 mb-0">🚚 Delivery only available in Karachi.</p>
+                  <p className="text-danger mt-2 mb-0">🚚 Delivery is available only in selected cities.</p>
                 </>
               )}
 
@@ -153,7 +151,6 @@ export const Loginmoadal = ({ setUserEmail }) => {
         </div>
       </div>
 
-      {/* Shake CSS + Fade Animation */}
       <style>
         {`
           .shake { animation: shake 0.5s; }

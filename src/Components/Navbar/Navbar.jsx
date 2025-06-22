@@ -9,7 +9,7 @@ export const Navbar = ({
   setWishlistItems,
   handleAddToCart,
   handleToggleWishlist,
-  // reservationCount,
+  searchTerm,
   userEmail
 }) => {
   const [showModal, setShowModal] = useState(false);
@@ -33,15 +33,30 @@ export const Navbar = ({
   });
 
   const [deliveryInfo, setDeliveryInfo] = useState({
-    name: '', address: '', phone: '', aphone: '', email: '', area: ''
+    name: '', address: '', phone: '', aphone: '', email: '', city: '', area: ''
   });
 
+  const cityAreas = {
+    Karachi: ['Select Area', 'DHA', 'Gulshan', 'Nazimabad', 'Malir'],
+    Lahore: ['Select Area', 'Model Town', 'Gulberg', 'Johar Town'],
+    Islamabad: ['Select Area', 'F-6', 'G-9', 'I-8'],
+    Multan: ['Select Area', 'Cantt', 'Shah Rukn-e-Alam', 'Boson Road']
+  };
+
   const areaCharges = {
-    'Select Area': 0,
     'DHA': 150,
     'Gulshan': 120,
     'Nazimabad': 100,
-    'Malir': 130
+    'Malir': 130,
+    'Model Town': 110,
+    'Gulberg': 140,
+    'Johar Town': 100,
+    'F-6': 130,
+    'G-9': 110,
+    'I-8': 120,
+    'Cantt': 125,
+    'Shah Rukn-e-Alam': 115,
+    'Boson Road': 105
   };
 
   const deliveryCharge = areaCharges[deliveryInfo.area] || 0;
@@ -95,7 +110,7 @@ export const Navbar = ({
       progressStyle: { background: 'red' },
     });
 
-    setReservationCount(updated.length); // update count
+    setReservationCount(updated.length);
   };
 
   const handleEditChange = (e) => {
@@ -133,6 +148,7 @@ export const Navbar = ({
     if (!deliveryInfo.name.trim()) errors.name = 'Name is required';
     if (!deliveryInfo.address.trim()) errors.address = 'Address is required';
     if (!deliveryInfo.phone.trim()) errors.phone = 'Phone number is required';
+    if (!deliveryInfo.city) errors.city = 'City is required';
     if (!deliveryInfo.area || deliveryInfo.area === 'Select Area') errors.area = 'Please select a delivery area';
     if (!deliveryInfo.email.trim() || !/\S+@\S+\.\S+/.test(deliveryInfo.email)) {
       errors.email = 'Valid email is required';
@@ -190,20 +206,7 @@ export const Navbar = ({
         </div>
 
         <div className="d-flex align-items-center gap-3 ms-auto">
-          {showSearch ? (
-            <input
-              type="text"
-              className="form-control rounded-pill px-4"
-              placeholder="Search for dishes..."
-              value={searchQuery}
-              onChange={handleSearchChange}
-              onBlur={() => { if (searchQuery === '') setShowSearch(false); }}
-              style={{ maxWidth: '100%', width: '250px' }}
-              autoFocus
-            />
-          ) : (
-            <button onClick={() => setShowSearch(true)} className="btn text-white" style={{ fontSize: '20px' }}>🔍</button>
-          )}
+         
 
           <button className="btn position-relative" onClick={handleCartClick} style={{ backgroundColor: 'transparent', border: 'none' }}>
             <img src="https://img.icons8.com/ios-filled/24/ffffff/shopping-cart.png" alt="Cart" />
@@ -242,6 +245,175 @@ export const Navbar = ({
         </button>
         </div>
       </nav>
+      {showModal && (
+  <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+    <div className="modal-dialog modal-lg">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h5 className="modal-title">🛒 Your Cart</h5>
+          <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+        </div>
+        <div className="modal-body">
+          {cartItems.length === 0 ? (
+            <p>No items in cart.</p>
+          ) : (
+            <ul className="list-group">
+              {cartItems.map((item, index) => (
+                <li className="list-group-item d-flex align-items-center justify-content-between" key={index}>
+                  <div className="d-flex align-items-center">
+                    <img src={item.img || "/default.jpg"} alt={item.name} style={{ width: '60px', height: '60px', objectFit: 'cover', marginRight: '15px' }} />
+                    <div>
+                      <h6 className="mb-1">{item.name}</h6>
+                      <div className="d-flex align-items-center mb-1">
+                        <button className="btn btn-sm btn-outline-secondary me-2" onClick={() => {
+                          const updated = [...cartItems];
+                          if (!updated[index].quantity) updated[index].quantity = 1;
+                          if (updated[index].quantity > 1) updated[index].quantity -= 1;
+                          setCartItems(updated);
+                        }}>−</button>
+                        <span>{item.quantity || 1}</span>
+                        <button className="btn btn-sm btn-outline-secondary ms-2" onClick={() => {
+                          const updated = [...cartItems];
+                          updated[index].quantity = (updated[index].quantity || 1) + 1;
+                          setCartItems(updated);
+                        }}>+</button>
+                      </div>
+                      <small className="text-muted">Price: Rs. {item.price * (item.quantity || 1)}</small>
+                    </div>
+                  </div>
+                  <button className="btn btn-sm btn-danger" onClick={() => {
+                    const updated = [...cartItems];
+                    updated.splice(index, 1);
+                    setCartItems(updated);
+                  }}>Remove</button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <div className="modal-footer flex-column flex-md-row justify-content-between align-items-center">
+          <h5 className="mb-2 mb-md-0">Total: Rs. {totalAmount}</h5>
+          <div>
+            <button className="btn btn-success me-2" onClick={handlePlaceOrder}>Place Order</button>
+            <button className="btn me-2" onClick={() => setShowModal(false)} style={{ backgroundColor: '#fdd835', color: '#000', border: 'none' }}>Add More Items</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+{/* Delivery Modal */}
+{showOrderModal && (
+  <div
+    className="modal fade show"
+    style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}
+  >
+    <div className="modal-dialog modal-lg">
+      <div className="modal-content">
+        {/* Modal Header */}
+        <div className="modal-header d-flex justify-content-between align-items-center">
+          <h5 className="modal-title">📦 Delivery Details</h5>
+          <button
+            type="button"
+            className="btn"
+            onClick={() => setShowOrderModal(false)}
+            style={{
+              fontSize: '1.2rem',
+              border: 'none',
+              background: 'transparent',
+              cursor: 'pointer',
+              lineHeight: 1,
+            }}
+            aria-label="Close"
+          >
+            ❌
+          </button>
+        </div>
+
+        {/* Modal Body */}
+        <div className="modal-body">
+          {/* Input Fields */}
+          {[
+            { name: 'name', label: 'Name' },
+            { name: 'address', label: 'Address' },
+            { name: 'phone', label: 'Phone' },
+            { name: 'aphone', label: 'Alternate phone' },
+            { name: 'email', label: 'Email' },
+          ].map((field, i) => (
+            <div className="mb-3" key={i}>
+              <label className="form-label">{field.label}</label>
+              <input
+                type={field.name === 'email' ? 'email' : 'text'}
+                className={`form-control ${deliveryErrors[field.name] ? 'is-invalid' : ''}`}
+                value={deliveryInfo[field.name]}
+                onChange={(e) =>
+                  setDeliveryInfo({ ...deliveryInfo, [field.name]: e.target.value })
+                }
+              />
+              {deliveryErrors[field.name] && (
+                <div className="invalid-feedback">{deliveryErrors[field.name]}</div>
+              )}
+            </div>
+          ))}
+
+          {/* Area Selection */}
+          <div className="mb-3">
+            <label className="form-label">Delivery Area</label>
+            <select
+              className={`form-select ${deliveryErrors.area ? 'is-invalid' : ''}`}
+              value={deliveryInfo.area}
+              onChange={(e) =>
+                setDeliveryInfo({ ...deliveryInfo, area: e.target.value })
+              }
+            >
+              <option value="Select Area" disabled>Select Area</option>
+              {Object.keys(areaCharges).map((area, idx) => (
+                <option key={idx} value={area}>
+                  {area}
+                </option>
+              ))}
+            </select>
+            {deliveryInfo.area !== 'Select Area' && (
+              <small className="text-muted">
+                Delivery Charges: Rs. {deliveryCharge}
+              </small>
+            )}
+            {deliveryErrors.area && (
+              <div className="invalid-feedback">{deliveryErrors.area}</div>
+            )}
+          </div>
+
+          {/* Order Summary */}
+          <h6 className="mt-4">🧾 Order Summary</h6>
+          <ul className="list-group mb-3">
+            {cartItems.map((item, i) => (
+              <li className="list-group-item d-flex justify-content-between" key={i}>
+                <span>
+                  {item.name} × {item.quantity || 1}
+                </span>
+                <strong>Rs. {item.price * (item.quantity || 1)}</strong>
+              </li>
+            ))}
+            <li className="list-group-item d-flex justify-content-between bg-light">
+              <strong>Delivery</strong>
+              <span>Rs. {deliveryCharge}</span>
+            </li>
+          </ul>
+          <h5>Total: Rs. {totalAmount}</h5>
+        </div>
+
+        {/* Modal Footer */}
+        <div className="modal-footer">
+          <button className="btn btn-success" onClick={handleConfirmOrder}>
+            Confirm Place Order
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
 
 {showReservationModal && (
   <div
@@ -515,173 +687,7 @@ export const Navbar = ({
     </div>
   </div>
 )}
-
-      {/* Cart Modal */}
-      {showModal && (
-        <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog modal-lg">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">🛒 Your Cart</h5>
-                <button type="button" className="btn-close" onClick={handleClose}></button>
-              </div>
-              <div className="modal-body">
-                {cartItems.length === 0 ? (
-                  <p>No items in cart.</p>
-                ) : (
-                  <ul className="list-group">
-                    {cartItems.map((item, index) => (
-                      <li className="list-group-item d-flex align-items-center justify-content-between" key={index}>
-                        <div className="d-flex align-items-center">
-                          <img src={item.img || "/default.jpg"} alt={item.name} style={{ width: '60px', height: '60px', objectFit: 'cover', marginRight: '15px' }} />
-                          <div>
-                            <h6 className="mb-1">{item.name}</h6>
-                            <div className="d-flex align-items-center mb-1">
-                              <button className="btn btn-sm btn-outline-secondary me-2" onClick={() => {
-                                const updated = [...cartItems];
-                                if (!updated[index].quantity) updated[index].quantity = 1;
-                                if (updated[index].quantity > 1) {
-                                  updated[index].quantity -= 1;
-                                }
-                                setCartItems(updated);
-                              }}>−</button>
-                              <span>{item.quantity || 1}</span>
-                              <button className="btn btn-sm btn-outline-secondary ms-2" onClick={() => {
-                                const updated = [...cartItems];
-                                updated[index].quantity = (updated[index].quantity || 1) + 1;
-                                setCartItems(updated);
-                              }}>+</button>
-                            </div>
-                            <small className="text-muted">Price: Rs. {item.price * (item.quantity || 1)}</small>
-                          </div>
-                        </div>
-                        <button className="btn btn-sm btn-danger" onClick={() => handleRemoveItem(index)}>
-                          Remove
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-              <div className="modal-footer flex-column flex-md-row justify-content-between align-items-center">
-                <h5 className="mb-2 mb-md-0">Total: Rs. {totalAmount}</h5>
-                <div>
-                  <button className="btn btn-success me-2" onClick={handlePlaceOrder}>Place Order</button>
-                  <button className="btn me-2" onClick={handleAddMoreItems} style={{ backgroundColor: '#fdd835', color: '#000', border: 'none' }}>Add More Items</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Delivery Modal */}
-    {/* Delivery Modal */}
-{showOrderModal && (
-  <div
-    className="modal fade show"
-    style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}
-  >
-    <div className="modal-dialog modal-lg">
-      <div className="modal-content">
-        <div className="modal-header d-flex justify-content-between align-items-center">
-          <h5 className="modal-title">📦 Delivery Details</h5>
-          <button
-            type="button"
-            className="btn"
-            onClick={() => setShowOrderModal(false)}
-            style={{
-              fontSize: '1.2rem',
-              border: 'none',
-              background: 'transparent',
-              cursor: 'pointer',
-              lineHeight: 1,
-            }}
-            aria-label="Close"
-          >
-            ❌
-          </button>
-        </div>
-
-        <div className="modal-body">
-          {/* Input Fields */}
-          {[
-            { name: 'name', label: 'Name' },
-            { name: 'address', label: 'Address' },
-            { name: 'phone', label: 'Phone' },
-            { name: 'aphone', label: 'Alternate phone' },
-            { name: 'email', label: 'Email' },
-          ].map((field, i) => (
-            <div className="mb-3" key={i}>
-              <label className="form-label">{field.label}</label>
-              <input
-                type={field.name === 'email' ? 'email' : 'text'}
-                className={`form-control ${deliveryErrors[field.name] ? 'is-invalid' : ''}`}
-                value={deliveryInfo[field.name]}
-                onChange={(e) =>
-                  setDeliveryInfo({ ...deliveryInfo, [field.name]: e.target.value })
-                }
-              />
-              {deliveryErrors[field.name] && (
-                <div className="invalid-feedback">{deliveryErrors[field.name]}</div>
-              )}
-            </div>
-          ))}
-
-          {/* Area Selection */}
-          <div className="mb-3">
-            <label className="form-label">Delivery Area</label>
-            <select
-              className={`form-select ${deliveryErrors.area ? 'is-invalid' : ''}`}
-              value={deliveryInfo.area}
-              onChange={(e) =>
-                setDeliveryInfo({ ...deliveryInfo, area: e.target.value })
-              }
-            >
-              {Object.keys(areaCharges).map((area, idx) => (
-                <option key={idx} value={area}>
-                  {area}
-                </option>
-              ))}
-            </select>
-            {deliveryInfo.area !== 'Select Area' && (
-              <small className="text-muted">
-                Delivery Charges: Rs. {deliveryCharge}
-              </small>
-            )}
-            {deliveryErrors.area && (
-              <div className="invalid-feedback">{deliveryErrors.area}</div>
-            )}
-          </div>
-
-          {/* Order Summary */}
-          <h6 className="mt-4">🧾 Order Summary</h6>
-          <ul className="list-group mb-3">
-            {cartItems.map((item, i) => (
-              <li className="list-group-item d-flex justify-content-between" key={i}>
-                <span>
-                  {item.name} × {item.quantity || 1}
-                </span>
-                <strong>Rs. {item.price * (item.quantity || 1)}</strong>
-              </li>
-            ))}
-            <li className="list-group-item d-flex justify-content-between bg-light">
-              <strong>Delivery</strong>
-              <span>Rs. {deliveryCharge}</span>
-            </li>
-          </ul>
-          <h5>Total: Rs. {totalAmount}</h5>
-        </div>
-
-        <div className="modal-footer">
-          <button className="btn btn-success" onClick={handleConfirmOrder}>
-            Confirm Place Order
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
+   
 
       {/* Confirmation Toast */}
       {showConfirmation && (

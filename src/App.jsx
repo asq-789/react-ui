@@ -27,23 +27,8 @@ import { Deal } from './Components/Deal';
 import { Alldishes } from './Components/Search/Alldishes';
 import { Events } from './Components/Events';
 import { ToastContainer, toast } from 'react-toastify';
-// search
-// import { AnimeeProducts } from './Components/Search/AllProducts';
-// import { bbqProducts } from './Components/Search/AllProducts';
-// import { biryaniProducts } from './Components/Search/AllProducts';
-// import { PopularProducts } from './Components/Search/AllProducts';
-// import { Products } from './Components/Search/AllProducts';
-// import { DessertsProducts } from './Components/Search/AllProducts';
-// import { appetizerProducts } from './Components/Search/AllProducts';
-// import { drinkProducts } from './Components/Search/AllProducts';
-// import { PizzaProducts } from './Components/Search/AllProducts';
-// import { sandwitchesProducts } from './Components/Search/AllProducts';
-// import { rollProducts } from './Components/Search/AllProducts';
-// import { burgerProducts } from './Components/Search/AllProducts';
-// import { burgerdealProducts } from './Components/Search/AllProducts';
 import 'react-toastify/dist/ReactToastify.css';
-// import { Products, PopularProducts, AnimeeProducts,appetizerProducts, bbqProducts, burgerdealProducts,DessertsProducts,drinkProducts,PizzaProducts,rollProducts,sandwitchesProducts} from './allProducts';
-// import { allProducts } from './Components/Search/Alldishes';
+import { Search } from './Components/Search';
 
 function App() {
   const [userEmail, setUserEmail] = useState(localStorage.getItem('userEmail') || '');
@@ -120,11 +105,13 @@ function App() {
 
         <Carousel />
         <Navbarname />
+  {/* <Search /> */}
       </div>
 
       <Routes>
         <Route path="/" element={<Loginmoadal setUserEmail={setUserEmail} />} />
         <Route path="events" element={<Events setUserEmail={setUserEmail} />} />
+        <Route path="search" element={<Search setUserEmail={setUserEmail} />} />
        <Route path="alldishes" element={<Alldishes setUserEmail={setUserEmail} />} />
         <Route path="alldishes" element={<Alldishes handleAddToCart={handleAddToCart} />} />
         <Route path="home" element={<Home handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} />} />

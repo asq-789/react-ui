@@ -3,6 +3,7 @@ import { Animeecards } from './Components/Cards/Animeecards';
 import { Cards } from './Components/Cards/Cards';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Search } from './Components/Search';
 
 
 const AnimeeProducts = [
@@ -653,6 +654,14 @@ const sandwitchesProducts = [
     badge: '🌶️ Spicy'
   },
 ];
+const scrollToSection = (id) => {
+  const section = document.getElementById(id);
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth' });
+  } else {
+    toast.error("Section not found!");
+  }
+};
 
 export const Home = ({ handleAddToCart,handleToggleWishlist, wishlistItems }) => {
 
@@ -660,8 +669,9 @@ export const Home = ({ handleAddToCart,handleToggleWishlist, wishlistItems }) =>
 
   return (
     <div>
+<Search onSearchSection={scrollToSection} />
       {/* Animee Deals */}
-      <div className="container mt-5">
+      <div id="animee" className="container mt-5">
         <div className="heading-section">
     <h3
   className="bold-heading"
@@ -694,7 +704,7 @@ export const Home = ({ handleAddToCart,handleToggleWishlist, wishlistItems }) =>
         </div>
       </div>
 {/* Burger Deal Section */}
-<div className="container mt-5">
+<div id="burger" className="container mt-5">
   <div className="heading-section">
     <h3
       style={{
@@ -713,7 +723,7 @@ export const Home = ({ handleAddToCart,handleToggleWishlist, wishlistItems }) =>
     </h6>
   </div>
 
-  <div className="row mt-4">
+  <div  className="row mt-4">
     {burgerProducts.map((prod, index) => (
       <Cards
         key={index}
@@ -730,7 +740,7 @@ export const Home = ({ handleAddToCart,handleToggleWishlist, wishlistItems }) =>
 </div>
 
       {/* Fast Food Deals */}
-      <div className="container mt-5">
+      <div id="fastfood" className="container mt-5">
         <div className="heading-section">
           <h3 style={{ fontWeight: 'bold', fontSize: '1.8rem', color: '#000', display: 'flex', alignItems: 'center' }}>
             <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🔥</span>
@@ -757,7 +767,7 @@ Grab-n-go meals that hit the spot every time!
       </div>
 
       {/* Popular Items */}
-      <div className="container mt-5">
+      <div id="popularitem"className="container mt-5">
         <div className="heading-section">
 <h3
   style={{
@@ -793,7 +803,7 @@ Grab-n-go meals that hit the spot every time!
         </div>
       </div>
       {/* Pixa */}
-      <div className="container mt-5">
+      <div id="pizza" className="container mt-5">
         <div className="heading-section">
        <h3
   style={{
@@ -827,7 +837,7 @@ Grab-n-go meals that hit the spot every time!
         </div>
       </div>
       {/* burgers Deals */}
-      <div className="container mt-5">
+      <div id="burgerdeal" className="container mt-5">
         <div className="heading-section">
       <h3
   style={{
@@ -861,7 +871,7 @@ Grab-n-go meals that hit the spot every time!
         </div>
       </div>
       {/* Sandwitches Deals */}
-      <div className="container mt-5">
+      <div id="sandwitch" className="container mt-5">
         <div className="heading-section">
         <h3
   style={{
@@ -895,7 +905,7 @@ Grab-n-go meals that hit the spot every time!
         </div>
       </div>
       {/* bbq Food Deals */}
-      <div className="container mt-5">
+      <div id="bbq" className="container mt-5">
         <div className="heading-section">
         <h3
   style={{
@@ -929,7 +939,7 @@ Grab-n-go meals that hit the spot every time!
         </div>
       </div>
       {/* biryani Deals */}
-      <div className="container mt-5">
+      <div id="biryani" className="container mt-5">
         <div className="heading-section">
          <h3
   style={{
@@ -963,7 +973,7 @@ Grab-n-go meals that hit the spot every time!
         </div>
       </div>
       {/* appetizers Deals */}
-      <div className="container mt-5">
+      <div id="appetizers"className="container mt-5">
         <div className="heading-section">
           <h3
   style={{
@@ -997,7 +1007,7 @@ Grab-n-go meals that hit the spot every time!
         </div>
       </div>
       {/* Rolls */}
-      <div className="container mt-5">
+      <div id="rolls" className="container mt-5">
         <div className="heading-section">
         <h3
   style={{
@@ -1031,7 +1041,7 @@ Grab-n-go meals that hit the spot every time!
         </div>
       </div>
       {/*drinks*/}
-      <div className="container mt-5">
+      <div id="drinks" className="container mt-5">
         <div className="heading-section">
       <h3
   style={{
@@ -1063,7 +1073,7 @@ Grab-n-go meals that hit the spot every time!
         </div>
       </div>
       {/* Desserts */}
-      <div className="container mt-5">
+      <div id="dessert" className="container mt-5">
         <div className="heading-section">
        <h3
   style={{

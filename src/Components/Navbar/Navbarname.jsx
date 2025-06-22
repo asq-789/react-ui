@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router';
+import { Search } from '../Search';
 
 export const Navbarname = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -206,6 +207,7 @@ navbar: {
           </div>
         </div>
       )}
+      {/* <Search/> */}
 
       <style>
         {`
@@ -220,6 +222,7 @@ navbar: {
           }
         `}
       </style>
+
     </>
   );
 };
