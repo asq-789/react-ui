@@ -141,7 +141,6 @@ navbar: {
 
   const menuItems = [
     { label: "Anime Deal", path: "/anime" },
-    { label: "Burger Deal", path: "/burgerdeal" },
     { label: "Fast Food", path: "/fastfood" },
     { label: "Chinese Deal", path: "/chinese" },
     { label: "Pizza", path: "/pizza" },
@@ -157,6 +156,8 @@ navbar: {
 
   return (
     <>
+        <div style={{ paddingTop: '0px' }}>
+
       <nav style={styles.navbar}>
         <h5 style={{ color: 'white', margin: 0 }}>🍽️ Menu</h5>
         <div style={styles.hamburger} onClick={() => setMenuOpen(true)}>☰</div>
@@ -208,7 +209,7 @@ navbar: {
         </div>
       )}
       {/* <Search/> */}
-
+</div>
       <style>
         {`
           html, body {

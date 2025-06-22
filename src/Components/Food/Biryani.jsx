@@ -52,8 +52,7 @@ export const biryaniProducts = [
   }
 ];
 
-
-export const Biryani = ({ handleAddToCart,handleToggleWishlist, wishlistItems }) => {
+export const Biryani = ({ handleAddToCart, handleToggleWishlist, wishlistItems }) => {
   return (
     <div>
       <div className="container mt-5">
@@ -70,6 +69,7 @@ export const Biryani = ({ handleAddToCart,handleToggleWishlist, wishlistItems })
           </h3>
           <h6>Aromatic rice meets bold spices in every spoonful</h6>
         </div>
+
         <div className="row mt-4">
           {biryaniProducts.map((prod) => (
             <Cards
@@ -78,7 +78,8 @@ export const Biryani = ({ handleAddToCart,handleToggleWishlist, wishlistItems })
               price={prod.price}
               img={prod.img}
               description={prod.description}
-               onToggleWishlist={() => handleToggleWishlist(prod)}
+              badge={prod.badge} // ✅ Add badge prop here
+              onToggleWishlist={() => handleToggleWishlist(prod)}
               isWished={wishlistItems.some((item) => item.name === prod.name)}
               onAddToCart={() => handleAddToCart(prod)}
             />

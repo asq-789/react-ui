@@ -46,7 +46,7 @@ const events = [
     area: 'Indoor Dining',
     tableType: 'Family',
     description: 'Celebrate your weekend with a special family feast. Includes complimentary dessert & kids play zone!',
-    image: '/events/familyfeast.jpg',
+    image: '/family.jpg',
     price: '4000 PKR'
   },
 ];
@@ -95,13 +95,28 @@ export const Events = ({ userEmail }) => {
     setRsvpName('');
   };
 
-  const cancelRSVP = (title) => {
-    const updated = rsvps.filter(e => e.title !== title);
-    saveRsvps(updated);
-    toast.info('❌ RSVP Cancelled');
-    setShowCancelModal(false);
-    setSelectedRSVP(null);
-  };
+const cancelRSVP = (title) => {
+  const updated = rsvps.filter(e => e.title !== title);
+  saveRsvps(updated);
+
+  toast.info('❌ RSVP Cancelled', {
+    position: 'top-right',
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    style: {
+      backgroundColor: 'red',
+      color: 'white',
+      fontWeight: 'bold',
+    },
+    icon: false, // Optional: disables default toast icon
+  });
+
+  setShowCancelModal(false);
+  setSelectedRSVP(null);
+};
 
   const handlePrint = (rsvp) => {
     const printWindow = window.open('', '_blank');
@@ -255,14 +270,14 @@ export const Events = ({ userEmail }) => {
 
     <div id="pastGallery" className="gallery-scroll">
       {[
-        "/past1.jpg",
-        "/past2.jpg",
-        "/past3.jpg",
-        "/past4.jpg",
-        "/past5.jpg",
-        "/past6.jpg",
-        "/past7.jpg",
-        "/past8.jpg"
+        "/dinner.jpg",
+        "/sc3.jpg",
+        "/sc2.jpg",
+        "/sc1.jpg",
+        "/sc4.jpg",
+        "/sc5.jpg",
+        "/sc7.jpg",
+        "/sc6.jpg"
       ].map((src, idx) => (
         <div key={idx} className="gallery-item">
           <img
@@ -278,17 +293,17 @@ export const Events = ({ userEmail }) => {
   </div>
 </div>
 
-
-      {/* 🎉 Celebrated Occasions & Discounts */}
 <div className="mt-5">
-  <h3 className="text-danger mb-3 text-center">🎂 Celebrated Occasions & Special Discounts</h3>
+  <h3 className="text-danger mb-3 text-center">
+    🎂 Celebrated Occasions & Special Discounts
+  </h3>
   <div className="row g-4">
     {[
       {
         title: "🎉 Birthday Bash",
         desc: "Colorful decorations, custom cake, and free birthday dessert for guests!",
         badge: "🎂 20% Off Birthday Packages",
-        img: "/occasions/birthday.jpg",
+        img: "/bash.jpg",
         area: "Indoor Dining",
         tableType: "Family",
         occasion: "Birthday"
@@ -297,7 +312,7 @@ export const Events = ({ userEmail }) => {
         title: "💍 Engagement Night",
         desc: "Romantic rooftop ambiance with complimentary drinks & candles.",
         badge: "💖 Couple Deal – Save 15%",
-        img: "/occasions/engagement.jpg",
+        img: "/eng.jpg",
         area: "Roof Top Garden Dining",
         tableType: "Couple",
         occasion: "Engagement"
@@ -306,7 +321,7 @@ export const Events = ({ userEmail }) => {
         title: "🎓 Graduation Dinner",
         desc: "Celebrate milestones with your loved ones. Free welcome drink included.",
         badge: "🎓 Group Deal – 10% Off",
-        img: "/occasions/graduation.jpg",
+        img: "/grad.jpg",
         area: "Indoor Dining",
         tableType: "Standard",
         occasion: "Graduation"
@@ -315,7 +330,7 @@ export const Events = ({ userEmail }) => {
         title: "👋 Farewell Gathering",
         desc: "Reserve for office or school farewells. Includes stage & projector.",
         badge: "🎤 Event Discount – Flat 1000 PKR Off",
-        img: "/occasions/farewell.jpg",
+        img: "/fare.jfif",
         area: "Outdoor Dining",
         tableType: "Family",
         occasion: "Farewell"
@@ -324,58 +339,86 @@ export const Events = ({ userEmail }) => {
         title: "💘 Anniversary Special",
         desc: "Live violin music, custom menu, and couple photography included.",
         badge: "💑 Anniversary Deal – Free Dessert & Rose",
-        img: "/occasions/anniversary.jpg",
+        img: "/anni.jpg",
         area: "Roof Top Garden Dining",
         tableType: "Couple",
         occasion: "Anniversary"
       },
       {
-  title: "🍽️ Corporate Dinner",
-  desc: "Impress your team or clients with our elegant corporate dinner setup including presentation screen and VIP service.",
-  badge: "🏢 Corporate Package – 15% Off for 10+ Guests",
-  img: "/occasions/corporate.jpg",
-  area: "Indoor Dining",
-  tableType: "Standard",
-  occasion: "Corporate Dinner"
-}
-
+        title: "🍽️ Corporate Dinner",
+        desc: "Impress your team or clients with our elegant corporate dinner setup including presentation screen and VIP service.",
+        badge: "🏢 Corporate Package – 15% Off for 10+ Guests",
+        img: "/cor.jpg",
+        area: "Indoor Dining",
+        tableType: "Standard",
+        occasion: "Corporate Dinner"
+      }
     ].map((item, idx) => (
       <div className="col-md-4" key={idx}>
-        <div className="card h-100 shadow border-0">
+        <div
+          className="card h-100 shadow"
+          style={{
+            overflow: 'hidden',
+            transition: 'all 0.3s ease',
+            border: '2px solid transparent',
+            borderRadius: '8px',
+            cursor: 'pointer'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.05)';
+            e.currentTarget.style.border = '2px solid red';
+            e.currentTarget.style.boxShadow = '0 0 20px rgba(255, 0, 0, 0.3)';
+            const title = e.currentTarget.querySelector('.card-title');
+            if (title) title.style.color = '#dc3545'; // Bootstrap red
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.border = '2px solid transparent';
+            e.currentTarget.style.boxShadow = 'none';
+            const title = e.currentTarget.querySelector('.card-title');
+            if (title) title.style.color = ''; // Reset text color
+          }}
+        >
           <img
             src={item.img}
             alt={item.title}
-            style={{ height: '200px', width: '100%', objectFit: 'cover', borderTopLeftRadius: '8px', borderTopRightRadius: '8px' }}
+            style={{
+              height: '200px',
+              width: '100%',
+              objectFit: 'cover',
+              borderTopLeftRadius: '8px',
+              borderTopRightRadius: '8px'
+            }}
           />
           <div className="card-body text-center">
-            <h5 className="card-title text-danger">{item.title}</h5>
+            <h5 className="card-title text-dark">{item.title}</h5>
             <p className="text-muted">{item.desc}</p>
             <span className="badge bg-success mb-2">{item.badge}</span>
             <br />
             <button
-    className="btn btn-outline-danger mt-2"
-    onClick={() => {
-      const prefill = {
-        area: item.area,
-        tableType: item.tableType,
-        occasion: item.occasion, // 🎯 This is what pre-fills the dropdown
-        discount: item.badge,
-        title: item.title,
-      };
-      localStorage.setItem('eventReservationPrefill', JSON.stringify(prefill));
-      navigate('/restaurant');
-    }}
-  >
-    🎉 Book This Occasion
-  </button>
-</div>
-          
+              className="btn btn-outline-danger mt-2"
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                const prefill = {
+                  area: item.area,
+                  tableType: item.tableType,
+                  occasion: item.occasion,
+                  discount: item.badge,
+                  title: item.title
+                };
+                localStorage.setItem('eventReservationPrefill', JSON.stringify(prefill));
+                navigate('/restaurant');
+              }}
+            >
+              🎉 Book This Occasion
+            </button>
+          </div>
         </div>
       </div>
     ))}
   </div>
-  
 </div>
+
  
       <ToastContainer position="top-center" />
 

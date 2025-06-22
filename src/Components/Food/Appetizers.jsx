@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'; 
 import { Cards } from '../Cards/Cards';
 
 export const appetizerProducts = [
@@ -54,37 +54,35 @@ export const appetizerProducts = [
 
 export const Appetizers = ({ handleAddToCart, handleToggleWishlist, wishlistItems }) => {
   return (
-    <div>
-      <div className="container mt-5">
-        <div className="heading-section">
-          <h3 style={{
-            fontWeight: 'bold',
-            fontSize: '1.8rem',
-            color: '#000',
-            display: 'flex',
-            alignItems: 'center'
-          }}>
-            <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🧆</span>
-            Irresistible Appetizers
-          </h3>
-          <h6>Small plates, BIG flavor!</h6>
-        </div>
+    <div className="container mt-5">
+      <div className="heading-section">
+        <h3 style={{
+          fontWeight: 'bold',
+          fontSize: '1.8rem',
+          color: '#000',
+          display: 'flex',
+          alignItems: 'center'
+        }}>
+          <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🧆</span>
+          Irresistible Appetizers
+        </h3>
+        <h6>Small plates, BIG flavor!</h6>
+      </div>
 
-        <div className="row mt-4">
-          {appetizerProducts.map((prod) => (
-            <Cards
-              key={prod.id}
-              name={prod.name}
-              price={prod.price}
-              img={prod.img}
-              description={prod.description}
-              badge={prod.badge}
-              onToggleWishlist={() => handleToggleWishlist(prod)}
-              isWished={wishlistItems.some((item) => item.name === prod.name)}
-              onAddToCart={() => handleAddToCart(prod)}
-            />
-          ))}
-        </div>
+      <div className="row mt-4">
+        {appetizerProducts.map((prod) => (
+          <Cards
+            key={prod.id}
+            name={prod.name}
+            price={prod.price}
+            img={prod.img}
+            description={prod.description}
+            badge={prod.badge} // ✅ Passes badge to card
+            onToggleWishlist={() => handleToggleWishlist(prod)}
+            isWished={wishlistItems.some((item) => item.name === prod.name)}
+            onAddToCart={() => handleAddToCart(prod)}
+          />
+        ))}
       </div>
     </div>
   );

@@ -41,9 +41,13 @@ export const Loginmoadal = ({ setUserEmail }) => {
 
     if (!email || !option || (option === 'Delivery' && !deliveryCity)) return;
 
+    // Save all values using email
     localStorage.setItem('userEmail', email);
     localStorage.setItem('orderType', option);
-    localStorage.setItem('deliveryCity', deliveryCity || 'N/A');
+    if (option === 'Delivery') {
+      localStorage.setItem(`city_${email}`, deliveryCity); // ✅ Save city with email
+    }
+
     setUserEmail(email);
 
     const savedCart = JSON.parse(localStorage.getItem(`cart_${email}`)) || [];

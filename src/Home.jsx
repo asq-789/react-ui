@@ -4,6 +4,8 @@ import { Cards } from './Components/Cards/Cards';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Search } from './Components/Search';
+import { Carousel } from './Components/Carousel/Carousel';
+import { Navbarname } from './Components/Navbar/Navbarname';
 
 
 const AnimeeProducts = [
@@ -513,17 +515,19 @@ const PizzaProducts = [
     badge: '🍖 Loaded'
   }
 ];
-const PopularProducts = [
+export const PopularProducts = [
   { 
     name: '🍤 Shrimp Chowmin', 
     price: 700, 
     img: '/chowmin.jpg',
+    description: 'Savory shrimp stir-fried with noodles and veggies.',
     badge: '🌟 Bestseller'
   },
   { 
     name: '🥕 Vegetable Chowmin', 
     price: 1699, 
     img: '/noodles.jpg',
+    description: 'Classic vegetable noodles packed with flavor.',
     badge: '🌱 Veg'
   },
   { 
@@ -537,39 +541,47 @@ const PopularProducts = [
     name: '🥦 Veg Fried Rice', 
     price: 1599, 
     img: '/veg.jpg',
+    description: 'Fried rice with fresh mixed vegetables.',
     badge: '🌱 Veg'
   },
   { 
     name: '🍜 Mix Chowmin', 
     price: 1060, 
     img: '/prawnsnoodles.jpg',
+    description: 'Combination of seafood and chicken noodles.',
     badge: '✨ Combo'
   },
   { 
     name: '🍝 Hakka Noodles', 
     price: 1060, 
-    img: '/hakka.jpg'
+    img: '/hakka.jpg',
+    description: 'Hakka-style stir-fried noodles with a spicy kick.',
+    badge: '🌶️ Hot'
   },
   { 
     name: '🥟 Chicken Momos', 
     price: 500, 
     img: '/momos.jpg',
+    description: 'Steamed dumplings filled with seasoned chicken.',
     badge: '💥 New'
   },
   { 
     name: '🍅 Red Sauce Pasta', 
     price: 650, 
     img: '/pasta.jpg',
+    description: 'Pasta in tangy tomato-based red sauce.',
     badge: '🍅 Tangy'
   },
   { 
     name: '🧀 Alfredo Pasta', 
     price: 900, 
     img: '/alferado.jpg',
+    description: 'Creamy Alfredo pasta topped with cheese.',
     badge: '🧀 Cheesy'
   }
 ];
-const rollProducts = [
+
+export const rollProducts = [
   {
     name: '🌯 Chicken Roll',
     price: 450,
@@ -581,7 +593,8 @@ const rollProducts = [
     name: '🥩 Beef Bihari Roll',
     price: 480,
     img: '/r2.jpg',
-    description: 'Tender Bihari-style beef strips in a spicy marinade, wrapped fresh.'
+    description: 'Tender Bihari-style beef strips in a spicy marinade, wrapped fresh.',
+    badge: '🌶️ Spicy Bihari'
   },
   {
     name: '🍗 Zinger Roll',
@@ -594,7 +607,8 @@ const rollProducts = [
     name: '🥛 Chicken Malai Roll',
     price: 470,
     img: '/r4.jpg',
-    description: 'Creamy malai chicken grilled to perfection with herbs and wrapped warm.'
+    description: 'Creamy malai chicken grilled to perfection with herbs and wrapped warm.',
+    badge: '🥛 Creamy Delight'
   },
   {
     name: '🥬 Vegetable Roll',
@@ -611,6 +625,7 @@ const rollProducts = [
     badge: '🧀 Cheesy'
   }
 ];
+
 const sandwitchesProducts = [
   { 
     name: '🥪 Grilled Chicken Sandwich', 
@@ -669,6 +684,34 @@ export const Home = ({ handleAddToCart,handleToggleWishlist, wishlistItems }) =>
 
   return (
     <div>
+   <div style={{ width: '200%', maxWidth: '100vw', overflowX: 'hidden' }}>
+           {/* <Navbar
+             cartItems={cartItems}
+             setCartItems={setCartItems}
+             wishlistItems={wishlistItems}
+             setWishlistItems={setWishlistItems}
+             handleAddToCart={handleAddToCart}
+             handleToggleWishlist={handleToggleWishlist}
+             userEmail={userEmail}
+             reservationCount={reservationCount}
+             selectedCity={selectedCity}
+           />
+    */}
+           <Carousel />
+   <div
+     style={{
+       position: 'sticky',
+       top: 0,
+       zIndex: 1000,
+       backgroundColor: 'red', // match your Navbarname background
+       boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+     }}
+   >
+     <Navbarname />
+   </div>
+  
+  
+        </div>
 <Search onSearchSection={scrollToSection} />
       {/* Animee Deals */}
       <div id="animee" className="container mt-5">
@@ -731,6 +774,7 @@ export const Home = ({ handleAddToCart,handleToggleWishlist, wishlistItems }) =>
         price={prod.price}
         img={prod.img}
         description={prod.description}
+        badge={prod.badge}
          onToggleWishlist={() => handleToggleWishlist(prod)}
               isWished={wishlistItems.some((item) => item.name === prod.name)}
         onAddToCart={() => handleAddToCart(prod)}
@@ -758,6 +802,7 @@ Grab-n-go meals that hit the spot every time!
               price={prod.price}
               img={prod.img}
             description={prod.description}
+            badge={prod.badge}
  onToggleWishlist={() => handleToggleWishlist(prod)}
               isWished={wishlistItems.some((item) => item.name === prod.name)}
            onAddToCart={() => handleAddToCart(prod)}
@@ -794,7 +839,8 @@ Grab-n-go meals that hit the spot every time!
               name={prod.name}
               price={prod.price}
               img={prod.img}
-             description={prod.description}
+       description={prod.description}
+badge={prod.badge}
  onToggleWishlist={() => handleToggleWishlist(prod)}
               isWished={wishlistItems.some((item) => item.name === prod.name)}
               onAddToCart={() => handleAddToCart(prod)}
@@ -829,6 +875,7 @@ Grab-n-go meals that hit the spot every time!
               price={prod.price}
               img={prod.img}
               description={prod.description}
+              badge={prod.badge}
                onToggleWishlist={() => handleToggleWishlist(prod)}
               isWished={wishlistItems.some((item) => item.name === prod.name)}
               onAddToCart={() => handleAddToCart(prod)}
@@ -863,6 +910,7 @@ Grab-n-go meals that hit the spot every time!
               price={prod.price}
               img={prod.img}
            description={prod.description}
+           badge={prod.badge}
             onToggleWishlist={() => handleToggleWishlist(prod)}
               isWished={wishlistItems.some((item) => item.name === prod.name)}
               onAddToCart={() => handleAddToCart(prod)}
@@ -897,6 +945,7 @@ Grab-n-go meals that hit the spot every time!
               price={prod.price}
               img={prod.img}
               description={prod.description}
+              badge={prod.badge}
  onToggleWishlist={() => handleToggleWishlist(prod)}
               isWished={wishlistItems.some((item) => item.name === prod.name)}
               onAddToCart={() => handleAddToCart(prod)}
@@ -931,6 +980,7 @@ Grab-n-go meals that hit the spot every time!
               price={prod.price}
               img={prod.img}
    description={prod.description}
+   badge={prod.badge}
     onToggleWishlist={() => handleToggleWishlist(prod)}
               isWished={wishlistItems.some((item) => item.name === prod.name)}
               onAddToCart={() => handleAddToCart(prod)}
@@ -965,6 +1015,7 @@ Grab-n-go meals that hit the spot every time!
               price={prod.price}
               img={prod.img}
                description={prod.description}
+               badge={prod.badge}
  onToggleWishlist={() => handleToggleWishlist(prod)}
               isWished={wishlistItems.some((item) => item.name === prod.name)}
               onAddToCart={() => handleAddToCart(prod)}
@@ -999,6 +1050,7 @@ Grab-n-go meals that hit the spot every time!
               price={prod.price}
               img={prod.img}
              description={prod.description}
+             badge={prod.badge}
  onToggleWishlist={() => handleToggleWishlist(prod)}
               isWished={wishlistItems.some((item) => item.name === prod.name)}
               onAddToCart={() => handleAddToCart(prod)}
@@ -1033,6 +1085,7 @@ Grab-n-go meals that hit the spot every time!
               price={prod.price}
               img={prod.img}
             description={prod.description}
+            badge={prod.badge}
              onToggleWishlist={() => handleToggleWishlist(prod)}
               isWished={wishlistItems.some((item) => item.name === prod.name)}
               onAddToCart={() => handleAddToCart(prod)}
@@ -1067,7 +1120,10 @@ Grab-n-go meals that hit the spot every time!
               price={prod.price}
               img={prod.img}
             description={prod.description}
+            badge={prod.badge}
               onAddToCart={() => handleAddToCart(prod)}
+              onToggleWishlist={() => handleToggleWishlist(prod)}
+              isWished={wishlistItems.some((item) => item.name === prod.name)}
             />
           ))}
         </div>
@@ -1099,6 +1155,7 @@ Grab-n-go meals that hit the spot every time!
               price={prod.price}
               img={prod.img}
              description={prod.description}
+             badge={prod.badge}
  onToggleWishlist={() => handleToggleWishlist(prod)}
               isWished={wishlistItems.some((item) => item.name === prod.name)}
               onAddToCart={() => handleAddToCart(prod)}

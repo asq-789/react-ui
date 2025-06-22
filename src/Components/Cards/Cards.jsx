@@ -1,131 +1,97 @@
 import React from 'react';
 
-export const Cards = ({ name, price, img, description, onAddToCart, onToggleWishlist, isWished, customClass, badge }) => {
+export const Cards = ({
+  name,
+  price,
+  img,
+  description,
+  onAddToCart,
+  onToggleWishlist,
+  isWished,
+  customClass,
+  badge
+}) => {
   return (
     <>
-      {/* Internal CSS styles */}
       <style>
         {`
-          .animee-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+          .glow-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
             border-radius: 16px;
-            overflow: hidden;
-            background-color: #fff;
             border: 2px solid #ddd;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+            background-color: #fff;
           }
 
-          .animee-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-            border-color: #E8380DF3;
+          .glow-card:hover {
+            transform: scale(1.03);
+            border-color: #e8380d;
+            box-shadow: 0 0 15px rgba(232, 56, 13, 0.6);
           }
 
-          .animee-card .wishlist-icon {
-            transition: transform 0.2s ease;
-          }
-
-          .animee-card .wishlist-icon:hover {
-            transform: scale(1.2);
-          }
-
-          .animee-card .btn-danger {
-            transition: background-color 0.3s ease, transform 0.2s ease;
-          }
-
-          .animee-card .btn-danger:hover {
-            background-color: #c82333;
-            transform: scale(1.05);
-          }
-
-          .animee-card .card-img-top {
-            height: 400px;
+          .glow-card .card-img-top {
+            height: 200px;
             object-fit: cover;
-            border-bottom: 1px solid #eee;
-          }
-
-          .animee-card .card-body {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 1rem;
-          }
-
-          .animee-card .card-title {
-            text-align: center;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-          }
-
-          .animee-card .card-text {
-            font-size: 0.9rem;
-            color: #6c757d;
-            margin-bottom: 0.75rem;
-          }
-
-          .animee-card .rating {
-            text-align: center;
-            color: #ffc107;
-            margin-bottom: 0.75rem;
-          }
-
-          .animee-card .price-section {
-            font-weight: bold;
-          }
-
-          .animee-card .actions {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-          }
-
-          .animee-card .badge-top {
-            display: inline-block;
-            background-color: #e8380d;
-            color: white;
-            font-size: 0.8rem;
-            font-weight: bold;
-            padding: 4px 8px;
-            border-radius: 12px;
-            margin-bottom: 0.3rem;
-            text-align: center;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
           }
         `}
       </style>
 
-      {/* Card layout */}
       <div className="col-lg-4 col-md-6 col-sm-12 mb-4">
-        <div className={`card ${customClass || 'animee-card'}`} style={{ height: '600px' }}>
-          <img src={img} className="card-img-top" alt={name} />
+        <div className={`card glow-card shadow-sm h-100 ${customClass || ''}`} style={{ height: '440px' }}>
+          <img
+            src={img}
+            className="card-img-top"
+            alt={name}
+          />
 
-          <div className="card-body">
-            {/* Badge above title */}
-            {badge && <div className="badge-top">{badge}</div>}
+          <div className="card-body d-flex flex-column justify-content-between p-3">
+            {badge && (
+              <div className="mb-2">
+                <span className="badge bg-danger text-white rounded-pill">{badge}</span>
+              </div>
+            )}
 
-            <h5 className="card-title">{name}</h5>
+            <h5 className="card-title text-center mb-2">{name}</h5>
 
-            {description && <p className="card-text">{description}</p>}
+            {description && (
+              <p
+                className="card-text small text-muted mb-2"
+                style={{
+                  maxHeight: '40px',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical'
+                }}
+                title={description}
+              >
+                {description}
+              </p>
+            )}
 
-            <div className="rating">★ ★ ★ ★ ★</div>
+            <div className="text-warning text-center mb-2" style={{ fontSize: '0.9rem' }}>
+              ★ ★ ★ ★ ★
+            </div>
 
             <div className="d-flex justify-content-between align-items-center mt-auto">
-              <span className="price-section">Rs. {price}</span>
+              <span className="fw-bold">Rs. {price}</span>
 
-              <div className="actions">
+              <div className="d-flex align-items-center gap-2">
                 <span
                   onClick={onToggleWishlist}
-                  className="wishlist-icon"
                   style={{
                     cursor: 'pointer',
-                    fontSize: '1.6rem',
-                    color: isWished ? 'red' : '#aaa',
+                    fontSize: '1.4rem',
+                    color: isWished ? 'red' : '#aaa'
                   }}
                   title="Add to Wishlist"
                 >
                   {isWished ? '❤️' : '🤍'}
                 </span>
 
-                <button className="btn btn-danger" onClick={onAddToCart}>
+                <button className="btn btn-danger btn-sm" onClick={onAddToCart}>
                   Add to Cart
                 </button>
               </div>

@@ -1,5 +1,6 @@
-import React from 'react'
+import React from 'react';
 import { Cards } from '../Cards/Cards';
+
 export const PizzaProducts = [
   { 
     name: '🍕 Margherita', 
@@ -66,39 +67,42 @@ export const PizzaProducts = [
   }
 ];
 
-export const Pizza = ({handleAddToCart,handleToggleWishlist, wishlistItems}) => {
+export const Pizza = ({ handleAddToCart, handleToggleWishlist, wishlistItems }) => {
   return (
-    <div>  {/* Pixa */}
-          <div className="container mt-5">
-            <div className="heading-section">
-           <h3
-      style={{
-        fontWeight: 'bold',
-        fontSize: '1.8rem',
-        color: '#000',
-        display: 'flex',
-        alignItems: 'center'
-      }}
-    >
-      <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🍕</span>
-      Cheesy Pizza Bliss
-    </h3>
-    
-    <h6>Melted cheese, crispy crust – pizza heaven starts here!</h6>
-    
-            </div>
-            <div className="row mt-4">
-              {PizzaProducts.map((prod, index) => (
-                <Cards
-                  key={index}
-                  name={prod.name}
-                  price={prod.price}
-                  img={prod.img}
-                  description={prod.description}
-                  onAddToCart={() => handleAddToCart(prod)}
-                />
-              ))}
-            </div>
-          </div></div>
-  )
-}
+    <div>  {/* Pizza */}
+      <div className="container mt-5">
+        <div className="heading-section">
+          <h3
+            style={{
+              fontWeight: 'bold',
+              fontSize: '1.8rem',
+              color: '#000',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            <span style={{ fontSize: '1.6rem', marginRight: '10px' }}>🍕</span>
+            Cheesy Pizza Bliss
+          </h3>
+          <h6>Melted cheese, crispy crust – pizza heaven starts here!</h6>
+        </div>
+
+        <div className="row mt-4">
+          {PizzaProducts.map((prod, index) => (
+            <Cards
+              key={index}
+              name={prod.name}
+              price={prod.price}
+              img={prod.img}
+              description={prod.description}
+              badge={prod.badge} // ✅ Show badge here
+              onToggleWishlist={() => handleToggleWishlist(prod)}
+              isWished={wishlistItems.some((item) => item.name === prod.name)}
+              onAddToCart={() => handleAddToCart(prod)}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};

@@ -46,8 +46,7 @@ export const Products = [
   },
 ];
 
-
-const FastFoodDeals = ({ handleAddToCart,handleToggleWishlist, wishlistItems }) => {
+const FastFoodDeals = ({ handleAddToCart, handleToggleWishlist, wishlistItems }) => {
   return (
     <div className="container mt-5">
       <div className="heading-section">
@@ -65,9 +64,10 @@ const FastFoodDeals = ({ handleAddToCart,handleToggleWishlist, wishlistItems }) 
             name={prod.name}
             price={prod.price}
             img={prod.img}
-           description={prod.description}
+            description={prod.description}
+            badge={prod.badge} // ✅ Show badge here
             onToggleWishlist={() => handleToggleWishlist(prod)}
-              isWished={wishlistItems.some((item) => item.name === prod.name)}
+            isWished={wishlistItems.some((item) => item.name === prod.name)}
             onAddToCart={() => handleAddToCart(prod)}
           />
         ))}

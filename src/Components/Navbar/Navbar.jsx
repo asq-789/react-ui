@@ -27,6 +27,7 @@ export const Navbar = ({
   const [showReservationModal, setShowReservationModal] = useState(false);
   const [reservedTables, setReservedTables] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
+  const [savedCity, setSavedCity] = useState('');
 
   const [editData, setEditData] = useState({
     name: '', email: '', phone: '', date: '', time: '', guests: '', area: '', occasion: ''
@@ -70,6 +71,9 @@ export const Navbar = ({
     if (userEmail) {
       const storedReservations = JSON.parse(localStorage.getItem(`reservations_${userEmail}`)) || [];
       setReservationCount(storedReservations.length);
+
+      const city = localStorage.getItem(`city_${userEmail}`) || '';
+      setSavedCity(city);
     }
   }, [userEmail]);
 
@@ -91,6 +95,7 @@ export const Navbar = ({
     setShowModal(false);
     setShowOrderModal(true);
   };
+
   const confirmDelete = (index) => setDeleteIndex(index);
 
   const handleDeleteReservation = (index) => {
@@ -178,7 +183,6 @@ export const Navbar = ({
       }
     }, 1000);
   };
-
 
   return (
     <>
@@ -360,20 +364,16 @@ export const Navbar = ({
           {/* Area Selection */}
           <div className="mb-3">
             <label className="form-label">Delivery Area</label>
-            <select
-              className={`form-select ${deliveryErrors.area ? 'is-invalid' : ''}`}
-              value={deliveryInfo.area}
-              onChange={(e) =>
-                setDeliveryInfo({ ...deliveryInfo, area: e.target.value })
-              }
-            >
-              <option value="Select Area" disabled>Select Area</option>
-              {Object.keys(areaCharges).map((area, idx) => (
-                <option key={idx} value={area}>
-                  {area}
-                </option>
-              ))}
-            </select>
+           <select
+      className={`form-select ${deliveryErrors.area ? 'is-invalid' : ''}`}
+      value={deliveryInfo.area}
+      onChange={(e) => setDeliveryInfo({ ...deliveryInfo, area: e.target.value })}
+    >
+      <option value="Select Area" disabled>Select Area</option>
+      {(cityAreas[savedCity] || []).map((area, idx) => (
+        <option key={idx} value={area}>{area}</option>
+      ))}
+    </select>
             {deliveryInfo.area !== 'Select Area' && (
               <small className="text-muted">
                 Delivery Charges: Rs. {deliveryCharge}
@@ -643,51 +643,99 @@ export const Navbar = ({
 
   
 
- {showWishlistModal && (
-  <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
-    <div className="modal-dialog modal-lg" style={{ maxWidth: '100%', margin: 'auto' }}>
-      <div className="modal-content" style={{ overflowX: 'hidden' }}>
-        <div className="modal-header">
-          <h5 className="modal-title">💖 Wishlist</h5>
+{showWishlistModal && (
+  <div
+    className="modal fade show"
+    style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}
+  >
+    <div className="modal-dialog modal-lg" style={{ maxWidth: '95%', margin: 'auto' }}>
+      <div className="modal-content rounded-4 shadow">
+        <div className="modal-header bg-light">
+          <h5 className="modal-title">💖 Your Wishlist</h5>
           <button type="button" className="btn-close" onClick={() => setShowWishlistModal(false)}></button>
         </div>
 
-        <div className="modal-body">
+        <div className="modal-body position-relative">
           {wishlistItems.length === 0 ? (
-            <p>Your wishlist is empty.</p>
+            <p className="text-center text-muted">Your wishlist is empty.</p>
           ) : (
-            <div className="row">
-              {wishlistItems.map((item, index) => (
-                <div className="col-md-4 mb-3" key={index}>
-                  <div className="card h-100 shadow-sm">
+            <>
+              {/* Red Scroll Arrows */}
+              <button
+                className="scroll-btn left"
+                onClick={() =>
+                  document.getElementById('wishlist-scroll').scrollBy({
+                    left: -250,
+                    behavior: 'smooth',
+                  })
+                }
+              >
+                ‹
+              </button>
+              <button
+                className="scroll-btn right"
+                onClick={() =>
+                  document.getElementById('wishlist-scroll').scrollBy({
+                    left: 250,
+                    behavior: 'smooth',
+                  })
+                }
+              >
+                ›
+              </button>
+
+              {/* Scrollable Wishlist Cards */}
+              <div
+                id="wishlist-scroll"
+                className="wishlist-scroll-container d-flex gap-4 px-3"
+              >
+                {wishlistItems.map((item, index) => (
+                  <div
+                    className="card wishlist-card"
+                    key={index}
+                  >
                     <img
                       src={item.img}
                       alt={item.name}
                       className="card-img-top"
-                      style={{ height: '200px', objectFit: 'cover' }}
                     />
-                    <div className="card-body">
-                      <h5 className="card-title">{item.name}</h5>
-                      <p className="card-text">{item.description}</p>
-                      <p className="card-text"><strong>Price:</strong> ${item.price}</p>
-                      <button className="btn btn-success me-2" onClick={() => handleAddToCart(item)}>Add to Cart 🛒</button>
-                      <button className="btn btn-outline-danger" onClick={() => handleToggleWishlist(item)}>Remove 💔</button>
+                    <div className="card-body d-flex flex-column justify-content-between">
+                      <h6 className="card-title">{item.name}</h6>
+                      <p className="small text-muted">{item.description}</p>
+                      <p className="fw-bold mb-2">Rs. {item.price}</p>
+                      <button
+                        className="btn btn-sm btn-success mb-2"
+                        onClick={() => handleAddToCart(item)}
+                      >
+                        Add to Cart 🛒
+                      </button>
+                      <button
+                        className="btn btn-sm btn-outline-danger"
+                        onClick={() => handleToggleWishlist(item)}
+                      >
+                        Remove 💔
+                      </button>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
 
-        <div className="modal-footer">
-          <button className="btn btn-secondary" onClick={() => setShowWishlistModal(false)}>Close</button>
+        <div className="modal-footer bg-light">
+          <button className="btn btn-dark rounded-pill px-4" onClick={() => setShowWishlistModal(false)}>
+            Close
+          </button>
         </div>
       </div>
     </div>
   </div>
 )}
-   
+
+
+
+
 
       {/* Confirmation Toast */}
       {showConfirmation && (

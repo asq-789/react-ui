@@ -32,6 +32,7 @@ import { Search } from './Components/Search';
 
 function App() {
   const [userEmail, setUserEmail] = useState(localStorage.getItem('userEmail') || '');
+  const [selectedCity, setSelectedCity] = useState('');
   const [cartItems, setCartItems] = useState([]);
   const [wishlistItems, setWishlistItems] = useState([]);
   const [reservationCount, setReservationCount] = useState(0);
@@ -39,6 +40,9 @@ function App() {
 
   useEffect(() => {
     if (userEmail) {
+      const storedCity = localStorage.getItem(`city_${userEmail}`) || '';
+      setSelectedCity(storedCity);
+
       const storedCart = JSON.parse(localStorage.getItem(`cart_${userEmail}`)) || [];
       const storedWishlist = JSON.parse(localStorage.getItem(`wishlist_${userEmail}`)) || [];
       const storedReservations = JSON.parse(localStorage.getItem(`reservations_${userEmail}`)) || [];
@@ -50,6 +54,7 @@ function App() {
       setCartItems([]);
       setWishlistItems([]);
       setReservationCount(0);
+      setSelectedCity('');
     }
     setIsCartLoaded(true);
   }, [userEmail]);
@@ -92,30 +97,42 @@ function App() {
       <ToastContainer position="top-right" autoClose={2000} hideProgressBar />
 
       <div style={{ width: '200%', maxWidth: '100vw', overflowX: 'hidden' }}>
-       <Navbar
-  cartItems={cartItems}
-  setCartItems={setCartItems}
-  wishlistItems={wishlistItems}
-  setWishlistItems={setWishlistItems}
-  handleAddToCart={handleAddToCart}
-  handleToggleWishlist={handleToggleWishlist}
-  userEmail={userEmail}
-  reservationCount={reservationCount} 
-/>
+        <Navbar
+          cartItems={cartItems}
+          setCartItems={setCartItems}
+          wishlistItems={wishlistItems}
+          setWishlistItems={setWishlistItems}
+          handleAddToCart={handleAddToCart}
+          handleToggleWishlist={handleToggleWishlist}
+          userEmail={userEmail}
+          reservationCount={reservationCount}
+          selectedCity={selectedCity}
+        />
 
-        <Carousel />
-        <Navbarname />
-  {/* <Search /> */}
+        {/* <Carousel /> */}
+{/* <div
+  style={{
+    position: 'sticky',
+    top: 0,
+    zIndex: 1000,
+    backgroundColor: 'red', // match your Navbarname background
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+  }}
+>
+  <Navbarname />
+</div> */}
+
+
       </div>
 
       <Routes>
         <Route path="/" element={<Loginmoadal setUserEmail={setUserEmail} />} />
         <Route path="events" element={<Events setUserEmail={setUserEmail} />} />
         <Route path="search" element={<Search setUserEmail={setUserEmail} />} />
-       <Route path="alldishes" element={<Alldishes setUserEmail={setUserEmail} />} />
+        <Route path="alldishes" element={<Alldishes setUserEmail={setUserEmail} />} />
         <Route path="alldishes" element={<Alldishes handleAddToCart={handleAddToCart} />} />
-        <Route path="home" element={<Home handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} />} />
-        <Route path="about" element={<Aboutus handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} />} />
+        <Route path="home" element={<Home handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} selectedCity={selectedCity} />} />
+        <Route path="about" element={<Aboutus handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} selectedCity={selectedCity} />} />
         <Route path="/restaurant" element={<Restaurant userEmail={userEmail} onReservationSubmit={(reservation) => console.log('Reservation submitted:', reservation)} />} />
         <Route path="/anime" element={<AnimeeDeals handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} />} />
         <Route path="/fastfood" element={<FastFoodDeals handleAddToCart={handleAddToCart} handleToggleWishlist={handleToggleWishlist} wishlistItems={wishlistItems} />} />

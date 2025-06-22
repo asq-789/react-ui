@@ -485,7 +485,7 @@ input[type=number]::-webkit-outer-spin-button {
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 600px;
+  max-width: 1200px;
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 10px;
@@ -514,4 +514,93 @@ input[type=number]::-webkit-outer-spin-button {
   padding: 10px;
   text-align: center;
   color: #888;
+}
+/* Scroll Buttons */
+.scroll-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  background-color: red;
+  color: white;
+  border: none;
+  font-size: 26px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.scroll-btn:hover {
+  background-color: darkred;
+}
+
+.scroll-btn.left {
+  left: 10px;
+}
+
+.scroll-btn.right {
+  right: 10px;
+}
+
+/* Scroll container: hide scrollbar */
+.wishlist-scroll-container {
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 10px;
+}
+
+.wishlist-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.wishlist-scroll-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Wishlist card */
+.wishlist-card {
+  min-width: 240px;
+  max-width: 240px;
+  flex: 0 0 auto;
+  border: 1px solid red;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.wishlist-card img {
+  height: 160px;
+  object-fit: cover;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+.animee-card {
+  transition: transform 0.3s ease, border 0.3s ease;
+  border: 2px solid transparent;
+  height: 100%;
+}
+
+.animee-card:hover {
+  transform: scale(1.03);
+  border: 2px solid red;
+}
+
+.zoom-img {
+  transition: transform 0.3s ease;
+  height: 250px;
+  object-fit: cover;
+}
+
+.animee-card:hover .zoom-img {
+  transform: scale(1.05);
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }

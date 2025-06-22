@@ -52,7 +52,6 @@ export const bbqProducts = [
   }
 ];
 
-
 export const BBQ = ({ handleAddToCart, handleToggleWishlist, wishlistItems }) => {
   return (
     <div>
@@ -70,6 +69,7 @@ export const BBQ = ({ handleAddToCart, handleToggleWishlist, wishlistItems }) =>
           </h3>
           <h6>Savor the smoky bites, grilled to perfection!</h6>
         </div>
+
         <div className="row mt-4">
           {bbqProducts.map((prod) => (
             <Cards
@@ -78,7 +78,8 @@ export const BBQ = ({ handleAddToCart, handleToggleWishlist, wishlistItems }) =>
               price={prod.price}
               img={prod.img}
               description={prod.description}
-               onToggleWishlist={() => handleToggleWishlist(prod)}
+              badge={prod.badge} // ✅ Ensure this line is included
+              onToggleWishlist={() => handleToggleWishlist(prod)}
               isWished={wishlistItems.some((item) => item.name === prod.name)}
               onAddToCart={() => handleAddToCart(prod)}
             />
